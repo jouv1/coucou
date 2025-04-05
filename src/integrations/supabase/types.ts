@@ -9,9 +9,100 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          appointment_date: string
+          appointment_time: string
+          appointment_title: string
+          created_at: string | null
+          id: number
+          location: string | null
+          loved_one_id: number
+          notes: string | null
+        }
+        Insert: {
+          appointment_date: string
+          appointment_time: string
+          appointment_title: string
+          created_at?: string | null
+          id?: number
+          location?: string | null
+          loved_one_id: number
+          notes?: string | null
+        }
+        Update: {
+          appointment_date?: string
+          appointment_time?: string
+          appointment_title?: string
+          created_at?: string | null
+          id?: number
+          location?: string | null
+          loved_one_id?: number
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_loved_one_id_fkey"
+            columns: ["loved_one_id"]
+            isOneToOne: false
+            referencedRelation: "loved_ones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      call_preferences: {
+        Row: {
+          call_frequency: string | null
+          call_length: string | null
+          created_at: string | null
+          id: number
+          loved_one_id: number | null
+          medication_reminders: boolean | null
+          mood_check: boolean | null
+          sleep_quality: boolean | null
+          upcoming_appointments: boolean | null
+          voice_preference: string | null
+        }
+        Insert: {
+          call_frequency?: string | null
+          call_length?: string | null
+          created_at?: string | null
+          id?: number
+          loved_one_id?: number | null
+          medication_reminders?: boolean | null
+          mood_check?: boolean | null
+          sleep_quality?: boolean | null
+          upcoming_appointments?: boolean | null
+          voice_preference?: string | null
+        }
+        Update: {
+          call_frequency?: string | null
+          call_length?: string | null
+          created_at?: string | null
+          id?: number
+          loved_one_id?: number | null
+          medication_reminders?: boolean | null
+          mood_check?: boolean | null
+          sleep_quality?: boolean | null
+          upcoming_appointments?: boolean | null
+          voice_preference?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_preferences_loved_one_id_fkey"
+            columns: ["loved_one_id"]
+            isOneToOne: false
+            referencedRelation: "loved_ones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conversations: {
         Row: {
+          call_direction: string | null
+          call_duration_secs: number | null
           created_at: string
+          happiness_level: string | null
           id: string
           phone_number: string | null
           transcript: string | null
@@ -19,7 +110,10 @@ export type Database = {
           user_id: number | null
         }
         Insert: {
+          call_direction?: string | null
+          call_duration_secs?: number | null
           created_at?: string
+          happiness_level?: string | null
           id?: string
           phone_number?: string | null
           transcript?: string | null
@@ -27,7 +121,10 @@ export type Database = {
           user_id?: number | null
         }
         Update: {
+          call_direction?: string | null
+          call_duration_secs?: number | null
           created_at?: string
+          happiness_level?: string | null
           id?: string
           phone_number?: string | null
           transcript?: string | null
@@ -47,6 +144,146 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loved_ones: {
+        Row: {
+          age_range: string | null
+          created_at: string | null
+          gender: string | null
+          id: number
+          name: string
+          nickname: string | null
+          relationship_to_user: string | null
+          user_id: number | null
+        }
+        Insert: {
+          age_range?: string | null
+          created_at?: string | null
+          gender?: string | null
+          id?: number
+          name: string
+          nickname?: string | null
+          relationship_to_user?: string | null
+          user_id?: number | null
+        }
+        Update: {
+          age_range?: string | null
+          created_at?: string | null
+          gender?: string | null
+          id?: number
+          name?: string
+          nickname?: string | null
+          relationship_to_user?: string | null
+          user_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loved_ones_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      medications: {
+        Row: {
+          created_at: string | null
+          id: number
+          loved_one_id: number | null
+          medication_name: string
+          time_taken: string[] | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: number
+          loved_one_id?: number | null
+          medication_name: string
+          time_taken?: string[] | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: number
+          loved_one_id?: number | null
+          medication_name?: string
+          time_taken?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "medications_loved_one_id_fkey"
+            columns: ["loved_one_id"]
+            isOneToOne: false
+            referencedRelation: "loved_ones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_settings: {
+        Row: {
+          created_at: string | null
+          daily_call_summary: boolean | null
+          id: number
+          loved_one_id: number | null
+          low_sentiment: boolean | null
+          missed_calls: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          daily_call_summary?: boolean | null
+          id?: number
+          loved_one_id?: number | null
+          low_sentiment?: boolean | null
+          missed_calls?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          daily_call_summary?: boolean | null
+          id?: number
+          loved_one_id?: number | null
+          low_sentiment?: boolean | null
+          missed_calls?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_settings_loved_one_id_fkey"
+            columns: ["loved_one_id"]
+            isOneToOne: false
+            referencedRelation: "loved_ones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      time_slots: {
+        Row: {
+          call_preference_id: number | null
+          created_at: string | null
+          frequency: string | null
+          id: number
+          time_slot: string | null
+        }
+        Insert: {
+          call_preference_id?: number | null
+          created_at?: string | null
+          frequency?: string | null
+          id?: number
+          time_slot?: string | null
+        }
+        Update: {
+          call_preference_id?: number | null
+          created_at?: string | null
+          frequency?: string | null
+          id?: number
+          time_slot?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "time_slots_call_preference_id_fkey"
+            columns: ["call_preference_id"]
+            isOneToOne: false
+            referencedRelation: "call_preferences"
             referencedColumns: ["id"]
           },
         ]

@@ -56,7 +56,7 @@ const Dashboard = () => {
         </div>
         
         <Button 
-          className="bg-coucou-400 hover:bg-coucou-500 text-white"
+          className="bg-coucou-800 hover:bg-coucou-900 text-white rounded-full"
           size="sm"
           onClick={handleCall}
         >
@@ -65,7 +65,7 @@ const Dashboard = () => {
       </div>
       
       {/* Last Call Status */}
-      <Card className="border-coucou-100">
+      <Card className="border-0 shadow-sm rounded-2xl overflow-hidden">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-medium">Last Check-in</CardTitle>
@@ -78,12 +78,12 @@ const Dashboard = () => {
           <Link to={`/calls/${mockData.lastCall.id}`} className="block">
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-3">
-                <Avatar className="h-12 w-12 border-2 border-coucou-100">
+                <Avatar className="h-12 w-12 border-2 border-gray-100">
                   {mockData.elderlyPhoto ? (
                     <AvatarImage src={mockData.elderlyPhoto} alt={mockData.elderlyName} />
                   ) : (
-                    <AvatarFallback className="bg-coucou-50">
-                      <User size={24} className="text-coucou-300" />
+                    <AvatarFallback className="bg-secondary">
+                      <User size={24} className="text-coucou-800" />
                     </AvatarFallback>
                   )}
                 </Avatar>
@@ -94,7 +94,7 @@ const Dashboard = () => {
                   </p>
                   <div className="flex gap-1 mt-1">
                     {mockData.lastCall.keywords.map((keyword, index) => (
-                      <Badge key={index} variant="outline" className="text-xs bg-coucou-50 border-coucou-200 text-coucou-700">
+                      <Badge key={index} variant="outline" className="text-xs bg-secondary border-secondary text-coucou-800">
                         {keyword}
                       </Badge>
                     ))}
@@ -112,10 +112,10 @@ const Dashboard = () => {
       {/* Metrics Grid */}
       <div className="grid grid-cols-2 gap-4">
         {/* Medication Status */}
-        <Card className="border-coucou-100">
+        <Card className="border-0 shadow-sm rounded-2xl">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
-              <Pill className="h-4 w-4 text-coucou-500" />
+              <Pill className="h-4 w-4 text-coucou-800" />
               <CardTitle className="text-sm font-medium">Medication</CardTitle>
             </div>
           </CardHeader>
@@ -144,10 +144,10 @@ const Dashboard = () => {
         </Card>
         
         {/* Sleep Quality */}
-        <Card className="border-coucou-100">
+        <Card className="border-0 shadow-sm rounded-2xl">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-coucou-500" />
+              <Clock className="h-4 w-4 text-coucou-800" />
               <CardTitle className="text-sm font-medium">Sleep Quality</CardTitle>
             </div>
           </CardHeader>
@@ -164,7 +164,7 @@ const Dashboard = () => {
                 {mockData.sleep.data.map((value, index) => (
                   <div 
                     key={index}
-                    className="bg-coucou-300 rounded-sm w-3" 
+                    className="bg-coucou-800 rounded-sm w-3" 
                     style={{ height: `${value * 10}%` }}
                   ></div>
                 ))}
@@ -174,12 +174,12 @@ const Dashboard = () => {
           </CardContent>
         </Card>
         
-        {/* Mood (was Sentiment) */}
-        <Card className="border-coucou-100">
+        {/* Mood Analysis (was Sentiment) */}
+        <Card className="border-0 shadow-sm rounded-2xl">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
-              <Heart className="h-4 w-4 text-coucou-500" />
-              <CardTitle className="text-sm font-medium">Mood</CardTitle>
+              <Heart className="h-4 w-4 text-coucou-800" />
+              <CardTitle className="text-sm font-medium">Mood Analysis</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-2">
@@ -192,11 +192,12 @@ const Dashboard = () => {
                   fill="currentColor" 
                 />
                 
-                {/* Heart filled based on mood score */}
-                <div className="absolute top-0 left-0 overflow-hidden" style={{ height: `${mockData.mood.score}%` }}>
+                {/* Heart filled based on mood score - filled from bottom to top */}
+                <div className="absolute bottom-0 left-0 w-full overflow-hidden" 
+                     style={{ height: `${mockData.mood.score}%` }}>
                   <Heart 
                     size={64} 
-                    className={`text-${mockData.mood.score > 50 ? 'green' : 'red'}-500`}
+                    className="absolute top-0 left-0 text-coucou-800"
                     fill="currentColor" 
                   />
                 </div>
@@ -211,11 +212,11 @@ const Dashboard = () => {
         </Card>
         
         {/* Appointments */}
-        <Card className="border-coucou-100">
+        <Card className="border-0 shadow-sm rounded-2xl">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-coucou-500" />
+                <Calendar className="h-4 w-4 text-coucou-800" />
                 <CardTitle className="text-sm font-medium">Appointments</CardTitle>
               </div>
             </div>
@@ -248,12 +249,12 @@ const Dashboard = () => {
       </div>
       
       {/* Recent Calls with Next Check-in */}
-      <Card className="border-coucou-100">
+      <Card className="border-0 shadow-sm rounded-2xl">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-medium">Recent Calls</CardTitle>
             <Link to="/calls">
-              <Button variant="link" size="sm" className="px-0">
+              <Button variant="link" size="sm" className="px-0 text-coucou-800">
                 View All
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
@@ -262,11 +263,11 @@ const Dashboard = () => {
         </CardHeader>
         <CardContent>
           {/* Next Check-in */}
-          <div className="mb-4 p-3 bg-coucou-50 rounded-lg">
+          <div className="mb-4 p-3 bg-secondary rounded-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="bg-coucou-100 p-2 rounded-full">
-                  <Clock className="h-5 w-5 text-coucou-500" />
+                <div className="bg-white p-2 rounded-full">
+                  <Clock className="h-5 w-5 text-coucou-800" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Next Check-in</p>

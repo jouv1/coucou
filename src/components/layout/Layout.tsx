@@ -12,8 +12,8 @@ const Layout = () => {
   const showNavigation = !isIndex && !isOnboarding;
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-background">
-      <main className="flex-1 container max-w-md mx-auto px-4 pb-16">
+    <div className="min-h-screen w-full flex flex-col bg-background pt-safe">
+      <main className="flex-1 container max-w-md mx-auto px-4 pb-16 overflow-auto">
         <Outlet />
       </main>
       {showNavigation && <BottomNavigation />}
