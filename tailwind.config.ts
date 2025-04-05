@@ -19,9 +19,6 @@ export default {
 			}
 		},
 		extend: {
-			fontFamily: {
-				sans: ['-apple-system', 'BlinkMacSystemFont', '"San Francisco"', '"Helvetica Neue"', 'Helvetica', 'Arial', 'sans-serif'],
-			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -56,18 +53,18 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				coucou: {
-					50: '#e9f2f3',
-					100: '#d3e6e8',
-					200: '#a8cdd1',
-					300: '#7cb4bb',
-					400: '#519ba4',
-					500: '#3d828b',
-					600: '#2a6973',
-					700: '#1f4f58',
-					800: '#18353c', // Main accent (teal)
-					900: '#0f2226',
-					950: '#081316',
+				lovable: {
+					50: '#f4f1ff',
+					100: '#e9e4ff',
+					200: '#d6ccff',
+					300: '#baa6ff',
+					400: '#9b87f5',
+					500: '#7e69ab',
+					600: '#6e59a5',
+					700: '#53437c',
+					800: '#463966',
+					900: '#3c3056',
+					950: '#231c37',
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
@@ -132,14 +129,6 @@ export default {
 						opacity: '1'
 					}
 				},
-				'fill-heart': {
-					'0%': {
-						height: '0%'
-					},
-					'100%': {
-						height: '100%'
-					}
-				},
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -147,7 +136,6 @@ export default {
 				'fade-in': 'fade-in 0.3s ease-out',
 				'fade-out': 'fade-out 0.3s ease-out',
 				'scale-in': 'scale-in 0.2s ease-out',
-				'fill-heart': 'fill-heart 1s ease-out forwards',
 			}
 		}
 	},
