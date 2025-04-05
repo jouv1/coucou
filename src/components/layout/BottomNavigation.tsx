@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { Home, Settings, MessageSquare } from "lucide-react";
+import { Home, Settings, MessageSquare, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const BottomNavigation = () => {
@@ -21,7 +21,7 @@ const BottomNavigation = () => {
     },
     {
       label: "Settings",
-      icon: Settings,
+      icon: Bell,
       path: "/settings",
     },
   ];

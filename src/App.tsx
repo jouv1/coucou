@@ -15,13 +15,14 @@ import Appointments from "./pages/Appointments";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
-// Import the individual settings pages when they get created
-// Eventually we'll need to create these pages:
-// import ProfileSettings from "./pages/settings/ProfileSettings";
-// import SecuritySettings from "./pages/settings/SecuritySettings";
-// import LovedOneSettings from "./pages/settings/LovedOneSettings";
-// import HealthSettings from "./pages/settings/HealthSettings";
-// etc.
+// Import settings pages
+import ProfileSettings from "./pages/settings/ProfileSettings";
+import LovedOneSettings from "./pages/settings/LovedOneSettings";
+import HealthSettings from "./pages/settings/HealthSettings";
+import MedicationSettings from "./pages/settings/MedicationSettings";
+import CallTypeSettings from "./pages/settings/CallTypeSettings";
+import ScheduleSettings from "./pages/settings/ScheduleSettings";
+import NotificationSettings from "./pages/settings/NotificationSettings";
 
 const queryClient = new QueryClient();
 
@@ -40,7 +41,18 @@ const App = () => (
             <Route path="calls/:id" element={<CallDetails />} />
             <Route path="appointments" element={<Appointments />} />
             <Route path="settings" element={<Settings />} />
-            {/* Individual settings pages will be added here when created */}
+            
+            {/* Settings SubPages */}
+            <Route path="settings/profile" element={<ProfileSettings />} />
+            <Route path="settings/loved-one" element={<LovedOneSettings />} />
+            <Route path="settings/health" element={<HealthSettings />} />
+            <Route path="settings/medications" element={<MedicationSettings />} />
+            <Route path="settings/call-type" element={<CallTypeSettings />} />
+            <Route path="settings/schedule" element={<ScheduleSettings />} />
+            <Route path="settings/summary" element={<NotificationSettings />} />
+            <Route path="settings/health-alerts" element={<NotificationSettings />} />
+            <Route path="settings/missed-calls" element={<NotificationSettings />} />
+            
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

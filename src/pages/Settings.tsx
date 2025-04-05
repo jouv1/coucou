@@ -47,7 +47,6 @@ const settingCategories = [
       { label: "Daily Call Summary", link: "/settings/summary" },
       { label: "Health Alerts", link: "/settings/health-alerts" },
       { label: "Missed Call Settings", link: "/settings/missed-calls" },
-      { label: "Custom Reminders", link: "/settings/reminders" },
     ]
   },
   {

@@ -51,6 +51,7 @@ const NotificationsStep = ({ data, updateData, stepId }: NotificationsStepProps)
             id="call-summary"
             checked={notifications.callSummary}
             onCheckedChange={(checked) => handleToggle("callSummary", checked)}
+            defaultChecked
           />
         </div>
         
@@ -68,6 +69,7 @@ const NotificationsStep = ({ data, updateData, stepId }: NotificationsStepProps)
             id="missed-call"
             checked={notifications.missedCall}
             onCheckedChange={(checked) => handleToggle("missedCall", checked)}
+            defaultChecked
           />
         </div>
         
@@ -85,6 +87,7 @@ const NotificationsStep = ({ data, updateData, stepId }: NotificationsStepProps)
             id="low-sentiment"
             checked={notifications.lowSentiment}
             onCheckedChange={(checked) => handleToggle("lowSentiment", checked)}
+            defaultChecked
           />
         </div>
       </div>

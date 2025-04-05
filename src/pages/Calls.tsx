@@ -1,4 +1,5 @@
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
@@ -15,13 +16,13 @@ const mockCalls = [
     id: "2",
     date: "Yesterday, 9:30 AM",
     duration: "5m 15s",
-    status: "OK",
+    status: "Done",
   },
   {
     id: "3",
     date: "May 3, 9:05 AM",
     duration: "3m 58s",
-    status: "OK",
+    status: "Done",
   },
   {
     id: "4",
@@ -39,7 +40,7 @@ const mockCalls = [
     id: "6",
     date: "Apr 30, 9:25 AM",
     duration: "5m 03s",
-    status: "OK",
+    status: "Done",
   },
 ];
 
@@ -47,8 +48,6 @@ const getStatusBadgeColor = (status: string) => {
   switch (status) {
     case "Done":
       return "bg-green-100 text-green-800";
-    case "OK":
-      return "bg-yellow-100 text-yellow-800";
     case "Missed":
       return "bg-red-100 text-red-800";
     default:
@@ -68,9 +67,17 @@ const Calls = () => {
       
       <Card className="border-lovable-100">
         <CardHeader className="pb-2">
-          <div className="flex items-center gap-2">
-            <Phone className="h-5 w-5 text-lovable-500" />
-            <CardTitle className="text-lg font-medium">Call History</CardTitle>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Phone className="h-5 w-5 text-lovable-500" />
+              <CardTitle className="text-lg font-medium">Call History</CardTitle>
+            </div>
+            <Button 
+              className="bg-lovable-400 hover:bg-lovable-500 text-white"
+              size="sm"
+            >
+              Add Appointment
+            </Button>
           </div>
         </CardHeader>
         <CardContent>

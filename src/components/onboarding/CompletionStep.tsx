@@ -64,13 +64,15 @@ const CompletionStep = ({ data }: CompletionStepProps) => {
         </div>
       </div>
       
-      <Button 
-        onClick={handleTestCall}
-        className="bg-lovable-400 hover:bg-lovable-500 text-white flex items-center gap-2"
-      >
-        <Phone size={16} />
-        Call My Number
-      </Button>
+      <div className="flex justify-center">
+        <Button 
+          onClick={handleTestCall}
+          className="bg-lovable-400 hover:bg-lovable-500 text-white flex items-center gap-2"
+        >
+          <Phone size={16} />
+          Call My Number
+        </Button>
+      </div>
       <p className="text-xs text-gray-500">
         This is a test call that will call you, not your loved one
       </p>

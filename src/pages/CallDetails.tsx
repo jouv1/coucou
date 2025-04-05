@@ -1,178 +1,150 @@
 
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, MessageSquare, Pill, Clock, HeartPulse } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ArrowLeft, Calendar, Clock, Heart, MessageSquare, Check, Plus } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 
-const mockCallDetails = {
-  "1": {
-    date: "Today, 9:15 AM",
-    duration: "4m 32s",
-    mood: "Joyful",
-    summary: "Mary reported having a good night's sleep and enjoyed breakfast with her neighbor.",
-    medication: {
-      status: "taken",
-      details: "Morning medication taken",
-    },
-    sleep: {
-      quality: "good",
-      details: "Slept well, 7+ hours",
-    },
-    sentiment: {
-      value: "positive",
-      details: "Happy and energetic today",
-    },
-    transcript: [
-      {
-        speaker: "Bisous",
-        text: "Good morning, Mary! How are you feeling today?",
-        time: "0:05",
-      },
-      {
-        speaker: "Mary",
-        text: "I'm feeling pretty good today, thank you for asking.",
-        time: "0:10",
-      },
-      {
-        speaker: "Bisous",
-        text: "That's wonderful to hear! Did you get a good night's sleep?",
-        time: "0:15",
-      },
-      {
-        speaker: "Mary",
-        text: "Yes, I slept very well. I think I got about 7 hours of sleep.",
-        time: "0:20",
-      },
-      {
-        speaker: "Bisous",
-        text: "That's great! Have you taken your morning medication yet?",
-        time: "0:25",
-      },
-      {
-        speaker: "Mary",
-        text: "Yes, I took it right after breakfast. I had breakfast with my neighbor Sarah.",
-        time: "0:35",
-      },
-      {
-        speaker: "Bisous",
-        text: "How nice! What did you have for breakfast?",
-        time: "0:40",
-      },
-      {
-        speaker: "Mary",
-        text: "We had some toast with jam and a nice cup of tea. Sarah brought over some homemade muffins too.",
-        time: "0:48",
-      },
-      {
-        speaker: "Bisous",
-        text: "That sounds delicious! Do you have any plans for the rest of the day?",
-        time: "0:55",
-      },
-      {
-        speaker: "Mary",
-        text: "I think I'll work on my knitting for a bit. I'm making a scarf for my grandson.",
-        time: "1:05",
-      },
-    ],
-  },
-  // Additional call records would be here...
+// Mock data for a single call
+const mockCallData = {
+  id: "1",
+  date: "Today, 9:15 AM",
+  duration: "4m 32s",
+  status: "Done",
+  transcript: "AI: Good morning Mary, how are you feeling today?\n\nMary: Oh, hello. I'm feeling pretty good today. Had breakfast with my neighbor Martha this morning.\n\nAI: That sounds nice. Have you taken your morning medication?\n\nMary: Yes, I've taken it already. I need to remember to buy groceries later though.\n\nAI: I'll make a note of that. How did you sleep last night?\n\nMary: Not too bad, woke up once or twice but got back to sleep okay.\n\nAI: That's good to hear. Do you have any plans for today?\n\nMary: Just going to watch my program, and then maybe go for a short walk if the weather's nice. Oh, and I need to schedule that doctor visit.",
+  sentiment: "Positive",
+  summary: "Mary is feeling good today. She had breakfast with her neighbor Martha and has taken her morning medication. She needs to buy groceries and schedule a doctor's appointment. She slept reasonably well and plans to watch TV and go for a walk.",
+  todos: [
+    { id: "1", text: "Buy groceries", completed: false },
+    { id: "2", text: "Schedule doctor visit", completed: false },
+  ],
 };
 
 const CallDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const callData = id ? mockCallDetails[id as keyof typeof mockCallDetails] : null;
+  const [todos, setTodos] = useState(mockCallData.todos);
+  const [newTodo, setNewTodo] = useState("");
 
-  if (!callData) {
-    return (
-      <div className="py-6 text-center">
-        <p>Call not found</p>
-        <Link to="/calls">
-          <Button variant="link">Back to calls</Button>
-        </Link>
-      </div>
-    );
-  }
+  // Function to toggle todo completion
+  const toggleTodo = (todoId: string) => {
+    setTodos(todos.map(todo => 
+      todo.id === todoId 
+        ? { ...todo, completed: !todo.completed }
+        : todo
+    ));
+  };
+
+  // Function to add a new todo
+  const addTodo = () => {
+    if (newTodo.trim()) {
+      setTodos([...todos, {
+        id: Date.now().toString(),
+        text: newTodo.trim(),
+        completed: false
+      }]);
+      setNewTodo("");
+    }
+  };
+
+  // Handle form submission
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    addTodo();
+  };
 
   return (
     <div className="py-6 animate-fade-in space-y-4">
-      <div className="flex items-center">
-        <Link to="/calls" className="mr-3">
-          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
+      <div>
+        <Link to="/calls" className="inline-flex items-center text-lovable-600 mb-4">
+          <ArrowLeft className="h-4 w-4 mr-1" /> Back to calls
         </Link>
-        <div>
-          <h1 className="text-xl font-semibold text-lovable-800 mb-1">Call Transcript</h1>
-          <p className="text-gray-600">{callData.date} · {callData.duration}</p>
+        <h1 className="text-2xl font-semibold text-lovable-800 mb-1">Call Details</h1>
+        <div className="flex items-center gap-2">
+          <p className="text-gray-600">{mockCallData.date}</p>
+          <Badge className="bg-green-100 text-green-800">
+            {mockCallData.status}
+          </Badge>
         </div>
       </div>
-
-      {/* Summary Cards */}
+      
+      {/* Call Summary Card */}
       <Card className="border-lovable-100">
-        <CardHeader className="pb-2 pt-4">
-          <CardTitle className="text-md font-medium">Call Summary</CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <p className="text-sm text-gray-600">{callData.summary}</p>
-          
-          <div className="grid grid-cols-3 gap-2 mt-4">
-            <div className="border border-lovable-100 rounded-md p-3 flex flex-col items-center">
-              <div className="flex items-center mb-1 text-green-600">
-                <Pill className="h-4 w-4 mr-1" />
-                <span className="text-xs font-medium">Medication</span>
-              </div>
-              <Badge className="bg-green-100 text-green-800">Taken</Badge>
-            </div>
-            
-            <div className="border border-lovable-100 rounded-md p-3 flex flex-col items-center">
-              <div className="flex items-center mb-1 text-blue-600">
-                <Clock className="h-4 w-4 mr-1" />
-                <span className="text-xs font-medium">Sleep</span>
-              </div>
-              <Badge className="bg-green-100 text-green-800">Good</Badge>
-            </div>
-            
-            <div className="border border-lovable-100 rounded-md p-3 flex flex-col items-center">
-              <div className="flex items-center mb-1 text-lovable-600">
-                <HeartPulse className="h-4 w-4 mr-1" />
-                <span className="text-xs font-medium">Sentiment</span>
-              </div>
-              <Badge className="bg-green-100 text-green-800">{callData.mood}</Badge>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Transcript */}
-      <Card className="border-lovable-100">
-        <CardHeader className="pb-2 pt-4">
+        <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
-            <MessageSquare className="h-4 w-4 text-lovable-500" />
-            <CardTitle className="text-md font-medium">Full Transcript</CardTitle>
+            <MessageSquare className="h-5 w-5 text-lovable-500" />
+            <CardTitle className="text-lg font-medium">Call Summary</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {callData.transcript.map((line, index) => (
-              <div key={index} className={`flex gap-3 ${line.speaker === "Bisous" ? "flex-row" : "flex-row-reverse"}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs ${
-                  line.speaker === "Bisous" ? "bg-lovable-400" : "bg-gray-400"
-                }`}>
-                  {line.speaker === "Bisous" ? "B" : "M"}
-                </div>
-                <div className={`flex-1 rounded-2xl p-3 ${
-                  line.speaker === "Bisous" ? "bg-lovable-50" : "bg-gray-100"
-                }`}>
-                  <div className="flex justify-between mb-1">
-                    <span className="text-xs font-medium">{line.speaker}</span>
-                    <span className="text-xs text-gray-500">{line.time}</span>
-                  </div>
-                  <p className="text-sm">{line.text}</p>
-                </div>
+          <p className="text-gray-700">{mockCallData.summary}</p>
+        </CardContent>
+      </Card>
+      
+      {/* To-Do List Card */}
+      <Card className="border-lovable-100">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-lg font-medium">To-Do List</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {todos.map((todo) => (
+              <div key={todo.id} className="flex items-center gap-2">
+                <Checkbox 
+                  id={`todo-${todo.id}`} 
+                  checked={todo.completed}
+                  onCheckedChange={() => toggleTodo(todo.id)}
+                />
+                <label 
+                  htmlFor={`todo-${todo.id}`}
+                  className={`text-sm ${todo.completed ? 'line-through text-gray-400' : ''}`}
+                >
+                  {todo.text}
+                </label>
               </div>
             ))}
+            
+            {/* Add new todo form */}
+            <form onSubmit={handleSubmit} className="flex items-center gap-2 mt-4">
+              <input
+                type="text"
+                value={newTodo}
+                onChange={(e) => setNewTodo(e.target.value)}
+                placeholder="Add a new task..."
+                className="flex-1 p-2 text-sm border border-gray-200 rounded"
+              />
+              <Button 
+                type="submit"
+                size="sm"
+                className="bg-lovable-400 hover:bg-lovable-500"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </form>
           </div>
+        </CardContent>
+      </Card>
+      
+      {/* Call Transcript Card */}
+      <Card className="border-lovable-100">
+        <CardHeader className="pb-2">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <Clock className="h-5 w-5 text-lovable-500" />
+              <CardTitle className="text-lg font-medium">Transcript</CardTitle>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-500">Duration:</span>
+              <span className="text-sm font-medium">{mockCallData.duration}</span>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <pre className="whitespace-pre-wrap text-sm text-gray-600 font-sans">
+            {mockCallData.transcript}
+          </pre>
         </CardContent>
       </Card>
     </div>

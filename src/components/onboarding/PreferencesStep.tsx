@@ -5,6 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface PreferencesStepProps {
   data: any;
@@ -108,6 +109,7 @@ const PreferencesStep = ({ data, updateData, stepId }: PreferencesStepProps) => 
                 id={`check-${item.id}`}
                 checked={preferences.checkItems.includes(item.id)}
                 onCheckedChange={() => toggleCheckItem(item.id)}
+                disabled={["medication", "mood", "sleep", "appointments"].includes(item.id)}
               />
               <Label htmlFor={`check-${item.id}`} className="text-sm">
                 {item.label}
@@ -129,26 +131,19 @@ const PreferencesStep = ({ data, updateData, stepId }: PreferencesStepProps) => 
       
       <div className="space-y-3 pt-3 border-t border-gray-100">
         <Label>Voice Preference</Label>
-        <RadioGroup 
+        <Select 
           value={preferences.voiceGender}
           onValueChange={handleVoiceGenderChange}
-          className="space-y-2"
         >
-          <div className="flex items-start space-x-3">
-            <RadioGroupItem value="female" id="female" className="mt-1" />
-            <Label htmlFor="female">Female Voice</Label>
-          </div>
-          
-          <div className="flex items-start space-x-3">
-            <RadioGroupItem value="male" id="male" className="mt-1" />
-            <Label htmlFor="male">Male Voice</Label>
-          </div>
-          
-          <div className="flex items-start space-x-3">
-            <RadioGroupItem value="custom" id="custom" className="mt-1" />
-            <Label htmlFor="custom">Custom Voice</Label>
-          </div>
-        </RadioGroup>
+          <SelectTrigger>
+            <SelectValue placeholder="Select voice preference" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="female">Female Voice</SelectItem>
+            <SelectItem value="male">Male Voice</SelectItem>
+            <SelectItem value="custom">Custom Voice</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {preferences.voiceGender === "custom" && (

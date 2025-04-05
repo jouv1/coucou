@@ -34,12 +34,26 @@ const MedicationsStep = ({ data, updateData, stepId }: MedicationsStepProps) => 
     }
   };
 
+  const generateMedName = (): string => {
+    if (newMedName && newMedName.trim().length > 0) {
+      return newMedName.trim();
+    }
+    
+    if (selectedTimes.length === 1) {
+      return `${selectedTimes[0].charAt(0).toUpperCase() + selectedTimes[0].slice(1)} Intake`;
+    } else if (selectedTimes.length > 1) {
+      return "Daily Medication";
+    }
+    
+    return "Daily Intake";
+  };
+
   const addMedication = () => {
     if (selectedTimes.length === 0) return;
     
     const newMed: Medication = {
       id: Date.now().toString(),
-      name: newMedName.trim() || "Unspecified medication",
+      name: generateMedName(),
       timeOfDay: selectedTimes,
     };
     

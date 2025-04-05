@@ -5,6 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface HealthConditionsStepProps {
   data: any;
@@ -89,54 +90,38 @@ const HealthConditionsStep = ({ data, updateData, stepId }: HealthConditionsStep
     <div className="space-y-6 pt-2">
       <div className="space-y-3">
         <Label>General Health Status</Label>
-        <RadioGroup 
+        <Select 
           value={healthData.generalHealth} 
           onValueChange={(value) => handleHealthOptionChange("generalHealth", value)}
-          className="space-y-2"
         >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="excellent" id="excellent" />
-            <Label htmlFor="excellent">Excellent - Very healthy for their age</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="good" id="good" />
-            <Label htmlFor="good">Good - Some minor health issues</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="fair" id="fair" />
-            <Label htmlFor="fair">Fair - Moderate health concerns</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="poor" id="poor" />
-            <Label htmlFor="poor">Poor - Significant health challenges</Label>
-          </div>
-        </RadioGroup>
+          <SelectTrigger>
+            <SelectValue placeholder="Select health status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="excellent">Excellent - Very healthy for their age</SelectItem>
+            <SelectItem value="good">Good - Some minor health issues</SelectItem>
+            <SelectItem value="fair">Fair - Moderate health concerns</SelectItem>
+            <SelectItem value="poor">Poor - Significant health challenges</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="space-y-3">
         <Label>Hearing Ability</Label>
-        <RadioGroup 
+        <Select 
           value={healthData.hearingAbility} 
           onValueChange={(value) => handleHealthOptionChange("hearingAbility", value)}
-          className="space-y-2"
         >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="excellent" id="hearing-excellent" />
-            <Label htmlFor="hearing-excellent">Excellent - No hearing issues</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="good" id="hearing-good" />
-            <Label htmlFor="hearing-good">Good - Slight difficulty in noisy environments</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="moderate" id="hearing-moderate" />
-            <Label htmlFor="hearing-moderate">Moderate - Uses hearing aid or needs louder speech</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="poor" id="hearing-poor" />
-            <Label htmlFor="hearing-poor">Poor - Significant hearing loss</Label>
-          </div>
-        </RadioGroup>
+          <SelectTrigger>
+            <SelectValue placeholder="Select hearing ability" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="excellent">Excellent - No hearing issues</SelectItem>
+            <SelectItem value="good">Good - Slight difficulty in noisy environments</SelectItem>
+            <SelectItem value="moderate">Moderate - Uses hearing aid or needs louder speech</SelectItem>
+            <SelectItem value="poor">Poor - Significant hearing loss</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="space-y-3 border-t pt-4">
@@ -189,28 +174,20 @@ const HealthConditionsStep = ({ data, updateData, stepId }: HealthConditionsStep
       
       <div className="space-y-3">
         <Label>Forgetfulness</Label>
-        <RadioGroup 
+        <Select 
           value={healthData.forgetfulness} 
           onValueChange={(value) => handleHealthOptionChange("forgetfulness", value)}
-          className="space-y-2"
         >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="rarely" id="rarely" />
-            <Label htmlFor="rarely">Rarely forgets things</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="sometimes" id="sometimes" />
-            <Label htmlFor="sometimes">Sometimes forgets minor things</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="often" id="often" />
-            <Label htmlFor="often">Often forgets important details</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="frequently" id="frequently" />
-            <Label htmlFor="frequently">Frequently forgets significant events or tasks</Label>
-          </div>
-        </RadioGroup>
+          <SelectTrigger>
+            <SelectValue placeholder="Select forgetfulness level" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="rarely">Rarely forgets things</SelectItem>
+            <SelectItem value="sometimes">Sometimes forgets minor things</SelectItem>
+            <SelectItem value="often">Often forgets important details</SelectItem>
+            <SelectItem value="frequently">Frequently forgets significant events or tasks</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
       
       <div className="space-y-3 border-t pt-4">
