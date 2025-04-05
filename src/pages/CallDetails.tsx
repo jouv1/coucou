@@ -9,7 +9,6 @@ const mockCallDetails = {
   "1": {
     date: "Today, 9:15 AM",
     duration: "4m 32s",
-    sentiment: "good",
     mood: "Joyful",
     summary: "Mary reported having a good night's sleep and enjoyed breakfast with her neighbor.",
     medication: {
