@@ -95,12 +95,8 @@ const Onboarding = () => {
       language: "",
     },
     healthConditions: {
-      generalHealth: "",
-      hearingAbility: "",
       mentalState: 5, // Scale of 1-10
       lowMentalStateReasons: [],
-      forgetfulness: "",
-      loneliness: 5, // Scale of 1-10
       conditions: [],
     },
     medications: [],

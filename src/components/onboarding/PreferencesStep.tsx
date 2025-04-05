@@ -3,8 +3,6 @@ import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface PreferencesStepProps {
@@ -13,127 +11,86 @@ interface PreferencesStepProps {
   stepId: string;
 }
 
-const checkItems = [
-  { id: "medication", label: "Medication Reminders", defaultChecked: true },
-  { id: "mood", label: "Mood Check-in", defaultChecked: true },
-  { id: "sleep", label: "Sleep Quality", defaultChecked: true },
-  { id: "appointments", label: "Appointment Reminders", defaultChecked: true },
-  { id: "meals", label: "Meals/Nutrition", defaultChecked: false },
-  { id: "physical-activity", label: "Physical Activity", defaultChecked: false },
-];
-
 const PreferencesStep = ({ data, updateData, stepId }: PreferencesStepProps) => {
-  const [preferences, setPreferences] = useState({
-    callLength: data.preferences?.callLength || "short",
-    voiceGender: data.preferences?.voiceGender || "female",
-    customVoice: data.preferences?.customVoice || "",
-    checkItems: data.preferences?.checkItems || ["medication", "mood", "sleep", "appointments"],
-    customCheckItem: data.preferences?.customCheckItem || "",
+  const [preferences, setPreferences] = useState(data.preferences || {
+    callLength: "medium",
+    voiceGender: "female",
+    customVoice: "",
+    checkItems: ["medication", "mood", "sleep", "appointments"],
+    customCheckItem: "",
   });
 
-  const handleCallLengthChange = (value: string) => {
-    const newPreferences = { ...preferences, callLength: value };
+  const handlePreferenceChange = (field: string, value: string) => {
+    const newPreferences = { ...preferences, [field]: value };
     setPreferences(newPreferences);
     updateData(stepId, newPreferences);
   };
 
-  const handleVoiceGenderChange = (value: string) => {
-    const newPreferences = { ...preferences, voiceGender: value };
-    setPreferences(newPreferences);
-    updateData(stepId, newPreferences);
-  };
-
-  const toggleCheckItem = (item: string) => {
-    const updatedItems = preferences.checkItems.includes(item)
-      ? preferences.checkItems.filter(i => i !== item)
-      : [...preferences.checkItems, item];
-    
-    const newPreferences = { ...preferences, checkItems: updatedItems };
-    setPreferences(newPreferences);
-    updateData(stepId, newPreferences);
-  };
-
-  const handleCustomVoiceChange = (value: string) => {
-    const newPreferences = { ...preferences, customVoice: value };
-    setPreferences(newPreferences);
-    updateData(stepId, newPreferences);
-  };
-
-  const handleCustomCheckItemChange = (value: string) => {
-    const newPreferences = { ...preferences, customCheckItem: value };
-    setPreferences(newPreferences);
-    updateData(stepId, newPreferences);
-  };
+  const checkItems = [
+    { id: "medication", label: "Medication Reminders" },
+    { id: "mood", label: "Mood Check" },
+    { id: "sleep", label: "Sleep Quality" },
+    { id: "appointments", label: "Upcoming Appointments" },
+  ];
 
   return (
     <div className="space-y-6 pt-2">
       <div className="space-y-3">
-        <Label>Call Length & Type</Label>
+        <Label>Call Length Preference</Label>
         <RadioGroup 
           value={preferences.callLength}
-          onValueChange={handleCallLengthChange}
-          className="space-y-2"
+          onValueChange={(value) => handlePreferenceChange("callLength", value)}
+          className="grid grid-cols-3 gap-3"
         >
-          <div className="flex items-start space-x-3">
-            <RadioGroupItem value="short" id="short" className="mt-1" />
-            <div>
-              <Label htmlFor="short" className="font-medium">Quick Check-in (1-3 min)</Label>
-              <p className="text-sm text-gray-500">For those who aren't very talkative and prefer brief conversations</p>
-            </div>
+          <div className="flex items-center justify-center">
+            <RadioGroupItem value="short" id="short" className="sr-only" />
+            <Label
+              htmlFor="short"
+              className={`flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer ${
+                preferences.callLength === "short" ? "border-lovable-500" : ""
+              }`}
+            >
+              <span className="text-xl mb-2">⚡</span>
+              <span className="font-medium">Short</span>
+              <span className="text-xs text-muted-foreground">2-3 minutes</span>
+            </Label>
           </div>
           
-          <div className="flex items-start space-x-3">
-            <RadioGroupItem value="medium" id="medium" className="mt-1" />
-            <div>
-              <Label htmlFor="medium" className="font-medium">Standard Call (3-5 min)</Label>
-              <p className="text-sm text-gray-500">For those who enjoy a balanced conversation</p>
-            </div>
+          <div className="flex items-center justify-center">
+            <RadioGroupItem value="medium" id="medium" className="sr-only" />
+            <Label
+              htmlFor="medium"
+              className={`flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer ${
+                preferences.callLength === "medium" ? "border-lovable-500" : ""
+              }`}
+            >
+              <span className="text-xl mb-2">🔄</span>
+              <span className="font-medium">Medium</span>
+              <span className="text-xs text-muted-foreground">4-5 minutes</span>
+            </Label>
           </div>
           
-          <div className="flex items-start space-x-3">
-            <RadioGroupItem value="long" id="long" className="mt-1" />
-            <div>
-              <Label htmlFor="long" className="font-medium">Extended Chat (5-10+ min)</Label>
-              <p className="text-sm text-gray-500">For those who love to chat and need social interaction</p>
-            </div>
+          <div className="flex items-center justify-center">
+            <RadioGroupItem value="long" id="long" className="sr-only" />
+            <Label
+              htmlFor="long"
+              className={`flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer ${
+                preferences.callLength === "long" ? "border-lovable-500" : ""
+              }`}
+            >
+              <span className="text-xl mb-2">🔊</span>
+              <span className="font-medium">Long</span>
+              <span className="text-xs text-muted-foreground">7-10 minutes</span>
+            </Label>
           </div>
         </RadioGroup>
       </div>
-
-      <div className="space-y-3 pt-2">
-        <Label>What should we check during calls?</Label>
-        <div className="grid grid-cols-2 gap-2">
-          {checkItems.map((item) => (
-            <div key={item.id} className="flex items-center space-x-2">
-              <Checkbox 
-                id={`check-${item.id}`}
-                checked={preferences.checkItems.includes(item.id)}
-                onCheckedChange={() => toggleCheckItem(item.id)}
-                disabled={["medication", "mood", "sleep", "appointments"].includes(item.id)}
-              />
-              <Label htmlFor={`check-${item.id}`} className="text-sm">
-                {item.label}
-              </Label>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="custom-check">Other Check (Optional)</Label>
-        <Input
-          id="custom-check"
-          placeholder="Any specific question you'd like us to ask?"
-          value={preferences.customCheckItem}
-          onChange={(e) => handleCustomCheckItemChange(e.target.value)}
-        />
-      </div>
       
-      <div className="space-y-3 pt-3 border-t border-gray-100">
+      <div className="space-y-3 pt-2 border-t">
         <Label>Voice Preference</Label>
         <Select 
-          value={preferences.voiceGender}
-          onValueChange={handleVoiceGenderChange}
+          value={preferences.voiceGender} 
+          onValueChange={(value) => handlePreferenceChange("voiceGender", value)}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select voice preference" />
@@ -145,25 +102,33 @@ const PreferencesStep = ({ data, updateData, stepId }: PreferencesStepProps) => 
           </SelectContent>
         </Select>
       </div>
-
-      {preferences.voiceGender === "custom" && (
-        <div className="space-y-2 animate-fade-in">
-          <Label htmlFor="custom-voice">Custom Voice ID</Label>
-          <Input
-            id="custom-voice"
-            placeholder="Enter ElevenLabs Voice ID"
-            value={preferences.customVoice}
-            onChange={(e) => handleCustomVoiceChange(e.target.value)}
-          />
-          <p className="text-xs text-gray-500">
-            You can use a custom voice from ElevenLabs by entering the Voice ID here
-          </p>
-        </div>
-      )}
       
-      <p className="text-sm text-muted-foreground mt-4 italic">
-        These preferences help us make conversations feel natural and enjoyable.
-      </p>
+      <div className="space-y-3 pt-2 border-t">
+        <Label>What should we check during calls?</Label>
+        <div className="grid grid-cols-2 gap-3">
+          {checkItems.map((item) => (
+            <div key={item.id} className="flex items-center gap-2 rounded-md border p-3 disabled">
+              <div className="h-5 w-5 border rounded flex items-center justify-center">
+                {preferences.checkItems.includes(item.id) && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-4 w-4"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                )}
+              </div>
+              <span>{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

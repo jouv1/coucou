@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   Bell, User, Settings as SettingsIcon, 
-  Phone, Shield, LogOut, ChevronRight,
-  Heart
+  Phone, Heart, LogOut, ChevronRight
 } from "lucide-react";
 
 const settingCategories = [
@@ -15,8 +14,7 @@ const settingCategories = [
     icon: User,
     color: "text-blue-500",
     items: [
-      { label: "Personal Information", link: "/settings/profile" },
-      { label: "Account Security", link: "/settings/security" },
+      { label: "Personal Information", link: "/settings/profile" }
     ]
   },
   {
@@ -25,8 +23,7 @@ const settingCategories = [
     color: "text-lovable-500",
     items: [
       { label: "Basic Information", link: "/settings/loved-one" },
-      { label: "Health & Medications", link: "/settings/health" },
-      { label: "Language Preference", link: "/settings/language" },
+      { label: "Health & Medications", link: "/settings/health" }
     ]
   },
   {
@@ -35,8 +32,7 @@ const settingCategories = [
     color: "text-green-500",
     items: [
       { label: "Call Type & Duration", link: "/settings/call-type" },
-      { label: "Voice Preference", link: "/settings/voice" },
-      { label: "Schedule & Frequency", link: "/settings/schedule" },
+      { label: "Schedule & Frequency", link: "/settings/schedule" }
     ]
   },
   {
@@ -44,27 +40,17 @@ const settingCategories = [
     icon: Bell,
     color: "text-amber-500",
     items: [
-      { label: "Daily Call Summary", link: "/settings/summary" },
-      { label: "Health Alerts", link: "/settings/health-alerts" },
-      { label: "Missed Call Settings", link: "/settings/missed-calls" },
+      { label: "Notification Settings", link: "/settings/summary" }
     ]
-  },
-  {
-    title: "App Settings",
-    icon: SettingsIcon,
-    color: "text-gray-500",
-    items: [
-      { label: "Privacy Settings", link: "/settings/privacy" },
-      { label: "Help & Support", link: "/settings/help" },
-    ]
-  },
+  }
 ];
 
 const Settings = () => {
   const navigate = useNavigate();
   
   const handleSignOut = () => {
-    // In a real app, this would handle authentication logout
+    // In a real app with authentication, this would handle logout
+    // For now, just navigate to the landing page
     navigate("/");
   };
   
@@ -73,7 +59,7 @@ const Settings = () => {
       <div>
         <h1 className="text-2xl font-semibold text-lovable-800 mb-1">Settings</h1>
         <p className="text-gray-600">
-          Manage your account and Bisou preferences
+          Manage your account and Coucou 🫶🏼 preferences
         </p>
       </div>
       

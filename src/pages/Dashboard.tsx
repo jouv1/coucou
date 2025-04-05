@@ -36,7 +36,7 @@ const Dashboard = () => {
     <div className="py-6 animate-fade-in space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-semibold text-lovable-800">Bisou</h1>
+          <h1 className="text-2xl font-semibold text-lovable-800">Coucou 🫶🏼</h1>
           <p className="text-gray-600">
             Here's how {mockData.elderlyName} is doing
           </p>
@@ -207,7 +207,7 @@ const Dashboard = () => {
                   </div>
                 ))}
                 <Button variant="ghost" size="sm" className="w-full mt-2">
-                  <Link to="/calls" className="flex items-center w-full justify-center">
+                  <Link to="/appointments" className="flex items-center w-full justify-center">
                     View All
                     <ChevronRight className="h-4 w-4 ml-1" />
                   </Link>

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Camera, Plus } from "lucide-react";
+import { Calendar, Plus } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -38,16 +38,11 @@ const Appointments = () => {
     }
   };
 
-  const uploadPhoto = () => {
-    // This would be implemented with actual OCR functionality
-    alert("Photo upload and OCR processing would happen here");
-  };
-
   return (
     <div className="py-6 animate-fade-in space-y-4">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-semibold text-lovable-800 mb-1">Appointments</h1>
+          <h1 className="text-2xl font-semibold text-lovable-800">Appointments</h1>
           <p className="text-gray-600">
             Manage your loved one's medical and social appointments
           </p>
@@ -113,20 +108,9 @@ const Appointments = () => {
       
       <Card className="border-lovable-100">
         <CardHeader className="pb-2">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-lovable-500" />
-              <CardTitle className="text-lg font-medium">Upcoming Appointments</CardTitle>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={uploadPhoto}
-              className="flex items-center gap-1"
-            >
-              <Camera className="h-4 w-4" />
-              <span>Add from Photo</span>
-            </Button>
+          <div className="flex items-center gap-2">
+            <Calendar className="h-5 w-5 text-lovable-500" />
+            <CardTitle className="text-lg font-medium">Upcoming Appointments</CardTitle>
           </div>
         </CardHeader>
         <CardContent className="pt-3">

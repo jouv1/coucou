@@ -59,7 +59,7 @@ const Calls = () => {
   return (
     <div className="py-6 animate-fade-in space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold text-lovable-800 mb-1">Recent Calls</h1>
+        <h1 className="text-2xl font-semibold text-lovable-800">Recent Calls</h1>
         <p className="text-gray-600">
           View transcripts and insights from past conversations
         </p>
@@ -67,17 +67,9 @@ const Calls = () => {
       
       <Card className="border-lovable-100">
         <CardHeader className="pb-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Phone className="h-5 w-5 text-lovable-500" />
-              <CardTitle className="text-lg font-medium">Call History</CardTitle>
-            </div>
-            <Button 
-              className="bg-lovable-400 hover:bg-lovable-500 text-white"
-              size="sm"
-            >
-              Add Appointment
-            </Button>
+          <div className="flex items-center">
+            <Phone className="h-5 w-5 text-lovable-500 mr-2" />
+            <CardTitle className="text-lg font-medium">Call History</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
