@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Phone, Pill, Clock, Heart, Calendar, ChevronRight, User, CheckCircle, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 
 const mockData = {
   elderlyName: "Mary Johnson",
@@ -174,12 +173,12 @@ const Dashboard = () => {
           </CardContent>
         </Card>
         
-        {/* Mood (was Sentiment) */}
+        {/* Mood Analysis */}
         <Card className="border-coucou-100">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
               <Heart className="h-4 w-4 text-coucou-500" />
-              <CardTitle className="text-sm font-medium">Mood</CardTitle>
+              <CardTitle className="text-sm font-medium">Mood Analysis</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-2">
@@ -192,13 +191,18 @@ const Dashboard = () => {
                   fill="currentColor" 
                 />
                 
-                {/* Heart filled based on mood score */}
-                <div className="absolute top-0 left-0 overflow-hidden" style={{ height: `${mockData.mood.score}%` }}>
-                  <Heart 
-                    size={64} 
-                    className={`text-${mockData.mood.score > 50 ? 'green' : 'red'}-500`}
-                    fill="currentColor" 
-                  />
+                {/* Heart filled based on mood score - filling from bottom to top */}
+                <div 
+                  className="absolute bottom-0 left-0 w-full overflow-hidden" 
+                  style={{ height: `${mockData.mood.score}%` }}
+                >
+                  <div className="absolute bottom-0 left-0">
+                    <Heart 
+                      size={64} 
+                      className={`text-${mockData.mood.score > 50 ? 'green' : 'red'}-500`}
+                      fill="currentColor" 
+                    />
+                  </div>
                 </div>
               </div>
             </div>

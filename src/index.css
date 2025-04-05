@@ -5,7 +5,7 @@
 
 @layer base {
   :root {
-    --background: 60 54% 97%;
+    --background: 0 0% 95%;
     --foreground: 164 35% 25%;
 
     --card: 0 0% 100%;
@@ -14,24 +14,24 @@
     --popover: 0 0% 100%;
     --popover-foreground: 164 35% 25%;
 
-    --primary: 164 35% 56%;
+    --primary: 18 91% 56%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 60 54% 97%;
+    --secondary: 0 0% 95%;
     --secondary-foreground: 164 35% 25%;
 
-    --muted: 164 25% 95%;
-    --muted-foreground: 164 15% 40%;
+    --muted: 18 80% 90%;
+    --muted-foreground: 18 30% 40%;
 
-    --accent: 164 25% 95%;
+    --accent: 18 80% 90%;
     --accent-foreground: 164 35% 25%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 164 30% 90%;
-    --input: 164 30% 90%;
-    --ring: 164 35% 56%;
+    --border: 18 30% 90%;
+    --input: 18 30% 90%;
+    --ring: 18 91% 56%;
 
     --radius: 0.75rem;
 
@@ -55,7 +55,7 @@
     --popover: 164 25% 15%;
     --popover-foreground: 164 20% 96%;
 
-    --primary: 164 35% 56%;
+    --primary: 18 91% 56%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 164 30% 25%;
@@ -72,7 +72,7 @@
 
     --border: 164 30% 25%;
     --input: 164 30% 25%;
-    --ring: 164 35% 56%;
+    --ring: 18 91% 56%;
     
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -91,7 +91,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-[#F2F2F2] text-foreground font-sans;
   }
   
   /* Custom font styles for better readability */
