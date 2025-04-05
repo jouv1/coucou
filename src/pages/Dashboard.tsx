@@ -2,13 +2,17 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Pill, Clock, HeartPulse, Calendar, ChevronRight } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Phone, Pill, Clock, HeartPulse, Calendar, ChevronRight, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const mockData = {
   elderlyName: "Mary Johnson",
+  elderlyPhoto: null, // We'll use a fallback for now
   lastCall: {
     date: "Today, 9:15 AM",
     sentiment: "good",
+    mood: "Joyful",
   },
   medications: {
     status: "taken",
@@ -28,7 +32,7 @@ const Dashboard = () => {
     <div className="py-6 animate-fade-in space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-semibold text-lovable-800">Hi there!</h1>
+          <h1 className="text-2xl font-semibold text-lovable-800">Bisous</h1>
           <p className="text-gray-600">
             Here's how {mockData.elderlyName} is doing
           </p>
@@ -52,17 +56,28 @@ const Dashboard = () => {
                 ? "bg-green-100 text-green-800" 
                 : "bg-yellow-100 text-yellow-800"
             }>
-              {mockData.lastCall.sentiment === "good" ? "Good day" : "OK day"}
+              {mockData.lastCall.mood}
             </Badge>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="flex justify-between items-center">
-            <div>
-              <p className="text-gray-600">{mockData.lastCall.date}</p>
-              <p className="text-sm text-gray-500">
-                "Feeling good today, had breakfast with a neighbor"
-              </p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Avatar className="h-12 w-12 border-2 border-lovable-100">
+                {mockData.elderlyPhoto ? (
+                  <AvatarImage src={mockData.elderlyPhoto} alt={mockData.elderlyName} />
+                ) : (
+                  <AvatarFallback className="bg-lovable-50">
+                    <User size={24} className="text-lovable-300" />
+                  </AvatarFallback>
+                )}
+              </Avatar>
+              <div>
+                <p className="text-gray-600">{mockData.lastCall.date}</p>
+                <p className="text-sm text-gray-500">
+                  "Feeling good today, had breakfast with a neighbor"
+                </p>
+              </div>
             </div>
             <Button variant="ghost" size="sm" className="h-8">
               <ChevronRight className="h-4 w-4" />
@@ -181,6 +196,12 @@ const Dashboard = () => {
                     </div>
                   </div>
                 ))}
+                <Button variant="ghost" size="sm" className="w-full mt-2">
+                  <Link to="/appointments" className="flex items-center w-full justify-center">
+                    View All
+                    <ChevronRight className="h-4 w-4 ml-1" />
+                  </Link>
+                </Button>
               </div>
             ) : (
               <p className="text-sm text-gray-500 h-16 flex items-center justify-center">
@@ -194,37 +215,47 @@ const Dashboard = () => {
       {/* Recent Calls */}
       <Card className="border-lovable-100">
         <CardHeader className="pb-2">
-          <CardTitle className="text-lg font-medium">Recent Calls</CardTitle>
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-lg font-medium">Recent Calls</CardTitle>
+            <Link to="/calls">
+              <Button variant="link" size="sm" className="px-0">
+                View All
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </Link>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            <div className="flex justify-between items-center border-b pb-3">
-              <div>
-                <p className="font-medium">Today, 9:15 AM</p>
-                <p className="text-sm text-gray-500">Duration: 4m 32s</p>
+            <Link to="/calls/1" className="block">
+              <div className="flex justify-between items-center border-b pb-3">
+                <div>
+                  <p className="font-medium">Today, 9:15 AM</p>
+                  <p className="text-sm text-gray-500">Duration: 4m 32s</p>
+                </div>
+                <Badge className="bg-green-100 text-green-800">Joyful</Badge>
               </div>
-              <Badge className="bg-green-100 text-green-800">Good day</Badge>
-            </div>
+            </Link>
             
-            <div className="flex justify-between items-center border-b pb-3">
-              <div>
-                <p className="font-medium">Yesterday, 9:30 AM</p>
-                <p className="text-sm text-gray-500">Duration: 5m 15s</p>
+            <Link to="/calls/2" className="block">
+              <div className="flex justify-between items-center border-b pb-3">
+                <div>
+                  <p className="font-medium">Yesterday, 9:30 AM</p>
+                  <p className="text-sm text-gray-500">Duration: 5m 15s</p>
+                </div>
+                <Badge className="bg-green-100 text-green-800">Calm</Badge>
               </div>
-              <Badge className="bg-green-100 text-green-800">Good day</Badge>
-            </div>
+            </Link>
             
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="font-medium">May 3, 9:05 AM</p>
-                <p className="text-sm text-gray-500">Duration: 3m 58s</p>
+            <Link to="/calls/3" className="block">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="font-medium">May 3, 9:05 AM</p>
+                  <p className="text-sm text-gray-500">Duration: 3m 58s</p>
+                </div>
+                <Badge className="bg-yellow-100 text-yellow-800">Tired</Badge>
               </div>
-              <Badge className="bg-yellow-100 text-yellow-800">OK day</Badge>
-            </div>
-            
-            <Button variant="outline" className="w-full mt-2">
-              View All Calls
-            </Button>
+            </Link>
           </div>
         </CardContent>
       </Card>

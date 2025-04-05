@@ -7,6 +7,7 @@ import {
   ArrowLeft, ArrowRight, Check, 
   User, Heart, Pill, Clock, Bell
 } from "lucide-react";
+import AccountCreationStep from "@/components/onboarding/AccountCreationStep";
 import BasicInfoStep from "@/components/onboarding/BasicInfoStep";
 import HealthConditionsStep from "@/components/onboarding/HealthConditionsStep";
 import MedicationsStep from "@/components/onboarding/MedicationsStep";
@@ -17,16 +18,23 @@ import CompletionStep from "@/components/onboarding/CompletionStep";
 
 const steps = [
   {
+    id: "account-creation",
+    title: "Create Your Account",
+    description: "Tell us about yourself",
+    icon: User,
+    component: AccountCreationStep,
+  },
+  {
     id: "basic-info",
-    title: "Basic Information",
-    description: "Tell us about your loved one",
+    title: "About Your Loved One",
+    description: "Tell us about who you care for",
     icon: User,
     component: BasicInfoStep,
   },
   {
     id: "health-conditions",
-    title: "Health Conditions",
-    description: "Select any conditions that apply",
+    title: "Health Assessment",
+    description: "Help us understand their health",
     icon: Heart,
     component: HealthConditionsStep,
   },
@@ -71,22 +79,45 @@ const Onboarding = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
+    account: {
+      fullName: "",
+      email: "",
+      phone: "",
+      password: "",
+    },
     basicInfo: {
       name: "",
+      nickname: "",
       age: "",
       gender: "",
       relationship: "",
+      photo: null,
+      interests: [],
+      voiceNote: null,
+      additionalInfo: "",
     },
-    healthConditions: [],
+    healthConditions: {
+      generalHealth: "",
+      hearingAbility: "",
+      mentalState: 5, // Scale of 1-10
+      forgetfulness: "",
+      loneliness: 5, // Scale of 1-10
+      conditions: [],
+      notes: "",
+    },
     medications: [],
     preferences: {
       voiceTone: "calm",
       topics: [],
+      interestAreas: [],
       customVoice: "",
+      callLength: "short",
+      checkItems: [],
     },
     callSchedule: {
       frequency: "daily",
-      timePreference: "morning",
+      timePreferences: [],
+      specificDays: [],
     },
     notifications: {
       missedCall: true,

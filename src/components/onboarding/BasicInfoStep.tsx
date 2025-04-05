@@ -2,8 +2,10 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Camera, User } from "lucide-react";
 
 interface BasicInfoStepProps {
   data: any;
@@ -13,6 +15,7 @@ interface BasicInfoStepProps {
 
 const BasicInfoStep = ({ data, updateData, stepId }: BasicInfoStepProps) => {
   const [localData, setLocalData] = useState(data.basicInfo);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const handleChange = (field: string, value: string) => {
     const newData = { ...localData, [field]: value };
@@ -20,8 +23,48 @@ const BasicInfoStep = ({ data, updateData, stepId }: BasicInfoStepProps) => {
     updateData(stepId, newData);
   };
 
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const photoUrl = URL.createObjectURL(file);
+      setPreviewUrl(photoUrl);
+      
+      const newData = { ...localData, photo: file };
+      setLocalData(newData);
+      updateData(stepId, newData);
+    }
+  };
+
+  const handleGenderSelect = (gender: string) => {
+    handleChange("gender", gender);
+  };
+
   return (
     <div className="space-y-5 pt-2">
+      <div className="flex justify-center mb-6">
+        <div className="relative">
+          <Avatar className="w-24 h-24 border-2 border-lovable-200">
+            {previewUrl ? (
+              <AvatarImage src={previewUrl} alt="Profile picture" />
+            ) : (
+              <AvatarFallback className="bg-lovable-50">
+                <User size={36} className="text-lovable-300" />
+              </AvatarFallback>
+            )}
+          </Avatar>
+          <label htmlFor="photo-upload" className="absolute -bottom-2 -right-2 bg-lovable-400 text-white p-2 rounded-full cursor-pointer hover:bg-lovable-500">
+            <Camera size={16} />
+            <input 
+              id="photo-upload" 
+              type="file" 
+              accept="image/*" 
+              className="hidden" 
+              onChange={handlePhotoChange}
+            />
+          </label>
+        </div>
+      </div>
+
       <div className="space-y-2">
         <Label htmlFor="name">Name of your loved one</Label>
         <Input
@@ -29,6 +72,16 @@ const BasicInfoStep = ({ data, updateData, stepId }: BasicInfoStepProps) => {
           placeholder="e.g. Mary Smith"
           value={localData.name}
           onChange={(e) => handleChange("name", e.target.value)}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="nickname">Nickname (optional)</Label>
+        <Input
+          id="nickname"
+          placeholder="What do you call them?"
+          value={localData.nickname}
+          onChange={(e) => handleChange("nickname", e.target.value)}
         />
       </div>
       
@@ -55,24 +108,24 @@ const BasicInfoStep = ({ data, updateData, stepId }: BasicInfoStepProps) => {
       
       <div className="space-y-3">
         <Label>Gender</Label>
-        <RadioGroup 
-          className="flex space-x-2"
-          value={localData.gender}
-          onValueChange={(value) => handleChange("gender", value)}
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="female" id="female" />
-            <Label htmlFor="female">Female</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="male" id="male" />
-            <Label htmlFor="male">Male</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="other" id="other" />
-            <Label htmlFor="other">Other</Label>
-          </div>
-        </RadioGroup>
+        <div className="grid grid-cols-2 gap-3">
+          <Button
+            type="button"
+            variant={localData.gender === "female" ? "default" : "outline"}
+            className={`h-10 ${localData.gender === "female" ? "bg-lovable-400" : ""}`}
+            onClick={() => handleGenderSelect("female")}
+          >
+            Female
+          </Button>
+          <Button
+            type="button"
+            variant={localData.gender === "male" ? "default" : "outline"}
+            className={`h-10 ${localData.gender === "male" ? "bg-lovable-400" : ""}`}
+            onClick={() => handleGenderSelect("male")}
+          >
+            Male
+          </Button>
+        </div>
       </div>
       
       <div className="space-y-2">
@@ -94,8 +147,19 @@ const BasicInfoStep = ({ data, updateData, stepId }: BasicInfoStepProps) => {
         </Select>
       </div>
       
+      <div className="space-y-2 pt-4">
+        <Label htmlFor="additionalInfo">Additional Information (optional)</Label>
+        <textarea
+          id="additionalInfo"
+          className="min-h-[100px] w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-lovable-400"
+          placeholder="Share any additional information about your loved one that might help us provide better care..."
+          value={localData.additionalInfo || ""}
+          onChange={(e) => handleChange("additionalInfo", e.target.value)}
+        ></textarea>
+      </div>
+      
       <p className="text-sm text-muted-foreground mt-4 italic">
-        This helps us personalize our AI's conversations with your loved one.
+        This information helps us personalize our AI's conversations with your loved one.
       </p>
     </div>
   );

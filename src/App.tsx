@@ -9,6 +9,10 @@ import Layout from "./components/layout/Layout";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Onboarding from "./pages/Onboarding";
+import Calls from "./pages/Calls";
+import CallDetails from "./pages/CallDetails";
+import Appointments from "./pages/Appointments";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +28,10 @@ const App = () => (
             <Route index element={<Index />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="onboarding" element={<Onboarding />} />
+            <Route path="calls" element={<Calls />} />
+            <Route path="calls/:id" element={<CallDetails />} />
+            <Route path="appointments" element={<Appointments />} />
+            <Route path="settings" element={<Settings />} />
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>

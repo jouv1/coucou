@@ -15,15 +15,15 @@ interface MedicationsStepProps {
 interface Medication {
   id: string;
   name: string;
-  timeOfDay: string;
+  timeOfDay: string[];
   notes?: string;
 }
 
 const MedicationsStep = ({ data, updateData, stepId }: MedicationsStepProps) => {
-  const [takesMedications, setTakesMedications] = useState(false);
+  const [takesMedications, setTakesMedications] = useState(data.medications && data.medications.length > 0);
   const [medications, setMedications] = useState<Medication[]>(data.medications || []);
   const [newMedName, setNewMedName] = useState("");
-  const [newMedTime, setNewMedTime] = useState("morning");
+  const [selectedTimes, setSelectedTimes] = useState<string[]>([]);
 
   const handleRadioChange = (value: string) => {
     const takes = value === "yes";
@@ -35,24 +35,35 @@ const MedicationsStep = ({ data, updateData, stepId }: MedicationsStepProps) => 
   };
 
   const addMedication = () => {
-    if (newMedName.trim()) {
-      const newMed: Medication = {
-        id: Date.now().toString(),
-        name: newMedName,
-        timeOfDay: newMedTime,
-      };
-      
-      const updatedMeds = [...medications, newMed];
-      setMedications(updatedMeds);
-      updateData(stepId, updatedMeds);
-      setNewMedName("");
-    }
+    if (selectedTimes.length === 0) return;
+    
+    const newMed: Medication = {
+      id: Date.now().toString(),
+      name: newMedName.trim() || "Unspecified medication",
+      timeOfDay: selectedTimes,
+    };
+    
+    const updatedMeds = [...medications, newMed];
+    setMedications(updatedMeds);
+    updateData(stepId, updatedMeds);
+    
+    // Reset form
+    setNewMedName("");
+    setSelectedTimes([]);
   };
 
   const removeMedication = (id: string) => {
     const updatedMeds = medications.filter((med) => med.id !== id);
     setMedications(updatedMeds);
     updateData(stepId, updatedMeds);
+  };
+
+  const toggleTimeOfDay = (time: string) => {
+    setSelectedTimes(prev => 
+      prev.includes(time) 
+        ? prev.filter(t => t !== time) 
+        : [...prev, time]
+    );
   };
   
   return (
@@ -94,7 +105,7 @@ const MedicationsStep = ({ data, updateData, stepId }: MedicationsStepProps) => 
                     <div>
                       <p className="font-medium">{med.name}</p>
                       <p className="text-xs text-gray-600">
-                        Taken in the {med.timeOfDay}
+                        Taken: {med.timeOfDay.join(", ")}
                       </p>
                     </div>
                     <Button 
@@ -117,33 +128,34 @@ const MedicationsStep = ({ data, updateData, stepId }: MedicationsStepProps) => 
             <div className="grid gap-3">
               <Input
                 id="med-name"
-                placeholder="Medication name"
+                placeholder="Medication name (optional)"
                 value={newMedName}
                 onChange={(e) => setNewMedName(e.target.value)}
               />
               
+              <Label>When is it taken?</Label>
               <div className="grid grid-cols-3 gap-2">
                 <Button
                   type="button"
-                  variant={newMedTime === "morning" ? "default" : "outline"}
-                  className={newMedTime === "morning" ? "bg-lovable-400" : ""}
-                  onClick={() => setNewMedTime("morning")}
+                  variant={selectedTimes.includes("morning") ? "default" : "outline"}
+                  className={selectedTimes.includes("morning") ? "bg-lovable-400" : ""}
+                  onClick={() => toggleTimeOfDay("morning")}
                 >
                   Morning
                 </Button>
                 <Button
                   type="button"
-                  variant={newMedTime === "afternoon" ? "default" : "outline"}
-                  className={newMedTime === "afternoon" ? "bg-lovable-400" : ""}
-                  onClick={() => setNewMedTime("afternoon")}
+                  variant={selectedTimes.includes("afternoon") ? "default" : "outline"}
+                  className={selectedTimes.includes("afternoon") ? "bg-lovable-400" : ""}
+                  onClick={() => toggleTimeOfDay("afternoon")}
                 >
                   Afternoon
                 </Button>
                 <Button
                   type="button"
-                  variant={newMedTime === "evening" ? "default" : "outline"}
-                  className={newMedTime === "evening" ? "bg-lovable-400" : ""}
-                  onClick={() => setNewMedTime("evening")}
+                  variant={selectedTimes.includes("evening") ? "default" : "outline"}
+                  className={selectedTimes.includes("evening") ? "bg-lovable-400" : ""}
+                  onClick={() => toggleTimeOfDay("evening")}
                 >
                   Evening
                 </Button>
@@ -151,7 +163,7 @@ const MedicationsStep = ({ data, updateData, stepId }: MedicationsStepProps) => 
               
               <Button 
                 onClick={addMedication} 
-                disabled={!newMedName.trim()}
+                disabled={selectedTimes.length === 0}
                 className="mt-2"
               >
                 <Plus className="h-4 w-4 mr-2" /> Add Medication
