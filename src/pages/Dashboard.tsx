@@ -3,11 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Phone, Pill, Clock, HeartPulse, Calendar, ChevronRight, User, CheckCircle, AlertCircle } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Phone, Pill, Clock, HeartPulse, Calendar, ChevronRight, User, CheckCircle, AlertCircle, Heart } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Progress } from "@/components/ui/progress";
 
 const mockData = {
   elderlyName: "Mary Johnson",
+  elderlyNickname: "Grandma",
   elderlyPhoto: null, // We'll use a fallback for now
   lastCall: {
     date: "Today, 9:15 AM",
@@ -20,11 +22,14 @@ const mockData = {
   },
   medications: {
     status: "taken",
-    adherence: "93%",
   },
   sleep: {
     status: "good",
     data: [4, 6, 7, 5, 8, 6, 7],
+  },
+  mood: {
+    value: 75, // 0-100 where 100 is great and 0 is critical
+    status: "Generally positive"
   },
   appointments: [
     { date: "May 7", title: "Doctor Appointment", time: "10:30 AM" },
@@ -32,6 +37,20 @@ const mockData = {
 };
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  
+  const handleCall = () => {
+    // In a real app, this would trigger a phone call
+    window.location.href = `tel:+1234567890`;
+  };
+  
+  const handleViewLastCall = () => {
+    navigate("/calls/1");
+  };
+  
+  // Calculate the heart fill percentage based on mood value
+  const heartFillPercentage = mockData.mood.value;
+  
   return (
     <div className="py-6 animate-fade-in space-y-6">
       <div className="flex justify-between items-center">
@@ -45,8 +64,10 @@ const Dashboard = () => {
         <Button 
           className="bg-lovable-400 hover:bg-lovable-500 text-white"
           size="sm"
+          onClick={handleCall}
         >
-          <Phone className="h-4 w-4 mr-2" /> Call Now
+          <Phone className="h-4 w-4 mr-2" /> 
+          Call {mockData.elderlyNickname || mockData.elderlyName}
         </Button>
       </div>
       
@@ -61,7 +82,7 @@ const Dashboard = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="flex items-start justify-between">
+          <div className="flex items-start justify-between cursor-pointer" onClick={handleViewLastCall}>
             <div className="flex items-start gap-3">
               <Avatar className="h-12 w-12 border-2 border-lovable-100">
                 {mockData.elderlyPhoto ? (
@@ -123,9 +144,6 @@ const Dashboard = () => {
               <p className="mt-2 font-medium text-center">
                 {mockData.medications.status === "taken" ? "Taken Today" : "Not Taken"}
               </p>
-              <p className="text-xs text-gray-500">
-                {mockData.medications.adherence} adherence
-              </p>
             </div>
           </CardContent>
         </Card>
@@ -161,27 +179,37 @@ const Dashboard = () => {
           </CardContent>
         </Card>
         
-        {/* Sentiment */}
+        {/* Mood (formerly Sentiment) */}
         <Card className="border-lovable-100">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
               <HeartPulse className="h-4 w-4 text-lovable-500" />
-              <CardTitle className="text-sm font-medium">Sentiment</CardTitle>
+              <CardTitle className="text-sm font-medium">Mood</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className="text-xs">Critical</span>
-              <span className="text-xs">Great</span>
+            <div className="flex justify-center items-center py-2">
+              <div className="relative flex items-center justify-center">
+                {/* Background heart outline */}
+                <Heart 
+                  className="h-12 w-12 stroke-2 text-gray-200" 
+                  fill="transparent" 
+                />
+                {/* Filled heart with clip-path based on value */}
+                <div 
+                  className="absolute inset-0 flex items-center justify-center overflow-hidden"
+                  style={{ 
+                    clipPath: `inset(${100 - heartFillPercentage}% 0 0 0)` 
+                  }}
+                >
+                  <Heart 
+                    className={`h-12 w-12 stroke-2 ${heartFillPercentage < 30 ? 'text-red-500' : 'text-lovable-500'}`}
+                    fill={heartFillPercentage < 30 ? 'rgb(239, 68, 68)' : 'rgb(156, 163, 175)'}
+                  />
+                </div>
+              </div>
             </div>
-            {/* Green bar for "generally positive" - no gradient */}
-            <div className="w-full bg-gray-100 rounded-full h-2.5">
-              <div 
-                className="bg-green-500 h-2.5 rounded-full" 
-                style={{ width: "75%" }}
-              ></div>
-            </div>
-            <p className="text-xs text-center text-gray-600">Generally positive</p>
+            <p className="text-xs text-center text-gray-600">{mockData.mood.status}</p>
           </CardContent>
         </Card>
         

@@ -2,10 +2,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Plus } from "lucide-react";
+import { Calendar, Plus, Trash2, Edit } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 const mockAppointments = [
   { id: "1", date: "May 7, 2025", title: "Doctor Appointment", time: "10:30 AM" },
@@ -17,25 +18,56 @@ const mockAppointments = [
 const Appointments = () => {
   const [appointments, setAppointments] = useState(mockAppointments);
   const [isAddingAppointment, setIsAddingAppointment] = useState(false);
-  const [newAppointment, setNewAppointment] = useState({
+  const [isEditingAppointment, setIsEditingAppointment] = useState(false);
+  const [currentAppointment, setCurrentAppointment] = useState({
+    id: "",
     title: "",
     date: "",
     time: "",
   });
 
+  const resetForm = () => {
+    setCurrentAppointment({ id: "", title: "", date: "", time: "" });
+  };
+
   const addAppointment = () => {
-    if (newAppointment.title && newAppointment.date) {
+    if (currentAppointment.title && currentAppointment.date) {
       const appointment = {
         id: Date.now().toString(),
-        title: newAppointment.title,
-        date: newAppointment.date,
-        time: newAppointment.time || "TBD",
+        title: currentAppointment.title,
+        date: currentAppointment.date,
+        time: currentAppointment.time || "TBD",
       };
       
       setAppointments([...appointments, appointment]);
-      setNewAppointment({ title: "", date: "", time: "" });
+      resetForm();
       setIsAddingAppointment(false);
+      toast.success("Appointment added successfully");
     }
+  };
+  
+  const editAppointment = () => {
+    if (currentAppointment.title && currentAppointment.date) {
+      const updatedAppointments = appointments.map(apt => 
+        apt.id === currentAppointment.id ? currentAppointment : apt
+      );
+      
+      setAppointments(updatedAppointments);
+      resetForm();
+      setIsEditingAppointment(false);
+      toast.success("Appointment updated successfully");
+    }
+  };
+  
+  const handleEdit = (appointment) => {
+    setCurrentAppointment({...appointment});
+    setIsEditingAppointment(true);
+  };
+  
+  const handleDelete = (id) => {
+    const updatedAppointments = appointments.filter(apt => apt.id !== id);
+    setAppointments(updatedAppointments);
+    toast.success("Appointment deleted successfully");
   };
 
   return (
@@ -64,8 +96,8 @@ const Appointments = () => {
                 <Input 
                   id="title" 
                   placeholder="e.g. Doctor Visit"
-                  value={newAppointment.title}
-                  onChange={e => setNewAppointment({...newAppointment, title: e.target.value})}
+                  value={currentAppointment.title}
+                  onChange={e => setCurrentAppointment({...currentAppointment, title: e.target.value})}
                 />
               </div>
               
@@ -74,8 +106,8 @@ const Appointments = () => {
                 <Input 
                   id="date" 
                   type="date"
-                  value={newAppointment.date}
-                  onChange={e => setNewAppointment({...newAppointment, date: e.target.value})}
+                  value={currentAppointment.date}
+                  onChange={e => setCurrentAppointment({...currentAppointment, date: e.target.value})}
                 />
               </div>
               
@@ -84,21 +116,80 @@ const Appointments = () => {
                 <Input 
                   id="time" 
                   type="time"
-                  value={newAppointment.time}
-                  onChange={e => setNewAppointment({...newAppointment, time: e.target.value})}
+                  value={currentAppointment.time}
+                  onChange={e => setCurrentAppointment({...currentAppointment, time: e.target.value})}
                 />
               </div>
               
               <div className="flex justify-between pt-3">
-                <Button variant="outline" onClick={() => setIsAddingAppointment(false)}>
+                <Button variant="outline" onClick={() => {
+                  setIsAddingAppointment(false);
+                  resetForm();
+                }}>
                   Cancel
                 </Button>
                 <Button 
                   className="bg-lovable-400 hover:bg-lovable-500 text-white"
                   onClick={addAppointment}
-                  disabled={!newAppointment.title || !newAppointment.date}
+                  disabled={!currentAppointment.title || !currentAppointment.date}
                 >
                   Add Appointment
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Edit Appointment Dialog */}
+        <Dialog open={isEditingAppointment} onOpenChange={setIsEditingAppointment}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit Appointment</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3 py-3">
+              <div className="space-y-2">
+                <Label htmlFor="edit-title">Appointment Title</Label>
+                <Input 
+                  id="edit-title" 
+                  placeholder="e.g. Doctor Visit"
+                  value={currentAppointment.title}
+                  onChange={e => setCurrentAppointment({...currentAppointment, title: e.target.value})}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="edit-date">Date</Label>
+                <Input 
+                  id="edit-date" 
+                  type="date"
+                  value={currentAppointment.date}
+                  onChange={e => setCurrentAppointment({...currentAppointment, date: e.target.value})}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="edit-time">Time (optional)</Label>
+                <Input 
+                  id="edit-time" 
+                  type="time"
+                  value={currentAppointment.time}
+                  onChange={e => setCurrentAppointment({...currentAppointment, time: e.target.value})}
+                />
+              </div>
+              
+              <div className="flex justify-between pt-3">
+                <Button variant="outline" onClick={() => {
+                  setIsEditingAppointment(false);
+                  resetForm();
+                }}>
+                  Cancel
+                </Button>
+                <Button 
+                  className="bg-lovable-400 hover:bg-lovable-500 text-white"
+                  onClick={editAppointment}
+                  disabled={!currentAppointment.title || !currentAppointment.date}
+                >
+                  Update Appointment
                 </Button>
               </div>
             </div>
@@ -124,9 +215,23 @@ const Appointments = () => {
                       {appointment.date}, {appointment.time}
                     </p>
                   </div>
-                  <Button variant="ghost" size="sm">
-                    Edit
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => handleEdit(appointment)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-red-500 hover:text-red-700"
+                      onClick={() => handleDelete(appointment.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>

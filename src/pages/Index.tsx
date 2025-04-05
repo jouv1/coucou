@@ -10,7 +10,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md space-y-8 animate-fade-in">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-lovable-600 mb-2">Bisou</h1>
+          <h1 className="text-4xl font-bold text-lovable-600 mb-2">Coucou</h1>
           <p className="text-xl text-lovable-800 mb-6">AI-powered check-ins for your loved ones</p>
         </div>
         
