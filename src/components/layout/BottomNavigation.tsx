@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { Home, Settings, MessageSquare, Bell } from "lucide-react";
+import { Settings, MessageSquare, Bell } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const BottomNavigation = () => {
@@ -15,7 +15,7 @@ const BottomNavigation = () => {
     },
     {
       label: "Home",
-      icon: Home,
+      icon: () => <span className="text-xl">🫶🏼</span>,
       path: "/dashboard",
       primary: true,
     },
@@ -35,18 +35,18 @@ const BottomNavigation = () => {
             to={item.path}
             className={cn(
               "flex flex-col items-center justify-center px-4 h-full",
-              currentPath === item.path ? "text-lovable-500" : "text-gray-500"
+              currentPath === item.path ? "text-coucou-500" : "text-gray-500"
             )}
           >
             {item.primary ? (
-              <div className="bg-lovable-400 text-white p-3 rounded-full -mt-6 shadow-md">
-                <item.icon size={24} />
+              <div className="bg-coucou-400 text-white p-3 rounded-full -mt-6 shadow-md flex items-center justify-center">
+                <item.icon />
               </div>
             ) : (
               <item.icon
                 size={24}
                 className={cn(
-                  currentPath === item.path ? "text-lovable-500" : "text-gray-500"
+                  currentPath === item.path ? "text-coucou-500" : "text-gray-500"
                 )}
               />
             )}
