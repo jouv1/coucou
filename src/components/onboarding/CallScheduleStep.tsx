@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Clock } from "lucide-react";
 
 interface CallScheduleStepProps {
@@ -14,12 +15,19 @@ interface CallScheduleStepProps {
 const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) => {
   const [schedule, setSchedule] = useState({
     frequency: data.callSchedule?.frequency || "daily",
+    callsPerDay: data.callSchedule?.callsPerDay || "one",
     timePreferences: data.callSchedule?.timePreferences || [],
     specificDays: data.callSchedule?.specificDays || [],
   });
 
   const handleFrequencyChange = (value: string) => {
     const newSchedule = { ...schedule, frequency: value };
+    setSchedule(newSchedule);
+    updateData(stepId, newSchedule);
+  };
+
+  const handleCallsPerDayChange = (value: string) => {
+    const newSchedule = { ...schedule, callsPerDay: value };
     setSchedule(newSchedule);
     updateData(stepId, newSchedule);
   };
@@ -54,23 +62,15 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
           className="space-y-2"
         >
           <div className="flex items-start space-x-3">
-            <RadioGroupItem value="daily" id="daily" />
+            <RadioGroupItem value="daily" id="daily" className="mt-1" />
             <div>
               <Label htmlFor="daily" className="font-medium">Daily Check-ins</Label>
-              <p className="text-sm text-gray-500">Our AI will call once every day</p>
+              <p className="text-sm text-gray-500">Our AI will call every day</p>
             </div>
           </div>
           
           <div className="flex items-start space-x-3">
-            <RadioGroupItem value="multiple-daily" id="multiple-daily" />
-            <div>
-              <Label htmlFor="multiple-daily" className="font-medium">Multiple Daily Check-ins</Label>
-              <p className="text-sm text-gray-500">Our AI will call multiple times per day</p>
-            </div>
-          </div>
-          
-          <div className="flex items-start space-x-3">
-            <RadioGroupItem value="weekdays" id="weekdays" />
+            <RadioGroupItem value="weekdays" id="weekdays" className="mt-1" />
             <div>
               <Label htmlFor="weekdays" className="font-medium">Weekdays Only</Label>
               <p className="text-sm text-gray-500">Monday through Friday check-ins</p>
@@ -78,7 +78,7 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
           </div>
           
           <div className="flex items-start space-x-3">
-            <RadioGroupItem value="custom" id="custom" />
+            <RadioGroupItem value="custom" id="custom" className="mt-1" />
             <div>
               <Label htmlFor="custom" className="font-medium">Custom Schedule</Label>
               <p className="text-sm text-gray-500">Select specific days for calls</p>
@@ -95,8 +95,12 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
               <Button
                 key={day}
                 type="button"
-                variant={schedule.specificDays.includes(day) ? "default" : "outline"}
-                className={`h-10 ${schedule.specificDays.includes(day) ? "bg-lovable-400 text-white" : ""}`}
+                variant="outline"
+                className={`${
+                  schedule.specificDays.includes(day) 
+                    ? "bg-lovable-100 border-lovable-300 text-lovable-700" 
+                    : ""
+                }`}
                 onClick={() => toggleDay(day)}
               >
                 {day}
@@ -107,14 +111,61 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
       )}
       
       <div className="space-y-3 border-t pt-4">
-        <Label>Preferred Time of Day</Label>
-        <p className="text-sm text-gray-500 mb-2">Select all that apply</p>
+        <Label>Calls Per Day</Label>
         <div className="grid grid-cols-3 gap-3">
           <Button
             type="button"
-            variant={schedule.timePreferences.includes("morning") ? "default" : "outline"}
+            variant="outline"
+            className={`${schedule.callsPerDay === "one" ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""}`}
+            onClick={() => handleCallsPerDayChange("one")}
+          >
+            Once
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className={`${schedule.callsPerDay === "two" ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""}`}
+            onClick={() => handleCallsPerDayChange("two")}
+          >
+            Twice
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className={`${schedule.callsPerDay === "three" ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""}`}
+            onClick={() => handleCallsPerDayChange("three")}
+          >
+            Three Times
+          </Button>
+        </div>
+      </div>
+      
+      <div className="space-y-3 border-t pt-4">
+        <Label>Preferred Times of Day</Label>
+        <p className="text-sm text-gray-500 mb-2">
+          {schedule.callsPerDay !== "one" 
+            ? "Select multiple time slots based on your calls per day" 
+            : "Select when the call should happen"}
+        </p>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+          <Button
+            type="button"
+            variant="outline"
             className={`flex flex-col items-center py-3 h-auto ${
-              schedule.timePreferences.includes("morning") ? "bg-lovable-400 text-white" : ""
+              schedule.timePreferences.includes("early-morning") ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""
+            }`}
+            onClick={() => toggleTimePreference("early-morning")}
+          >
+            <Clock className="mb-1" size={18} />
+            <span>Early Morning</span>
+            <span className="text-xs opacity-70">6AM - 8AM</span>
+          </Button>
+          
+          <Button
+            type="button"
+            variant="outline"
+            className={`flex flex-col items-center py-3 h-auto ${
+              schedule.timePreferences.includes("morning") ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""
             }`}
             onClick={() => toggleTimePreference("morning")}
           >
@@ -125,22 +176,35 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
           
           <Button
             type="button"
-            variant={schedule.timePreferences.includes("afternoon") ? "default" : "outline"}
+            variant="outline"
             className={`flex flex-col items-center py-3 h-auto ${
-              schedule.timePreferences.includes("afternoon") ? "bg-lovable-400 text-white" : ""
+              schedule.timePreferences.includes("noon") ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""
+            }`}
+            onClick={() => toggleTimePreference("noon")}
+          >
+            <Clock className="mb-1" size={18} />
+            <span>Noon</span>
+            <span className="text-xs opacity-70">11AM - 1PM</span>
+          </Button>
+          
+          <Button
+            type="button"
+            variant="outline"
+            className={`flex flex-col items-center py-3 h-auto ${
+              schedule.timePreferences.includes("afternoon") ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""
             }`}
             onClick={() => toggleTimePreference("afternoon")}
           >
             <Clock className="mb-1" size={18} />
             <span>Afternoon</span>
-            <span className="text-xs opacity-70">12PM - 4PM</span>
+            <span className="text-xs opacity-70">1PM - 5PM</span>
           </Button>
           
           <Button
             type="button"
-            variant={schedule.timePreferences.includes("evening") ? "default" : "outline"}
+            variant="outline"
             className={`flex flex-col items-center py-3 h-auto ${
-              schedule.timePreferences.includes("evening") ? "bg-lovable-400 text-white" : ""
+              schedule.timePreferences.includes("evening") ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""
             }`}
             onClick={() => toggleTimePreference("evening")}
           >
@@ -148,11 +212,24 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
             <span>Evening</span>
             <span className="text-xs opacity-70">5PM - 8PM</span>
           </Button>
+          
+          <Button
+            type="button"
+            variant="outline"
+            className={`flex flex-col items-center py-3 h-auto ${
+              schedule.timePreferences.includes("night") ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""
+            }`}
+            onClick={() => toggleTimePreference("night")}
+          >
+            <Clock className="mb-1" size={18} />
+            <span>Night</span>
+            <span className="text-xs opacity-70">8PM - 10PM</span>
+          </Button>
         </div>
       </div>
       
       <p className="text-sm text-muted-foreground mt-4 italic">
-        We'll make calls at a consistent time within your selected time range.
+        We'll make calls at a consistent time within your selected time ranges.
       </p>
     </div>
   );

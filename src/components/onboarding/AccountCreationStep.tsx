@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertCircle } from "lucide-react";
 
 interface AccountCreationStepProps {
   data: any;
@@ -16,6 +18,7 @@ const AccountCreationStep = ({ data, updateData, stepId }: AccountCreationStepPr
     phone: "",
     password: "",
     confirmPassword: "",
+    language: "en",
   });
 
   const handleChange = (field: string, value: string) => {
@@ -26,12 +29,15 @@ const AccountCreationStep = ({ data, updateData, stepId }: AccountCreationStepPr
 
   return (
     <div className="space-y-5 pt-2">
-      <p className="text-sm text-gray-600 mb-3">
-        We need some information to create your Bisous account.
-      </p>
+      <div className="bg-lovable-50 p-3 rounded-md flex items-start gap-3 mb-4">
+        <AlertCircle className="text-lovable-600 mt-0.5" size={18} />
+        <p className="text-sm text-gray-600">
+          Let's set up <strong>your account</strong> first. You'll add information about your loved one in the next steps.
+        </p>
+      </div>
       
       <div className="space-y-2">
-        <Label htmlFor="fullName">Full Name</Label>
+        <Label htmlFor="fullName">Your Full Name</Label>
         <Input
           id="fullName"
           placeholder="Enter your full name"
@@ -59,6 +65,26 @@ const AccountCreationStep = ({ data, updateData, stepId }: AccountCreationStepPr
           value={accountData.phone}
           onChange={(e) => handleChange("phone", e.target.value)}
         />
+      </div>
+      
+      <div className="space-y-2">
+        <Label htmlFor="language">Preferred Language</Label>
+        <Select 
+          value={accountData.language} 
+          onValueChange={(value) => handleChange("language", value)}
+        >
+          <SelectTrigger id="language">
+            <SelectValue placeholder="Select your preferred language" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="en">English</SelectItem>
+            <SelectItem value="fr">French</SelectItem>
+            <SelectItem value="es">Spanish</SelectItem>
+            <SelectItem value="de">German</SelectItem>
+            <SelectItem value="it">Italian</SelectItem>
+            <SelectItem value="pt">Portuguese</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
       
       <div className="space-y-2">

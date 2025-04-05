@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
   ArrowLeft, ArrowRight, Check, 
-  User, Heart, Pill, Clock, Bell
+  User, Heart, Pill, Clock, Bell,
+  MessageSquare, Mic, Globe
 } from "lucide-react";
 import AccountCreationStep from "@/components/onboarding/AccountCreationStep";
 import BasicInfoStep from "@/components/onboarding/BasicInfoStep";
@@ -49,7 +50,7 @@ const steps = [
     id: "preferences",
     title: "Call Preferences",
     description: "Customize the conversation style",
-    icon: User,
+    icon: MessageSquare,
     component: PreferencesStep,
   },
   {
@@ -84,6 +85,7 @@ const Onboarding = () => {
       email: "",
       phone: "",
       password: "",
+      language: "en"
     },
     basicInfo: {
       name: "",
@@ -107,22 +109,25 @@ const Onboarding = () => {
     },
     medications: [],
     preferences: {
-      voiceTone: "calm",
+      voiceTone: "female",
+      callType: "standard",
       topics: [],
       interestAreas: [],
-      customVoice: "",
-      callLength: "short",
       checkItems: [],
     },
     callSchedule: {
       frequency: "daily",
+      callsPerDay: "one",
       timePreferences: [],
       specificDays: [],
     },
     notifications: {
+      callSummary: true,
       missedCall: true,
       lowSentiment: true,
       medication: true,
+      sleep: false,
+      appointments: true,
     },
   });
 

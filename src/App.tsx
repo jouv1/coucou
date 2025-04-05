@@ -15,6 +15,14 @@ import Appointments from "./pages/Appointments";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
+// Import the individual settings pages when they get created
+// Eventually we'll need to create these pages:
+// import ProfileSettings from "./pages/settings/ProfileSettings";
+// import SecuritySettings from "./pages/settings/SecuritySettings";
+// import LovedOneSettings from "./pages/settings/LovedOneSettings";
+// import HealthSettings from "./pages/settings/HealthSettings";
+// etc.
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -32,6 +40,7 @@ const App = () => (
             <Route path="calls/:id" element={<CallDetails />} />
             <Route path="appointments" element={<Appointments />} />
             <Route path="settings" element={<Settings />} />
+            {/* Individual settings pages will be added here when created */}
             <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
