@@ -18,6 +18,7 @@ const BottomNavigation = () => {
       icon: Home,
       path: "/dashboard",
       primary: true,
+      emoji: "🫶🏼"
     },
     {
       label: "Settings",
@@ -35,18 +36,18 @@ const BottomNavigation = () => {
             to={item.path}
             className={cn(
               "flex flex-col items-center justify-center px-4 h-full",
-              currentPath === item.path ? "text-lovable-500" : "text-gray-500"
+              currentPath === item.path ? "text-[#46192e]" : "text-gray-500"
             )}
           >
             {item.primary ? (
-              <div className="bg-lovable-400 text-white p-3 rounded-full -mt-6 shadow-md">
-                <item.icon size={24} />
+              <div className="bg-[#46192e] text-white p-3 rounded-full -mt-6 shadow-md">
+                {item.emoji}
               </div>
             ) : (
               <item.icon
                 size={24}
                 className={cn(
-                  currentPath === item.path ? "text-lovable-500" : "text-gray-500"
+                  currentPath === item.path ? "text-[#46192e]" : "text-gray-500"
                 )}
               />
             )}
