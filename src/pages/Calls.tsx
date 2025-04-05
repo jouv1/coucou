@@ -59,16 +59,16 @@ const Calls = () => {
   return (
     <div className="py-6 animate-fade-in space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold text-lovable-800">Recent Calls</h1>
+        <h1 className="text-2xl font-semibold text-coucou-800">Recent Calls</h1>
         <p className="text-gray-600">
           View transcripts and insights from past conversations
         </p>
       </div>
       
-      <Card className="border-lovable-100">
+      <Card className="border-coucou-100">
         <CardHeader className="pb-2">
           <div className="flex items-center">
-            <Phone className="h-5 w-5 text-lovable-500 mr-2" />
+            <Phone className="h-5 w-5 text-coucou-500 mr-2" />
             <CardTitle className="text-lg font-medium">Call History</CardTitle>
           </div>
         </CardHeader>
