@@ -5,33 +5,33 @@
 
 @layer base {
   :root {
-    --background: 40 22% 95%;
-    --foreground: 324 52% 19%;
+    --background: 60 54% 97%;
+    --foreground: 164 35% 25%;
 
     --card: 0 0% 100%;
-    --card-foreground: 324 52% 19%;
+    --card-foreground: 164 35% 25%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 324 52% 19%;
+    --popover-foreground: 164 35% 25%;
 
-    --primary: 324 52% 19%;
+    --primary: 164 35% 56%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 204 35% 91%;
-    --secondary-foreground: 324 52% 19%;
+    --secondary: 60 54% 97%;
+    --secondary-foreground: 164 35% 25%;
 
-    --muted: 324 42% 95%;
-    --muted-foreground: 324 15% 40%;
+    --muted: 164 25% 95%;
+    --muted-foreground: 164 15% 40%;
 
-    --accent: 324 42% 95%;
-    --accent-foreground: 324 52% 19%;
+    --accent: 164 25% 95%;
+    --accent-foreground: 164 35% 25%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 324 30% 90%;
-    --input: 324 30% 90%;
-    --ring: 324 52% 19%;
+    --border: 164 30% 90%;
+    --input: 164 30% 90%;
+    --ring: 164 35% 56%;
 
     --radius: 0.75rem;
 
@@ -46,33 +46,33 @@
   }
 
   .dark {
-    --background: 324 25% 15%;
-    --foreground: 324 20% 96%;
+    --background: 164 25% 15%;
+    --foreground: 164 20% 96%;
 
-    --card: 324 25% 15%;
-    --card-foreground: 324 20% 96%;
+    --card: 164 25% 15%;
+    --card-foreground: 164 20% 96%;
 
-    --popover: 324 25% 15%;
-    --popover-foreground: 324 20% 96%;
+    --popover: 164 25% 15%;
+    --popover-foreground: 164 20% 96%;
 
-    --primary: 324 52% 19%;
+    --primary: 164 35% 56%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 324 30% 25%;
-    --secondary-foreground: 324 20% 96%;
+    --secondary: 164 30% 25%;
+    --secondary-foreground: 164 20% 96%;
 
-    --muted: 324 30% 25%;
-    --muted-foreground: 324 15% 70%;
+    --muted: 164 30% 25%;
+    --muted-foreground: 164 15% 70%;
 
-    --accent: 324 30% 25%;
-    --accent-foreground: 324 20% 96%;
+    --accent: 164 30% 25%;
+    --accent-foreground: 164 20% 96%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 324 20% 96%;
+    --destructive-foreground: 164 20% 96%;
 
-    --border: 324 30% 25%;
-    --input: 324 30% 25%;
-    --ring: 324 52% 19%;
+    --border: 164 30% 25%;
+    --input: 164 30% 25%;
+    --ring: 164 35% 56%;
     
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -92,7 +92,6 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    background-color: #f3f1eb;
   }
   
   /* Custom font styles for better readability */
