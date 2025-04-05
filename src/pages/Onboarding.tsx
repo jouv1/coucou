@@ -124,6 +124,9 @@ const Onboarding = () => {
   const CurrentStepComponent = steps[currentStep].component;
   const progress = ((currentStep + 1) / steps.length) * 100;
   const isLastStep = currentStep === steps.length - 1;
+  
+  // Get the current icon component
+  const IconComponent = steps[currentStep].icon;
 
   return (
     <div className="min-h-screen py-8 animate-fade-in">
@@ -145,7 +148,7 @@ const Onboarding = () => {
         <CardContent className="p-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="bg-lovable-100 p-2 rounded-md text-lovable-600">
-              {steps[currentStep].icon && <steps[currentStep].icon size={24} />}
+              <IconComponent size={24} />
             </div>
             <div>
               <h2 className="text-xl font-medium text-lovable-800">
