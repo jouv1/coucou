@@ -1,11 +1,56 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <div className="min-h-screen flex flex-col items-center justify-center p-6">
+      <div className="w-full max-w-md space-y-8 animate-fade-in">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-lovable-600 mb-2">Lovable</h1>
+          <p className="text-xl text-lovable-800 mb-6">AI-powered check-ins for your loved ones</p>
+        </div>
+        
+        <div className="space-y-4 pt-4">
+          <div className="bg-white p-5 rounded-xl shadow-md border border-lovable-100">
+            <h2 className="text-lg font-medium text-lovable-700 mb-2">Daily AI Check-ins</h2>
+            <p className="text-gray-600">
+              Our AI makes natural-sounding calls to check on your loved ones daily, ensuring they're well and safe.
+            </p>
+          </div>
+          
+          <div className="bg-white p-5 rounded-xl shadow-md border border-lovable-100">
+            <h2 className="text-lg font-medium text-lovable-700 mb-2">Health Monitoring</h2>
+            <p className="text-gray-600">
+              Track medication adherence, sleep quality, and overall well-being with insightful dashboards.
+            </p>
+          </div>
+          
+          <div className="bg-white p-5 rounded-xl shadow-md border border-lovable-100">
+            <h2 className="text-lg font-medium text-lovable-700 mb-2">Peace of Mind</h2>
+            <p className="text-gray-600">
+              Get notifications only when they matter, so you can stay connected without constant worry.
+            </p>
+          </div>
+        </div>
+        
+        <div className="pt-6 flex flex-col gap-4">
+          <Button 
+            onClick={() => navigate("/onboarding")}
+            className="w-full bg-lovable-400 hover:bg-lovable-500 text-white py-6"
+          >
+            Get Started
+          </Button>
+          <Button 
+            variant="outline" 
+            className="w-full border-lovable-300 text-lovable-600 hover:bg-lovable-50"
+            onClick={() => navigate("/dashboard")}
+          >
+            See Demo Dashboard
+          </Button>
+        </div>
       </div>
     </div>
   );
