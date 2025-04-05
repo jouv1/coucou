@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Calendar, Clock, Heart, MessageSquare, Check, Plus, ChevronDown, ChevronUp, Pill } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Heart, MessageSquare, Check, ChevronDown, ChevronUp, Pill } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
@@ -44,10 +44,10 @@ const CallDetails = () => {
   return (
     <div className="py-6 animate-fade-in space-y-4">
       <div>
-        <Link to="/calls" className="inline-flex items-center text-lovable-600 mb-4">
+        <Link to="/calls" className="inline-flex items-center text-coucou-600 mb-4">
           <ArrowLeft className="h-4 w-4 mr-1" /> Back to calls
         </Link>
-        <h1 className="text-2xl font-semibold text-lovable-800 mb-1">Call Details</h1>
+        <h1 className="text-2xl font-semibold text-coucou-800 mb-1">Call Details</h1>
         <div className="flex items-center gap-2">
           <p className="text-gray-600">{mockCallData.date}</p>
           <Badge className="bg-green-100 text-green-800">
@@ -57,10 +57,10 @@ const CallDetails = () => {
       </div>
       
       {/* Call Summary Card */}
-      <Card className="border-lovable-100">
+      <Card className="border-coucou-100">
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
-            <MessageSquare className="h-5 w-5 text-lovable-500" />
+            <MessageSquare className="h-5 w-5 text-coucou-500" />
             <CardTitle className="text-lg font-medium">Call Summary</CardTitle>
           </div>
         </CardHeader>
@@ -103,11 +103,11 @@ const CallDetails = () => {
       </Card>
       
       {/* Call Transcript Card */}
-      <Card className="border-lovable-100">
+      <Card className="border-coucou-100">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
-              <Clock className="h-5 w-5 text-lovable-500" />
+              <Clock className="h-5 w-5 text-coucou-500" />
               <CardTitle className="text-lg font-medium">Transcript</CardTitle>
             </div>
             <div className="flex items-center gap-2">

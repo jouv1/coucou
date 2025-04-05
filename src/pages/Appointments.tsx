@@ -2,11 +2,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, Plus, Trash2, Edit } from "lucide-react";
+import { Calendar, Plus, Trash2, Edit2 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 const mockAppointments = [
   { id: "1", date: "May 7, 2025", title: "Doctor Appointment", time: "10:30 AM" },
@@ -19,188 +19,100 @@ const Appointments = () => {
   const [appointments, setAppointments] = useState(mockAppointments);
   const [isAddingAppointment, setIsAddingAppointment] = useState(false);
   const [isEditingAppointment, setIsEditingAppointment] = useState(false);
-  const [currentAppointment, setCurrentAppointment] = useState({
-    id: "",
+  const [currentAppointment, setCurrentAppointment] = useState<any>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [appointmentToDelete, setAppointmentToDelete] = useState<string | null>(null);
+  
+  const [formData, setFormData] = useState({
     title: "",
     date: "",
     time: "",
   });
 
-  const resetForm = () => {
-    setCurrentAppointment({ id: "", title: "", date: "", time: "" });
-  };
-
-  const addAppointment = () => {
-    if (currentAppointment.title && currentAppointment.date) {
-      const appointment = {
-        id: Date.now().toString(),
-        title: currentAppointment.title,
-        date: currentAppointment.date,
-        time: currentAppointment.time || "TBD",
-      };
+  const handleAddOrUpdate = () => {
+    if (formData.title && formData.date) {
+      if (isEditingAppointment && currentAppointment) {
+        // Update existing appointment
+        const updatedAppointments = appointments.map(apt => 
+          apt.id === currentAppointment.id 
+            ? { ...apt, title: formData.title, date: formData.date, time: formData.time || "TBD" }
+            : apt
+        );
+        setAppointments(updatedAppointments);
+        setIsEditingAppointment(false);
+      } else {
+        // Add new appointment
+        const appointment = {
+          id: Date.now().toString(),
+          title: formData.title,
+          date: formData.date,
+          time: formData.time || "TBD",
+        };
+        setAppointments([...appointments, appointment]);
+        setIsAddingAppointment(false);
+      }
       
-      setAppointments([...appointments, appointment]);
-      resetForm();
-      setIsAddingAppointment(false);
-      toast.success("Appointment added successfully");
+      // Reset form
+      setFormData({ title: "", date: "", time: "" });
+      setCurrentAppointment(null);
     }
   };
   
-  const editAppointment = () => {
-    if (currentAppointment.title && currentAppointment.date) {
-      const updatedAppointments = appointments.map(apt => 
-        apt.id === currentAppointment.id ? currentAppointment : apt
-      );
-      
-      setAppointments(updatedAppointments);
-      resetForm();
-      setIsEditingAppointment(false);
-      toast.success("Appointment updated successfully");
-    }
-  };
-  
-  const handleEdit = (appointment) => {
-    setCurrentAppointment({...appointment});
+  const handleEdit = (appointment: any) => {
+    setCurrentAppointment(appointment);
+    setFormData({
+      title: appointment.title,
+      date: appointment.date,
+      time: appointment.time,
+    });
     setIsEditingAppointment(true);
   };
   
-  const handleDelete = (id) => {
-    const updatedAppointments = appointments.filter(apt => apt.id !== id);
-    setAppointments(updatedAppointments);
-    toast.success("Appointment deleted successfully");
+  const confirmDelete = (id: string) => {
+    setAppointmentToDelete(id);
+    setDeleteDialogOpen(true);
+  };
+  
+  const handleDelete = () => {
+    if (appointmentToDelete) {
+      setAppointments(appointments.filter(apt => apt.id !== appointmentToDelete));
+      setDeleteDialogOpen(false);
+      setAppointmentToDelete(null);
+    }
+  };
+  
+  const closeDialog = () => {
+    setIsAddingAppointment(false);
+    setIsEditingAppointment(false);
+    setFormData({ title: "", date: "", time: "" });
+    setCurrentAppointment(null);
   };
 
   return (
     <div className="py-6 animate-fade-in space-y-4">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-semibold text-lovable-800">Appointments</h1>
+          <h1 className="text-2xl font-semibold text-coucou-800">Appointments</h1>
           <p className="text-gray-600">
             Manage your loved one's medical and social appointments
           </p>
         </div>
         
-        <Dialog open={isAddingAppointment} onOpenChange={setIsAddingAppointment}>
-          <DialogTrigger asChild>
-            <Button className="bg-lovable-400 hover:bg-lovable-500 text-white">
-              <Plus className="h-4 w-4 mr-2" /> Add
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New Appointment</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-3 py-3">
-              <div className="space-y-2">
-                <Label htmlFor="title">Appointment Title</Label>
-                <Input 
-                  id="title" 
-                  placeholder="e.g. Doctor Visit"
-                  value={currentAppointment.title}
-                  onChange={e => setCurrentAppointment({...currentAppointment, title: e.target.value})}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="date">Date</Label>
-                <Input 
-                  id="date" 
-                  type="date"
-                  value={currentAppointment.date}
-                  onChange={e => setCurrentAppointment({...currentAppointment, date: e.target.value})}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="time">Time (optional)</Label>
-                <Input 
-                  id="time" 
-                  type="time"
-                  value={currentAppointment.time}
-                  onChange={e => setCurrentAppointment({...currentAppointment, time: e.target.value})}
-                />
-              </div>
-              
-              <div className="flex justify-between pt-3">
-                <Button variant="outline" onClick={() => {
-                  setIsAddingAppointment(false);
-                  resetForm();
-                }}>
-                  Cancel
-                </Button>
-                <Button 
-                  className="bg-lovable-400 hover:bg-lovable-500 text-white"
-                  onClick={addAppointment}
-                  disabled={!currentAppointment.title || !currentAppointment.date}
-                >
-                  Add Appointment
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-        
-        {/* Edit Appointment Dialog */}
-        <Dialog open={isEditingAppointment} onOpenChange={setIsEditingAppointment}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Edit Appointment</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-3 py-3">
-              <div className="space-y-2">
-                <Label htmlFor="edit-title">Appointment Title</Label>
-                <Input 
-                  id="edit-title" 
-                  placeholder="e.g. Doctor Visit"
-                  value={currentAppointment.title}
-                  onChange={e => setCurrentAppointment({...currentAppointment, title: e.target.value})}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="edit-date">Date</Label>
-                <Input 
-                  id="edit-date" 
-                  type="date"
-                  value={currentAppointment.date}
-                  onChange={e => setCurrentAppointment({...currentAppointment, date: e.target.value})}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="edit-time">Time (optional)</Label>
-                <Input 
-                  id="edit-time" 
-                  type="time"
-                  value={currentAppointment.time}
-                  onChange={e => setCurrentAppointment({...currentAppointment, time: e.target.value})}
-                />
-              </div>
-              
-              <div className="flex justify-between pt-3">
-                <Button variant="outline" onClick={() => {
-                  setIsEditingAppointment(false);
-                  resetForm();
-                }}>
-                  Cancel
-                </Button>
-                <Button 
-                  className="bg-lovable-400 hover:bg-lovable-500 text-white"
-                  onClick={editAppointment}
-                  disabled={!currentAppointment.title || !currentAppointment.date}
-                >
-                  Update Appointment
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <Button 
+          className="bg-coucou-400 hover:bg-coucou-500 text-white"
+          onClick={() => {
+            setFormData({ title: "", date: "", time: "" });
+            setIsAddingAppointment(true);
+          }}
+        >
+          <Plus className="h-4 w-4 mr-2" /> Add
+        </Button>
       </div>
       
-      <Card className="border-lovable-100">
+      <Card className="border-coucou-100">
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-lovable-500" />
+            <Calendar className="h-5 w-5 text-coucou-500" />
             <CardTitle className="text-lg font-medium">Upcoming Appointments</CardTitle>
           </div>
         </CardHeader>
@@ -218,18 +130,18 @@ const Appointments = () => {
                   <div className="flex gap-2">
                     <Button 
                       variant="ghost" 
-                      size="sm" 
+                      size="sm"
                       onClick={() => handleEdit(appointment)}
                     >
-                      <Edit className="h-4 w-4" />
+                      <Edit2 size={16} />
                     </Button>
                     <Button 
                       variant="ghost" 
-                      size="sm" 
-                      className="text-red-500 hover:text-red-700"
-                      onClick={() => handleDelete(appointment.id)}
+                      size="sm"
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                      onClick={() => confirmDelete(appointment.id)}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 size={16} />
                     </Button>
                   </div>
                 </div>
@@ -239,7 +151,7 @@ const Appointments = () => {
             <div className="text-center py-8">
               <p className="text-gray-500">No appointments scheduled</p>
               <Button 
-                className="mt-3 bg-lovable-400 hover:bg-lovable-500 text-white"
+                className="mt-3 bg-coucou-400 hover:bg-coucou-500 text-white"
                 onClick={() => setIsAddingAppointment(true)}
               >
                 <Plus className="h-4 w-4 mr-2" /> Add First Appointment
@@ -248,6 +160,77 @@ const Appointments = () => {
           )}
         </CardContent>
       </Card>
+      
+      {/* Add/Edit Dialog */}
+      <Dialog open={isAddingAppointment || isEditingAppointment} onOpenChange={closeDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{isEditingAppointment ? "Edit Appointment" : "Add New Appointment"}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-3">
+            <div className="space-y-2">
+              <Label htmlFor="title">Appointment Title</Label>
+              <Input 
+                id="title" 
+                placeholder="e.g. Doctor Visit"
+                value={formData.title}
+                onChange={e => setFormData({...formData, title: e.target.value})}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="date">Date</Label>
+              <Input 
+                id="date" 
+                placeholder="e.g. May 7, 2025"
+                value={formData.date}
+                onChange={e => setFormData({...formData, date: e.target.value})}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="time">Time (optional)</Label>
+              <Input 
+                id="time" 
+                placeholder="e.g. 10:30 AM"
+                value={formData.time}
+                onChange={e => setFormData({...formData, time: e.target.value})}
+              />
+            </div>
+            
+            <div className="flex justify-between pt-3">
+              <Button variant="outline" onClick={closeDialog}>
+                Cancel
+              </Button>
+              <Button 
+                className="bg-coucou-400 hover:bg-coucou-500 text-white"
+                onClick={handleAddOrUpdate}
+                disabled={!formData.title || !formData.date}
+              >
+                {isEditingAppointment ? "Update" : "Add"} Appointment
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Delete Confirmation */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Appointment</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this appointment? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-red-500 text-white hover:bg-red-600">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

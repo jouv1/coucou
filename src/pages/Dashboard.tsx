@@ -3,15 +3,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Phone, Pill, Clock, HeartPulse, Calendar, ChevronRight, User, CheckCircle, AlertCircle, Heart } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
-import { Progress } from "@/components/ui/progress";
+import { Phone, Pill, Clock, Heart, Calendar, ChevronRight, User, CheckCircle, AlertCircle } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const mockData = {
   elderlyName: "Mary Johnson",
-  elderlyNickname: "Grandma",
+  elderlyNickname: "Mom",
   elderlyPhoto: null, // We'll use a fallback for now
+  elderlyPhone: "+1234567890", // Added phone number for call button
   lastCall: {
+    id: "1", // Added ID for link to call details
     date: "Today, 9:15 AM",
     status: "Done",
     sentiment: "Feeling good today, had breakfast with a neighbor",
@@ -27,52 +29,43 @@ const mockData = {
     status: "good",
     data: [4, 6, 7, 5, 8, 6, 7],
   },
-  mood: {
-    value: 75, // 0-100 where 100 is great and 0 is critical
-    status: "Generally positive"
-  },
   appointments: [
     { date: "May 7", title: "Doctor Appointment", time: "10:30 AM" },
   ],
+  mood: {
+    // Value between 0-100, where 100 is great and 0 is critical
+    score: 75,
+  }
 };
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-  
   const handleCall = () => {
-    // In a real app, this would trigger a phone call
-    window.location.href = `tel:+1234567890`;
+    window.location.href = `tel:${mockData.elderlyPhone}`;
   };
   
-  const handleViewLastCall = () => {
-    navigate("/calls/1");
-  };
-  
-  // Calculate the heart fill percentage based on mood value
-  const heartFillPercentage = mockData.mood.value;
-  
+  const displayName = mockData.elderlyNickname || mockData.elderlyName;
+
   return (
     <div className="py-6 animate-fade-in space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-semibold text-lovable-800">Coucou 🫶🏼</h1>
+          <h1 className="text-2xl font-semibold text-coucou-800">Coucou 🫶🏼</h1>
           <p className="text-gray-600">
             Here's how {mockData.elderlyName} is doing
           </p>
         </div>
         
         <Button 
-          className="bg-lovable-400 hover:bg-lovable-500 text-white"
+          className="bg-coucou-400 hover:bg-coucou-500 text-white"
           size="sm"
           onClick={handleCall}
         >
-          <Phone className="h-4 w-4 mr-2" /> 
-          Call {mockData.elderlyNickname || mockData.elderlyName}
+          <Phone className="h-4 w-4 mr-2" /> Call {displayName}
         </Button>
       </div>
       
       {/* Last Call Status */}
-      <Card className="border-lovable-100">
+      <Card className="border-coucou-100">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-medium">Last Check-in</CardTitle>
@@ -82,45 +75,47 @@ const Dashboard = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="flex items-start justify-between cursor-pointer" onClick={handleViewLastCall}>
-            <div className="flex items-start gap-3">
-              <Avatar className="h-12 w-12 border-2 border-lovable-100">
-                {mockData.elderlyPhoto ? (
-                  <AvatarImage src={mockData.elderlyPhoto} alt={mockData.elderlyName} />
-                ) : (
-                  <AvatarFallback className="bg-lovable-50">
-                    <User size={24} className="text-lovable-300" />
-                  </AvatarFallback>
-                )}
-              </Avatar>
-              <div>
-                <p className="text-gray-600">{mockData.lastCall.date}</p>
-                <p className="text-sm text-gray-500">
-                  "{mockData.lastCall.sentiment}"
-                </p>
-                <div className="flex gap-1 mt-1">
-                  {mockData.lastCall.keywords.map((keyword, index) => (
-                    <Badge key={index} variant="outline" className="text-xs bg-lovable-50 border-lovable-200 text-lovable-700">
-                      {keyword}
-                    </Badge>
-                  ))}
+          <Link to={`/calls/${mockData.lastCall.id}`} className="block">
+            <div className="flex items-start justify-between">
+              <div className="flex items-start gap-3">
+                <Avatar className="h-12 w-12 border-2 border-coucou-100">
+                  {mockData.elderlyPhoto ? (
+                    <AvatarImage src={mockData.elderlyPhoto} alt={mockData.elderlyName} />
+                  ) : (
+                    <AvatarFallback className="bg-coucou-50">
+                      <User size={24} className="text-coucou-300" />
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+                <div>
+                  <p className="text-gray-600">{mockData.lastCall.date}</p>
+                  <p className="text-sm text-gray-500">
+                    "{mockData.lastCall.sentiment}"
+                  </p>
+                  <div className="flex gap-1 mt-1">
+                    {mockData.lastCall.keywords.map((keyword, index) => (
+                      <Badge key={index} variant="outline" className="text-xs bg-coucou-50 border-coucou-200 text-coucou-700">
+                        {keyword}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
               </div>
+              <Button variant="ghost" size="sm" className="h-8">
+                <ChevronRight className="h-4 w-4" />
+              </Button>
             </div>
-            <Button variant="ghost" size="sm" className="h-8">
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
+          </Link>
         </CardContent>
       </Card>
       
       {/* Metrics Grid */}
       <div className="grid grid-cols-2 gap-4">
         {/* Medication Status */}
-        <Card className="border-lovable-100">
+        <Card className="border-coucou-100">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
-              <Pill className="h-4 w-4 text-lovable-500" />
+              <Pill className="h-4 w-4 text-coucou-500" />
               <CardTitle className="text-sm font-medium">Medication</CardTitle>
             </div>
           </CardHeader>
@@ -149,10 +144,10 @@ const Dashboard = () => {
         </Card>
         
         {/* Sleep Quality */}
-        <Card className="border-lovable-100">
+        <Card className="border-coucou-100">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-lovable-500" />
+              <Clock className="h-4 w-4 text-coucou-500" />
               <CardTitle className="text-sm font-medium">Sleep Quality</CardTitle>
             </div>
           </CardHeader>
@@ -169,7 +164,7 @@ const Dashboard = () => {
                 {mockData.sleep.data.map((value, index) => (
                   <div 
                     key={index}
-                    className="bg-lovable-300 rounded-sm w-3" 
+                    className="bg-coucou-300 rounded-sm w-3" 
                     style={{ height: `${value * 10}%` }}
                   ></div>
                 ))}
@@ -179,46 +174,48 @@ const Dashboard = () => {
           </CardContent>
         </Card>
         
-        {/* Mood (formerly Sentiment) */}
-        <Card className="border-lovable-100">
+        {/* Mood (was Sentiment) */}
+        <Card className="border-coucou-100">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
-              <HeartPulse className="h-4 w-4 text-lovable-500" />
+              <Heart className="h-4 w-4 text-coucou-500" />
               <CardTitle className="text-sm font-medium">Mood</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-2">
-            <div className="flex justify-center items-center py-2">
-              <div className="relative flex items-center justify-center">
-                {/* Background heart outline */}
+            <div className="flex justify-center">
+              <div className="relative w-16 h-16">
+                {/* Heart background (empty) */}
                 <Heart 
-                  className="h-12 w-12 stroke-2 text-gray-200" 
-                  fill="transparent" 
+                  size={64} 
+                  className="absolute top-0 left-0 text-gray-200" 
+                  fill="currentColor" 
                 />
-                {/* Filled heart with clip-path based on value */}
-                <div 
-                  className="absolute inset-0 flex items-center justify-center overflow-hidden"
-                  style={{ 
-                    clipPath: `inset(${100 - heartFillPercentage}% 0 0 0)` 
-                  }}
-                >
+                
+                {/* Heart filled based on mood score */}
+                <div className="absolute top-0 left-0 overflow-hidden" style={{ height: `${mockData.mood.score}%` }}>
                   <Heart 
-                    className={`h-12 w-12 stroke-2 ${heartFillPercentage < 30 ? 'text-red-500' : 'text-lovable-500'}`}
-                    fill={heartFillPercentage < 30 ? 'rgb(239, 68, 68)' : 'rgb(156, 163, 175)'}
+                    size={64} 
+                    className={`text-${mockData.mood.score > 50 ? 'green' : 'red'}-500`}
+                    fill="currentColor" 
                   />
                 </div>
               </div>
             </div>
-            <p className="text-xs text-center text-gray-600">{mockData.mood.status}</p>
+            <p className="text-xs text-center text-gray-600">
+              {mockData.mood.score > 75 ? "Great" : 
+               mockData.mood.score > 50 ? "Good" : 
+               mockData.mood.score > 25 ? "Fair" : "Critical"}
+            </p>
           </CardContent>
         </Card>
         
         {/* Appointments */}
-        <Card className="border-lovable-100">
+        <Card className="border-coucou-100">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-lovable-500" />
+                <Calendar className="h-4 w-4 text-coucou-500" />
                 <CardTitle className="text-sm font-medium">Appointments</CardTitle>
               </div>
             </div>
@@ -251,7 +248,7 @@ const Dashboard = () => {
       </div>
       
       {/* Recent Calls with Next Check-in */}
-      <Card className="border-lovable-100">
+      <Card className="border-coucou-100">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-medium">Recent Calls</CardTitle>
@@ -265,11 +262,11 @@ const Dashboard = () => {
         </CardHeader>
         <CardContent>
           {/* Next Check-in */}
-          <div className="mb-4 p-3 bg-lovable-50 rounded-lg">
+          <div className="mb-4 p-3 bg-coucou-50 rounded-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="bg-lovable-100 p-2 rounded-full">
-                  <Clock className="h-5 w-5 text-lovable-500" />
+                <div className="bg-coucou-100 p-2 rounded-full">
+                  <Clock className="h-5 w-5 text-coucou-500" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Next Check-in</p>

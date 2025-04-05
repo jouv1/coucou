@@ -53,18 +53,18 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				lovable: {
-					50: '#f3f1eb',   // Soft White
-					100: '#dde9f1',  // Pale Sky
-					200: '#c2d4c5',  // Muted Sage
-					300: '#a4ccd3',  // Serene Blue
-					400: '#82b5c0',  // Deeper Serene Blue
-					500: '#5a939e',  // Mid Ocean
-					600: '#3d7582',  // Deep Ocean Light
-					700: '#2d5460',  // Deep Ocean Medium
-					800: '#18333f',  // Deep Ocean
-					900: '#0e1e26',  // Dark Ocean
-					950: '#071116',  // Near Black
+				coucou: {
+					50: '#eafbf7',
+					100: '#d0f7ed',
+					200: '#a6eed9',
+					300: '#75e0c4',
+					400: '#62BFAD',
+					500: '#30aa8e',
+					600: '#258a74',
+					700: '#216f5f',
+					800: '#1f584d',
+					900: '#1d4941',
+					950: '#0c2a25',
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
@@ -80,8 +80,7 @@ export default {
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)',
-				'2xl': '1rem',  // Adding explicit 2xl radius
+				sm: 'calc(var(--radius) - 4px)'
 			},
 			keyframes: {
 				'accordion-down': {
@@ -137,10 +136,6 @@ export default {
 				'fade-in': 'fade-in 0.3s ease-out',
 				'fade-out': 'fade-out 0.3s ease-out',
 				'scale-in': 'scale-in 0.2s ease-out',
-			},
-			boxShadow: {
-				'soft': '0 4px 20px rgba(0, 0, 0, 0.05)',
-				'gentle': '0 2px 10px rgba(0, 0, 0, 0.03)'
 			}
 		}
 	},

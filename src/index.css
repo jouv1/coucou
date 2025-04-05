@@ -5,83 +5,83 @@
 
 @layer base {
   :root {
-    --background: 43 18% 94%;
-    --foreground: 203 49% 17%;
+    --background: 60 54% 97%;
+    --foreground: 164 35% 25%;
 
-    --card: 43 18% 94%;
-    --card-foreground: 203 49% 17%;
+    --card: 0 0% 100%;
+    --card-foreground: 164 35% 25%;
 
-    --popover: 43 18% 94%;
-    --popover-foreground: 203 49% 17%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 164 35% 25%;
 
-    --primary: 157 21% 61%;
-    --primary-foreground: 203 49% 17%;
+    --primary: 164 35% 56%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 47% 90%;
-    --secondary-foreground: 203 49% 17%;
+    --secondary: 60 54% 97%;
+    --secondary-foreground: 164 35% 25%;
 
-    --muted: 210 47% 90%;
-    --muted-foreground: 203 49% 38%;
+    --muted: 164 25% 95%;
+    --muted-foreground: 164 15% 40%;
 
-    --accent: 190 35% 73%;
-    --accent-foreground: 203 49% 17%;
+    --accent: 164 25% 95%;
+    --accent-foreground: 164 35% 25%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 210 47% 90%;
-    --input: 210 47% 90%;
-    --ring: 190 35% 73%;
+    --border: 164 30% 90%;
+    --input: 164 30% 90%;
+    --ring: 164 35% 56%;
 
     --radius: 0.75rem;
 
-    --sidebar-background: 43 18% 97%;
-    --sidebar-foreground: 203 49% 17%;
-    --sidebar-primary: 203 49% 17%;
-    --sidebar-primary-foreground: 43 18% 94%;
-    --sidebar-accent: 210 47% 95%;
-    --sidebar-accent-foreground: 203 49% 17%;
-    --sidebar-border: 210 47% 90%;
-    --sidebar-ring: 190 35% 73%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 203 49% 17%;
-    --foreground: 43 18% 94%;
+    --background: 164 25% 15%;
+    --foreground: 164 20% 96%;
 
-    --card: 203 50% 15%;
-    --card-foreground: 43 18% 94%;
+    --card: 164 25% 15%;
+    --card-foreground: 164 20% 96%;
 
-    --popover: 203 50% 15%;
-    --popover-foreground: 43 18% 94%;
+    --popover: 164 25% 15%;
+    --popover-foreground: 164 20% 96%;
 
-    --primary: 157 21% 61%;
-    --primary-foreground: 203 49% 17%;
+    --primary: 164 35% 56%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 203 49% 24%;
-    --secondary-foreground: 43 18% 94%;
+    --secondary: 164 30% 25%;
+    --secondary-foreground: 164 20% 96%;
 
-    --muted: 203 49% 24%;
-    --muted-foreground: 203 49% 70%;
+    --muted: 164 30% 25%;
+    --muted-foreground: 164 15% 70%;
 
-    --accent: 190 35% 33%;
-    --accent-foreground: 43 18% 94%;
+    --accent: 164 30% 25%;
+    --accent-foreground: 164 20% 96%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 43 18% 94%;
+    --destructive-foreground: 164 20% 96%;
 
-    --border: 203 49% 24%;
-    --input: 203 49% 24%;
-    --ring: 190 35% 53%;
+    --border: 164 30% 25%;
+    --input: 164 30% 25%;
+    --ring: 164 35% 56%;
     
-    --sidebar-background: 203 50% 12%;
-    --sidebar-foreground: 43 18% 94%;
-    --sidebar-primary: 43 18% 94%;
-    --sidebar-primary-foreground: 203 49% 17%;
-    --sidebar-accent: 203 49% 20%;
-    --sidebar-accent-foreground: 43 18% 94%;
-    --sidebar-border: 203 49% 28%;
-    --sidebar-ring: 190 35% 53%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
 
@@ -108,41 +108,5 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
-  }
-
-  .soft-shadow {
-    @apply shadow-soft rounded-2xl;
-  }
-
-  .gentle-shadow {
-    @apply shadow-gentle rounded-2xl;
-  }
-
-  .glass-card {
-    @apply backdrop-blur-sm border border-lovable-100/50;
-  }
-
-  .glass-card-light {
-    @apply bg-lovable-50/90;
-  }
-
-  .glass-card-dark {
-    @apply bg-lovable-800/90;
-  }
-  
-  .serene-gradient {
-    @apply bg-gradient-to-b from-lovable-100 to-lovable-300/50;
-  }
-  
-  .ocean-button {
-    @apply bg-lovable-800 text-lovable-50 hover:bg-lovable-700;
-  }
-  
-  .sage-button {
-    @apply bg-lovable-200 text-lovable-800 hover:bg-lovable-300;
-  }
-  
-  .sky-button {
-    @apply bg-lovable-300 text-lovable-800 hover:bg-lovable-400;
   }
 }
