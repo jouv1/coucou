@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AlertCircle } from "lucide-react";
 
 interface AccountCreationStepProps {
@@ -18,7 +17,6 @@ const AccountCreationStep = ({ data, updateData, stepId }: AccountCreationStepPr
     phone: "",
     password: "",
     confirmPassword: "",
-    language: "en",
   });
 
   const handleChange = (field: string, value: string) => {
@@ -65,26 +63,6 @@ const AccountCreationStep = ({ data, updateData, stepId }: AccountCreationStepPr
           value={accountData.phone}
           onChange={(e) => handleChange("phone", e.target.value)}
         />
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="language">Preferred Language</Label>
-        <Select 
-          value={accountData.language} 
-          onValueChange={(value) => handleChange("language", value)}
-        >
-          <SelectTrigger id="language">
-            <SelectValue placeholder="Select your preferred language" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="en">English</SelectItem>
-            <SelectItem value="fr">French</SelectItem>
-            <SelectItem value="es">Spanish</SelectItem>
-            <SelectItem value="de">German</SelectItem>
-            <SelectItem value="it">Italian</SelectItem>
-            <SelectItem value="pt">Portuguese</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
       
       <div className="space-y-2">

@@ -1,9 +1,8 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Clock } from "lucide-react";
 
 interface CallScheduleStepProps {
@@ -20,6 +19,25 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
     specificDays: data.callSchedule?.specificDays || [],
   });
 
+  // Effect to limit time preferences based on calls per day
+  useEffect(() => {
+    let maxAllowedTimeSlots = 1;
+    if (schedule.callsPerDay === "two") maxAllowedTimeSlots = 2;
+    if (schedule.callsPerDay === "three") maxAllowedTimeSlots = 3;
+
+    if (schedule.timePreferences.length > maxAllowedTimeSlots) {
+      const limitedTimePreferences = schedule.timePreferences.slice(0, maxAllowedTimeSlots);
+      setSchedule(prev => ({
+        ...prev,
+        timePreferences: limitedTimePreferences
+      }));
+      updateData(stepId, {
+        ...schedule,
+        timePreferences: limitedTimePreferences
+      });
+    }
+  }, [schedule.callsPerDay, stepId, updateData]);
+
   const handleFrequencyChange = (value: string) => {
     const newSchedule = { ...schedule, frequency: value };
     setSchedule(newSchedule);
@@ -33,9 +51,24 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
   };
 
   const toggleTimePreference = (time: string) => {
-    const updatedTimes = schedule.timePreferences.includes(time)
-      ? schedule.timePreferences.filter(t => t !== time)
-      : [...schedule.timePreferences, time];
+    let maxAllowedTimeSlots = 1;
+    if (schedule.callsPerDay === "two") maxAllowedTimeSlots = 2;
+    if (schedule.callsPerDay === "three") maxAllowedTimeSlots = 3;
+
+    let updatedTimes = [...schedule.timePreferences];
+    
+    if (schedule.timePreferences.includes(time)) {
+      // Remove the time if it's already selected
+      updatedTimes = updatedTimes.filter(t => t !== time);
+    } else {
+      // Add time if we haven't reached the limit
+      if (updatedTimes.length < maxAllowedTimeSlots) {
+        updatedTimes = [...updatedTimes, time];
+      } else {
+        // Replace the first item if we're at the limit
+        updatedTimes = [...updatedTimes.slice(1), time];
+      }
+    }
     
     const newSchedule = { ...schedule, timePreferences: updatedTimes };
     setSchedule(newSchedule);
@@ -51,6 +84,19 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
     setSchedule(newSchedule);
     updateData(stepId, newSchedule);
   };
+
+  // Calculate max allowed time slots based on calls per day
+  const maxAllowedTimeSlots = schedule.callsPerDay === "three" ? 3 : 
+                              schedule.callsPerDay === "two" ? 2 : 1;
+
+  const timeSlots = [
+    { id: "early-morning", label: "Early Morning", time: "6AM - 8AM" },
+    { id: "morning", label: "Morning", time: "8AM - 11AM" },
+    { id: "noon", label: "Noon", time: "11AM - 1PM" },
+    { id: "afternoon", label: "Afternoon", time: "1PM - 5PM" },
+    { id: "evening", label: "Evening", time: "5PM - 8PM" },
+    { id: "night", label: "Night", time: "8PM - 10PM" }
+  ];
 
   return (
     <div className="space-y-6 pt-2">
@@ -144,88 +190,32 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
         <Label>Preferred Times of Day</Label>
         <p className="text-sm text-gray-500 mb-2">
           {schedule.callsPerDay !== "one" 
-            ? "Select multiple time slots based on your calls per day" 
+            ? `Select up to ${maxAllowedTimeSlots} time slots based on your calls per day` 
             : "Select when the call should happen"}
         </p>
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
-          <Button
-            type="button"
-            variant="outline"
-            className={`flex flex-col items-center py-3 h-auto ${
-              schedule.timePreferences.includes("early-morning") ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""
-            }`}
-            onClick={() => toggleTimePreference("early-morning")}
-          >
-            <Clock className="mb-1" size={18} />
-            <span>Early Morning</span>
-            <span className="text-xs opacity-70">6AM - 8AM</span>
-          </Button>
-          
-          <Button
-            type="button"
-            variant="outline"
-            className={`flex flex-col items-center py-3 h-auto ${
-              schedule.timePreferences.includes("morning") ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""
-            }`}
-            onClick={() => toggleTimePreference("morning")}
-          >
-            <Clock className="mb-1" size={18} />
-            <span>Morning</span>
-            <span className="text-xs opacity-70">8AM - 11AM</span>
-          </Button>
-          
-          <Button
-            type="button"
-            variant="outline"
-            className={`flex flex-col items-center py-3 h-auto ${
-              schedule.timePreferences.includes("noon") ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""
-            }`}
-            onClick={() => toggleTimePreference("noon")}
-          >
-            <Clock className="mb-1" size={18} />
-            <span>Noon</span>
-            <span className="text-xs opacity-70">11AM - 1PM</span>
-          </Button>
-          
-          <Button
-            type="button"
-            variant="outline"
-            className={`flex flex-col items-center py-3 h-auto ${
-              schedule.timePreferences.includes("afternoon") ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""
-            }`}
-            onClick={() => toggleTimePreference("afternoon")}
-          >
-            <Clock className="mb-1" size={18} />
-            <span>Afternoon</span>
-            <span className="text-xs opacity-70">1PM - 5PM</span>
-          </Button>
-          
-          <Button
-            type="button"
-            variant="outline"
-            className={`flex flex-col items-center py-3 h-auto ${
-              schedule.timePreferences.includes("evening") ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""
-            }`}
-            onClick={() => toggleTimePreference("evening")}
-          >
-            <Clock className="mb-1" size={18} />
-            <span>Evening</span>
-            <span className="text-xs opacity-70">5PM - 8PM</span>
-          </Button>
-          
-          <Button
-            type="button"
-            variant="outline"
-            className={`flex flex-col items-center py-3 h-auto ${
-              schedule.timePreferences.includes("night") ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""
-            }`}
-            onClick={() => toggleTimePreference("night")}
-          >
-            <Clock className="mb-1" size={18} />
-            <span>Night</span>
-            <span className="text-xs opacity-70">8PM - 10PM</span>
-          </Button>
+          {timeSlots.map((slot) => (
+            <Button
+              key={slot.id}
+              type="button"
+              variant="outline"
+              className={`flex flex-col items-center py-3 h-auto ${
+                schedule.timePreferences.includes(slot.id) ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""
+              }`}
+              onClick={() => toggleTimePreference(slot.id)}
+              disabled={!schedule.timePreferences.includes(slot.id) && schedule.timePreferences.length >= maxAllowedTimeSlots}
+            >
+              <Clock className="mb-1" size={18} />
+              <span>{slot.label}</span>
+              <span className="text-xs opacity-70">{slot.time}</span>
+            </Button>
+          ))}
         </div>
+        {schedule.timePreferences.length < 1 && (
+          <p className="text-sm text-amber-600 mt-2">
+            Please select at least one time slot
+          </p>
+        )}
       </div>
       
       <p className="text-sm text-muted-foreground mt-4 italic">

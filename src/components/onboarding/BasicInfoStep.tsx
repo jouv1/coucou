@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Camera, User, Mic, Square, CheckSquare } from "lucide-react";
+import { Camera, User } from "lucide-react";
 
 interface BasicInfoStepProps {
   data: any;
@@ -14,9 +14,16 @@ interface BasicInfoStepProps {
 }
 
 const BasicInfoStep = ({ data, updateData, stepId }: BasicInfoStepProps) => {
-  const [localData, setLocalData] = useState(data.basicInfo);
+  const [localData, setLocalData] = useState(data.basicInfo || {
+    name: "",
+    nickname: "",
+    age: "",
+    gender: "",
+    relationship: "",
+    photo: null,
+    language: "",
+  });
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [isRecording, setIsRecording] = useState(false);
 
   const handleChange = (field: string, value: string) => {
     const newData = { ...localData, [field]: value };
@@ -39,37 +46,6 @@ const BasicInfoStep = ({ data, updateData, stepId }: BasicInfoStepProps) => {
   const handleGenderSelect = (gender: string) => {
     handleChange("gender", gender);
   };
-
-  const toggleRecording = () => {
-    // This would actually start/stop recording with the Web Audio API
-    setIsRecording(!isRecording);
-    
-    // For demo purposes, just toggle the state
-    if (isRecording) {
-      // In a real implementation, we would save the recording
-      const newData = { ...localData, voiceNote: "recording-file.mp3" };
-      setLocalData(newData);
-      updateData(stepId, newData);
-    }
-  };
-
-  const handleInterestToggle = (interest: string) => {
-    const currentInterests = localData.interests || [];
-    const updatedInterests = currentInterests.includes(interest)
-      ? currentInterests.filter((i: string) => i !== interest)
-      : [...currentInterests, interest];
-    
-    const newData = { ...localData, interests: updatedInterests };
-    setLocalData(newData);
-    updateData(stepId, newData);
-  };
-
-  // Common interest topics
-  const interestTopics = [
-    "Family", "Weather", "History", "Music", "Books",
-    "Cooking", "Gardening", "Travel", "Sports", "Politics",
-    "Health", "Technology", "Nature", "Art", "Television"
-  ];
 
   return (
     <div className="space-y-5 pt-2">
@@ -159,6 +135,31 @@ const BasicInfoStep = ({ data, updateData, stepId }: BasicInfoStepProps) => {
           </Button>
         </div>
       </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="language">Language Spoken</Label>
+        <Select 
+          value={localData.language || ""} 
+          onValueChange={(value) => handleChange("language", value)}
+        >
+          <SelectTrigger id="language">
+            <SelectValue placeholder="Select their primary language" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="english">English</SelectItem>
+            <SelectItem value="french">French</SelectItem>
+            <SelectItem value="spanish">Spanish</SelectItem>
+            <SelectItem value="german">German</SelectItem>
+            <SelectItem value="italian">Italian</SelectItem>
+            <SelectItem value="portuguese">Portuguese</SelectItem>
+            <SelectItem value="mandarin">Mandarin</SelectItem>
+            <SelectItem value="japanese">Japanese</SelectItem>
+            <SelectItem value="arabic">Arabic</SelectItem>
+            <SelectItem value="hindi">Hindi</SelectItem>
+            <SelectItem value="other">Other</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       
       <div className="space-y-2">
         <Label htmlFor="relationship">Relationship to you</Label>
@@ -178,68 +179,6 @@ const BasicInfoStep = ({ data, updateData, stepId }: BasicInfoStepProps) => {
           </SelectContent>
         </Select>
       </div>
-
-      <div className="space-y-3 pt-3 border-t border-gray-100">
-        <Label>Voice Note About Your Loved One (optional)</Label>
-        <p className="text-sm text-gray-500 mb-2">
-          Record yourself speaking about your loved one to help us understand their personality better
-        </p>
-        <Button 
-          type="button" 
-          variant={isRecording ? "destructive" : "outline"}
-          className="w-full flex items-center gap-2"
-          onClick={toggleRecording}
-        >
-          <Mic size={18} />
-          {isRecording ? "Stop Recording" : "Start Recording"}
-        </Button>
-        {localData.voiceNote && !isRecording && (
-          <div className="text-sm text-green-600 flex items-center gap-1 mt-1">
-            <CheckSquare size={16} />
-            Voice note recorded
-          </div>
-        )}
-      </div>
-
-      <div className="space-y-3 pt-3">
-        <Label>Areas of Interest</Label>
-        <p className="text-sm text-gray-500 mb-2">
-          Select topics that your loved one enjoys talking about
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {interestTopics.map((topic) => (
-            <Button
-              key={topic}
-              type="button"
-              variant="outline"
-              size="sm"
-              className={`mb-1 ${
-                (localData.interests || []).includes(topic) 
-                  ? "bg-lovable-100 border-lovable-300 text-lovable-700" 
-                  : "bg-white"
-              }`}
-              onClick={() => handleInterestToggle(topic)}
-            >
-              {topic}
-            </Button>
-          ))}
-        </div>
-      </div>
-      
-      <div className="space-y-2 pt-4">
-        <Label htmlFor="additionalInfo">Additional Information (optional)</Label>
-        <textarea
-          id="additionalInfo"
-          className="min-h-[100px] w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-lovable-400"
-          placeholder="Share any additional information about your loved one that might help us provide better care..."
-          value={localData.additionalInfo || ""}
-          onChange={(e) => handleChange("additionalInfo", e.target.value)}
-        ></textarea>
-      </div>
-      
-      <p className="text-sm text-muted-foreground mt-4 italic">
-        This information helps us personalize our AI's conversations with your loved one.
-      </p>
     </div>
   );
 };

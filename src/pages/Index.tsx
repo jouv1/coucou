@@ -65,22 +65,13 @@ const Index = () => {
           >
             Get Started
           </Button>
-          <div className="flex gap-3 w-full">
-            <Button 
-              variant="outline" 
-              className="flex-1 border-lovable-300 text-lovable-600 hover:bg-lovable-50"
-              onClick={() => navigate("/dashboard")}
-            >
-              See Demo
-            </Button>
-            <Button 
-              variant="outline" 
-              className="flex-1 border-lovable-300 text-lovable-600 hover:bg-lovable-50"
-              onClick={() => navigate("/onboarding")}
-            >
-              Sign In
-            </Button>
-          </div>
+          <Button 
+            variant="outline" 
+            className="w-full border-lovable-300 text-lovable-600 hover:bg-lovable-50"
+            onClick={() => navigate("/onboarding")}
+          >
+            Sign In
+          </Button>
         </div>
       </div>
     </div>

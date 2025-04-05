@@ -8,7 +8,6 @@ import {
   Frown, 
   Pill, 
   Clock as SleepIcon, 
-  HeartPulse,
   Calendar
 } from "lucide-react";
 
@@ -141,19 +140,6 @@ const NotificationsStep = ({ data, updateData, stepId }: NotificationsStepProps)
             checked={notifications.appointments}
             onCheckedChange={(checked) => handleToggle("appointments", checked)}
           />
-        </div>
-      </div>
-      
-      <div className="border-t pt-4 mt-4">
-        <h3 className="font-medium mb-3 flex items-center gap-2">
-          <Phone size={16} className="text-blue-500" /> 
-          <span>Missed Call Escalation</span>
-        </h3>
-        <div className="bg-blue-50 p-3 rounded-md text-sm">
-          <p className="text-gray-700 mb-2">Configure when to receive missed call notifications:</p>
-          <p className="text-gray-600 mb-1">• Notify after <span className="font-medium">2</span> missed attempts</p>
-          <p className="text-gray-600 mb-1">• Retry interval: <span className="font-medium">15 minutes</span></p>
-          <p className="text-gray-600">• Escalate after <span className="font-medium">3</span> consecutive missed calls</p>
         </div>
       </div>
       

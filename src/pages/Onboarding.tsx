@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { 
   ArrowLeft, ArrowRight, Check, 
   User, Heart, Pill, Clock, Bell,
-  MessageSquare, Mic, Globe
+  MessageSquare, Mic
 } from "lucide-react";
 import AccountCreationStep from "@/components/onboarding/AccountCreationStep";
 import BasicInfoStep from "@/components/onboarding/BasicInfoStep";
@@ -85,7 +85,6 @@ const Onboarding = () => {
       email: "",
       phone: "",
       password: "",
-      language: "en"
     },
     basicInfo: {
       name: "",
@@ -94,26 +93,24 @@ const Onboarding = () => {
       gender: "",
       relationship: "",
       photo: null,
-      interests: [],
-      voiceNote: null,
-      additionalInfo: "",
+      language: "",
     },
     healthConditions: {
       generalHealth: "",
       hearingAbility: "",
       mentalState: 5, // Scale of 1-10
+      lowMentalStateReasons: [],
       forgetfulness: "",
       loneliness: 5, // Scale of 1-10
       conditions: [],
-      notes: "",
     },
     medications: [],
     preferences: {
-      voiceTone: "female",
-      callType: "standard",
-      topics: [],
-      interestAreas: [],
-      checkItems: [],
+      callLength: "short",
+      voiceGender: "female",
+      customVoice: "",
+      checkItems: ["medication", "mood", "sleep", "appointments"],
+      customCheckItem: "",
     },
     callSchedule: {
       frequency: "daily",
@@ -215,7 +212,7 @@ const Onboarding = () => {
           onClick={handleNext}
           className="flex-1 bg-lovable-400 hover:bg-lovable-500 text-white"
         >
-          {isLastStep ? "Complete" : "Continue"}
+          {isLastStep ? "Go to Dashboard" : "Continue"}
           {!isLastStep && <ArrowRight className="ml-2 h-4 w-4" />}
         </Button>
       </div>

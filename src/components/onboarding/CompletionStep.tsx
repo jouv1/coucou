@@ -1,5 +1,6 @@
 
 import { Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface CompletionStepProps {
   data: any;
@@ -8,6 +9,11 @@ interface CompletionStepProps {
 }
 
 const CompletionStep = ({ data }: CompletionStepProps) => {
+  const handleTestCall = () => {
+    // In a real implementation, this would initiate a test call
+    alert("This would initiate a test call to you, not your loved one.");
+  };
+  
   return (
     <div className="text-center space-y-6 py-4">
       <div className="flex justify-center">
@@ -21,7 +27,7 @@ const CompletionStep = ({ data }: CompletionStepProps) => {
       <div className="space-y-2">
         <h3 className="text-xl font-medium text-lovable-700">You're all set!</h3>
         <p className="text-gray-600">
-          We've configured everything to start checking in with {data.basicInfo.name || "your loved one"}
+          We've configured everything to start checking in with {data.basicInfo?.name || "your loved one"}
         </p>
       </div>
       
@@ -34,7 +40,7 @@ const CompletionStep = ({ data }: CompletionStepProps) => {
               <span className="text-xs">1</span>
             </div>
             <p className="text-sm">
-              Our AI will call {data.basicInfo.name || "your loved one"} at the scheduled times to check how they're doing.
+              Our AI will call {data.basicInfo?.name || "your loved one"} at the scheduled times to check how they're doing.
             </p>
           </div>
           
@@ -58,8 +64,14 @@ const CompletionStep = ({ data }: CompletionStepProps) => {
         </div>
       </div>
       
-      <p className="text-sm text-muted-foreground italic">
-        We're here to help you stay connected with your loved one. Click "Complete" to go to your dashboard.
+      <Button 
+        onClick={handleTestCall}
+        className="bg-blue-500 hover:bg-blue-600 text-white"
+      >
+        Test Call
+      </Button>
+      <p className="text-xs text-gray-500">
+        This will call you (the caregiver), not your loved one
       </p>
     </div>
   );

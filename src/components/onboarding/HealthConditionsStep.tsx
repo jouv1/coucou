@@ -1,11 +1,10 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface HealthConditionsStepProps {
   data: any;
@@ -13,164 +12,244 @@ interface HealthConditionsStepProps {
   stepId: string;
 }
 
-const conditions = [
-  { id: "dementia", label: "Dementia / Alzheimer's" },
-  { id: "arthritis", label: "Arthritis" },
-  { id: "diabetes", label: "Diabetes" },
-  { id: "hypertension", label: "High Blood Pressure" },
-  { id: "heart-disease", label: "Heart Disease" },
-  { id: "copd", label: "COPD / Respiratory Issues" },
-  { id: "hearing-loss", label: "Hearing Loss" },
-  { id: "vision-impairment", label: "Vision Impairment" },
-  { id: "depression", label: "Depression" },
-  { id: "anxiety", label: "Anxiety" },
-];
-
 const HealthConditionsStep = ({ data, updateData, stepId }: HealthConditionsStepProps) => {
   const [healthData, setHealthData] = useState(data.healthConditions || {
     generalHealth: "",
     hearingAbility: "",
     mentalState: 5,
+    lowMentalStateReasons: [],
     forgetfulness: "",
     loneliness: 5,
     conditions: [],
-    notes: "",
   });
 
-  const updateHealthData = (field: string, value: any) => {
-    const updatedData = { ...healthData, [field]: value };
-    setHealthData(updatedData);
-    updateData(stepId, updatedData);
+  const handleHealthOptionChange = (field: string, value: string) => {
+    const newData = { ...healthData, [field]: value };
+    setHealthData(newData);
+    updateData(stepId, newData);
+  };
+
+  const handleSliderChange = (field: string, value: number[]) => {
+    const newData = { ...healthData, [field]: value[0] };
+    setHealthData(newData);
+    updateData(stepId, newData);
   };
 
   const toggleCondition = (condition: string) => {
-    const currentConditions = healthData.conditions || [];
+    const currentConditions = [...(healthData.conditions || [])];
     const updatedConditions = currentConditions.includes(condition)
-      ? currentConditions.filter((c: string) => c !== condition)
+      ? currentConditions.filter(c => c !== condition)
       : [...currentConditions, condition];
     
-    updateHealthData("conditions", updatedConditions);
+    const newData = { ...healthData, conditions: updatedConditions };
+    setHealthData(newData);
+    updateData(stepId, newData);
   };
 
+  const toggleLowMentalStateReason = (reason: string) => {
+    const currentReasons = [...(healthData.lowMentalStateReasons || [])];
+    const updatedReasons = currentReasons.includes(reason)
+      ? currentReasons.filter(r => r !== reason)
+      : [...currentReasons, reason];
+    
+    const newData = { ...healthData, lowMentalStateReasons: updatedReasons };
+    setHealthData(newData);
+    updateData(stepId, newData);
+  };
+
+  const lowMentalStateReasons = [
+    { id: "physical-pain", label: "Physical Pain" },
+    { id: "loneliness", label: "Loneliness" },
+    { id: "trauma", label: "Trauma" },
+    { id: "family-issues", label: "Family Issues" },
+    { id: "loss", label: "Loss of Loved One" },
+    { id: "health-decline", label: "Health Decline" },
+    { id: "financial", label: "Financial Stress" },
+    { id: "independence", label: "Loss of Independence" }
+  ];
+
+  // Common health conditions for elderly
+  const healthConditions = [
+    { id: "arthritis", label: "Arthritis" },
+    { id: "heart-disease", label: "Heart Disease" },
+    { id: "high-blood-pressure", label: "High Blood Pressure" },
+    { id: "diabetes", label: "Diabetes" },
+    { id: "dementia", label: "Dementia" },
+    { id: "alzheimers", label: "Alzheimer's" },
+    { id: "parkinsons", label: "Parkinson's" },
+    { id: "depression", label: "Depression" },
+    { id: "anxiety", label: "Anxiety" },
+    { id: "copd", label: "COPD" },
+    { id: "cancer", label: "Cancer" },
+    { id: "stroke", label: "Stroke History" },
+    { id: "osteoporosis", label: "Osteoporosis" }
+  ];
+
   return (
-    <div className="space-y-5 pt-2">
-      <p className="text-sm text-gray-600 mb-3">
-        Tell us about your loved one's health to help us provide better care and conversations.
-      </p>
-      
+    <div className="space-y-6 pt-2">
       <div className="space-y-3">
-        <Label htmlFor="generalHealth">How would you describe their general health?</Label>
-        <Select 
+        <Label>General Health Status</Label>
+        <RadioGroup 
           value={healthData.generalHealth} 
-          onValueChange={(value) => updateHealthData("generalHealth", value)}
+          onValueChange={(value) => handleHealthOptionChange("generalHealth", value)}
+          className="space-y-2"
         >
-          <SelectTrigger id="generalHealth">
-            <SelectValue placeholder="Select general health status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="excellent">Excellent</SelectItem>
-            <SelectItem value="good">Good</SelectItem>
-            <SelectItem value="fair">Fair</SelectItem>
-            <SelectItem value="poor">Poor</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      
-      <div className="space-y-3">
-        <Label htmlFor="hearingAbility">How well do they hear?</Label>
-        <Select 
-          value={healthData.hearingAbility} 
-          onValueChange={(value) => updateHealthData("hearingAbility", value)}
-        >
-          <SelectTrigger id="hearingAbility">
-            <SelectValue placeholder="Select hearing ability" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="excellent">Excellent - No issues</SelectItem>
-            <SelectItem value="good">Good - Minimal difficulties</SelectItem>
-            <SelectItem value="fair">Fair - Some difficulties</SelectItem>
-            <SelectItem value="poor">Poor - Significant hearing loss</SelectItem>
-            <SelectItem value="very-poor">Very Poor - Severe hearing loss</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      
-      <div className="space-y-3">
-        <Label htmlFor="forgetfulness">Do they tend to forget things?</Label>
-        <Select 
-          value={healthData.forgetfulness} 
-          onValueChange={(value) => updateHealthData("forgetfulness", value)}
-        >
-          <SelectTrigger id="forgetfulness">
-            <SelectValue placeholder="Select memory status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="rarely">Rarely forgets anything</SelectItem>
-            <SelectItem value="sometimes">Sometimes forgets minor things</SelectItem>
-            <SelectItem value="often">Often forgets appointments/tasks</SelectItem>
-            <SelectItem value="frequently">Frequently forgets important things</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      
-      <div className="space-y-3">
-        <Label>Mental Wellbeing</Label>
-        <p className="text-sm text-gray-500">How would you rate their mental wellbeing?</p>
-        <div className="pt-2">
-          <div className="flex justify-between text-xs text-gray-500 mb-1">
-            <span>Struggling</span>
-            <span>Excellent</span>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="excellent" id="excellent" />
+            <Label htmlFor="excellent">Excellent - Very healthy for their age</Label>
           </div>
-          <Slider
-            value={[healthData.mentalState]}
-            min={1}
-            max={10}
-            step={1}
-            onValueChange={([value]) => updateHealthData("mentalState", value)}
-            className="my-4"
-          />
-          <div className="text-center text-sm font-medium">
-            {healthData.mentalState}/10
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="good" id="good" />
+            <Label htmlFor="good">Good - Some minor health issues</Label>
           </div>
-        </div>
-      </div>
-      
-      <div className="space-y-3">
-        <Label>Loneliness</Label>
-        <p className="text-sm text-gray-500">How lonely do they seem to be?</p>
-        <div className="pt-2">
-          <div className="flex justify-between text-xs text-gray-500 mb-1">
-            <span>Very Lonely</span>
-            <span>Very Social</span>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="fair" id="fair" />
+            <Label htmlFor="fair">Fair - Moderate health concerns</Label>
           </div>
-          <Slider
-            value={[healthData.loneliness]}
-            min={1}
-            max={10}
-            step={1}
-            onValueChange={([value]) => updateHealthData("loneliness", value)}
-            className="my-4"
-          />
-          <div className="text-center text-sm font-medium">
-            {healthData.loneliness}/10
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="poor" id="poor" />
+            <Label htmlFor="poor">Poor - Significant health challenges</Label>
           </div>
-        </div>
+        </RadioGroup>
       </div>
 
-      <div className="space-y-3 pt-3 border-t border-gray-100">
-        <Label>Health Conditions</Label>
-        <p className="text-sm text-gray-600">
-          Select any health conditions they may have:
+      <div className="space-y-3">
+        <Label>Hearing Ability</Label>
+        <RadioGroup 
+          value={healthData.hearingAbility} 
+          onValueChange={(value) => handleHealthOptionChange("hearingAbility", value)}
+          className="space-y-2"
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="excellent" id="hearing-excellent" />
+            <Label htmlFor="hearing-excellent">Excellent - No hearing issues</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="good" id="hearing-good" />
+            <Label htmlFor="hearing-good">Good - Slight difficulty in noisy environments</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="moderate" id="hearing-moderate" />
+            <Label htmlFor="hearing-moderate">Moderate - Uses hearing aid or needs louder speech</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="poor" id="hearing-poor" />
+            <Label htmlFor="hearing-poor">Poor - Significant hearing loss</Label>
+          </div>
+        </RadioGroup>
+      </div>
+
+      <div className="space-y-3 border-t pt-4">
+        <Label>Mental Wellbeing (1-10)</Label>
+        <p className="text-sm text-gray-500 mb-2">
+          How would you rate their overall mental wellbeing?
         </p>
-        
+        <div className="flex items-center space-x-4">
+          <span className="text-sm">Poor</span>
+          <Slider 
+            defaultValue={[healthData.mentalState || 5]} 
+            max={10} 
+            step={1}
+            onValueChange={(value) => handleSliderChange("mentalState", value)}
+            className="flex-1"
+          />
+          <span className="text-sm">Excellent</span>
+        </div>
+        <div className="text-center mb-2">
+          <span className="text-lg font-medium">{healthData.mentalState || 5}/10</span>
+        </div>
+
+        {(healthData.mentalState < 7) && (
+          <div className="space-y-3 mt-3 p-3 border rounded-md bg-slate-50 animate-fade-in">
+            <Label>Why do you think their mental wellbeing is lower?</Label>
+            <p className="text-sm text-gray-500 mb-1">
+              Select all that apply:
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {lowMentalStateReasons.map((reason) => (
+                <Button
+                  key={reason.id}
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className={`justify-start ${
+                    (healthData.lowMentalStateReasons || []).includes(reason.id) 
+                      ? "bg-lovable-100 border-lovable-300 text-lovable-700" 
+                      : "bg-white"
+                  }`}
+                  onClick={() => toggleLowMentalStateReason(reason.id)}
+                >
+                  {reason.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+      
+      <div className="space-y-3">
+        <Label>Forgetfulness</Label>
+        <RadioGroup 
+          value={healthData.forgetfulness} 
+          onValueChange={(value) => handleHealthOptionChange("forgetfulness", value)}
+          className="space-y-2"
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="rarely" id="rarely" />
+            <Label htmlFor="rarely">Rarely forgets things</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="sometimes" id="sometimes" />
+            <Label htmlFor="sometimes">Sometimes forgets minor things</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="often" id="often" />
+            <Label htmlFor="often">Often forgets important details</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="frequently" id="frequently" />
+            <Label htmlFor="frequently">Frequently forgets significant events or tasks</Label>
+          </div>
+        </RadioGroup>
+      </div>
+      
+      <div className="space-y-3 border-t pt-4">
+        <Label>Loneliness (1-10)</Label>
+        <p className="text-sm text-gray-500 mb-2">
+          How socially connected is your loved one?
+        </p>
+        <div className="flex items-center space-x-4">
+          <span className="text-sm">Very Lonely</span>
+          <Slider 
+            defaultValue={[healthData.loneliness || 5]} 
+            max={10} 
+            step={1}
+            onValueChange={(value) => handleSliderChange("loneliness", value)}
+            className="flex-1"
+          />
+          <span className="text-sm">Very Social</span>
+        </div>
+        <div className="text-center mb-2">
+          <span className="text-lg font-medium">{healthData.loneliness || 5}/10</span>
+        </div>
+      </div>
+      
+      <div className="space-y-3 border-t pt-4">
+        <Label>Health Conditions</Label>
+        <p className="text-sm text-gray-500 mb-2">
+          Select any conditions that apply:
+        </p>
         <div className="grid grid-cols-2 gap-2">
-          {conditions.map((condition) => (
-            <Button 
+          {healthConditions.map((condition) => (
+            <Button
               key={condition.id}
               type="button"
-              variant={healthData.conditions?.includes(condition.id) ? "default" : "outline"}
-              className={`justify-start h-auto py-2 px-3 ${
-                healthData.conditions?.includes(condition.id) ? "bg-lovable-400" : ""
+              variant="outline"
+              size="sm"
+              className={`justify-start ${
+                (healthData.conditions || []).includes(condition.id) 
+                  ? "bg-lovable-100 border-lovable-300 text-lovable-700" 
+                  : "bg-white"
               }`}
               onClick={() => toggleCondition(condition.id)}
             >
@@ -179,31 +258,6 @@ const HealthConditionsStep = ({ data, updateData, stepId }: HealthConditionsStep
           ))}
         </div>
       </div>
-      
-      <div className="pt-2 space-y-2">
-        <Label htmlFor="other-condition">Other condition (optional)</Label>
-        <Input
-          id="other-condition"
-          placeholder="Enter any other condition"
-          value={healthData.otherCondition || ""}
-          onChange={(e) => updateHealthData("otherCondition", e.target.value)}
-        />
-      </div>
-
-      <div className="pt-2 space-y-2">
-        <Label htmlFor="health-notes">Additional notes (optional)</Label>
-        <Textarea
-          id="health-notes"
-          placeholder="Any specific details about these conditions?"
-          value={healthData.notes || ""}
-          onChange={(e) => updateHealthData("notes", e.target.value)}
-          className="min-h-[80px]"
-        />
-      </div>
-      
-      <p className="text-sm text-muted-foreground mt-4 italic">
-        This information helps us adapt our conversations to be more supportive and relevant.
-      </p>
     </div>
   );
 };
