@@ -1,16 +1,14 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Phone, Pill, Clock, HeartPulse, Calendar, ChevronRight, User, CheckCircle, AlertCircle, Heart } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { Progress } from "@/components/ui/progress";
 
 const mockData = {
   elderlyName: "Mary Johnson",
   elderlyNickname: "Grandma",
-  elderlyPhoto: null, // We'll use a fallback for now
+  elderlyPhoto: null,
   lastCall: {
     date: "Today, 9:15 AM",
     status: "Done",
@@ -28,7 +26,7 @@ const mockData = {
     data: [4, 6, 7, 5, 8, 6, 7],
   },
   mood: {
-    value: 75, // 0-100 where 100 is great and 0 is critical
+    value: 75,
     status: "Generally positive"
   },
   appointments: [
@@ -40,7 +38,6 @@ const Dashboard = () => {
   const navigate = useNavigate();
   
   const handleCall = () => {
-    // In a real app, this would trigger a phone call
     window.location.href = `tel:+1234567890`;
   };
   
@@ -48,7 +45,6 @@ const Dashboard = () => {
     navigate("/calls/1");
   };
   
-  // Calculate the heart fill percentage based on mood value
   const heartFillPercentage = mockData.mood.value;
   
   return (
@@ -71,7 +67,6 @@ const Dashboard = () => {
         </Button>
       </div>
       
-      {/* Last Call Status */}
       <Card className="border-lovable-100">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
@@ -114,9 +109,7 @@ const Dashboard = () => {
         </CardContent>
       </Card>
       
-      {/* Metrics Grid */}
       <div className="grid grid-cols-2 gap-4">
-        {/* Medication Status */}
         <Card className="border-lovable-100">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
@@ -148,7 +141,6 @@ const Dashboard = () => {
           </CardContent>
         </Card>
         
-        {/* Sleep Quality */}
         <Card className="border-lovable-100">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
@@ -179,7 +171,6 @@ const Dashboard = () => {
           </CardContent>
         </Card>
         
-        {/* Mood (formerly Sentiment) */}
         <Card className="border-lovable-100">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
@@ -189,31 +180,45 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex justify-center items-center py-2">
-              <div className="relative flex items-center justify-center">
-                {/* Background heart outline */}
-                <Heart 
-                  className="h-12 w-12 stroke-2 text-gray-200" 
-                  fill="transparent" 
-                />
-                {/* Filled heart with clip-path based on value */}
-                <div 
-                  className="absolute inset-0 flex items-center justify-center overflow-hidden"
-                  style={{ 
-                    clipPath: `inset(${100 - heartFillPercentage}% 0 0 0)` 
-                  }}
-                >
+              <div className="relative w-16 h-16 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center transform-gpu transition-all duration-300 hover:scale-105">
                   <Heart 
-                    className={`h-12 w-12 stroke-2 ${heartFillPercentage < 30 ? 'text-red-500' : 'text-lovable-500'}`}
-                    fill={heartFillPercentage < 30 ? 'rgb(239, 68, 68)' : 'rgb(156, 163, 175)'}
+                    className="h-14 w-14 stroke-[1.5px] text-lovable-800/20 dark:text-lovable-50/20 drop-shadow-[0_2px_2px_rgba(0,0,0,0.1)]" 
+                    fill="transparent" 
                   />
+                  <div 
+                    className="absolute inset-0 flex items-center justify-center overflow-hidden transition-all duration-500"
+                    style={{ 
+                      clipPath: `inset(${100 - heartFillPercentage}% 0 0 0)` 
+                    }}
+                  >
+                    <Heart 
+                      className={`h-14 w-14 stroke-[1.5px] ${heartFillPercentage < 30 ? 'text-red-500/90' : 'text-lovable-500/90'}`}
+                      fill={heartFillPercentage < 30 ? 'url(#heartGradientCritical)' : 'url(#heartGradientGood)'}
+                      style={{
+                        filter: `drop-shadow(0 2px 3px rgba(0,0,0,0.15))`,
+                      }}
+                    />
+                  </div>
                 </div>
+                <svg width="0" height="0" className="absolute">
+                  <defs>
+                    <linearGradient id="heartGradientGood" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#a4ccd3" />
+                      <stop offset="100%" stopColor="#82b5c0" />
+                    </linearGradient>
+                    <linearGradient id="heartGradientCritical" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#ff7e7e" />
+                      <stop offset="100%" stopColor="#ff5252" />
+                    </linearGradient>
+                  </defs>
+                </svg>
               </div>
             </div>
-            <p className="text-xs text-center text-gray-600">{mockData.mood.status}</p>
+            <p className="text-xs text-center text-gray-600 font-light tracking-wide">{mockData.mood.status}</p>
           </CardContent>
         </Card>
         
-        {/* Appointments */}
         <Card className="border-lovable-100">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center justify-between">
@@ -250,7 +255,6 @@ const Dashboard = () => {
         </Card>
       </div>
       
-      {/* Recent Calls with Next Check-in */}
       <Card className="border-lovable-100">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
@@ -264,7 +268,6 @@ const Dashboard = () => {
           </div>
         </CardHeader>
         <CardContent>
-          {/* Next Check-in */}
           <div className="mb-4 p-3 bg-lovable-50 rounded-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
