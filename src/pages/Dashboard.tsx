@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Phone, Pill, Clock, Heart, Calendar, ChevronRight, User, CheckCircle, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 const mockData = {
   elderlyName: "Mary Johnson",
@@ -48,14 +49,14 @@ const Dashboard = () => {
     <div className="py-6 animate-fade-in space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-semibold text-[#46192e]">Coucou 🫶🏼</h1>
+          <h1 className="text-2xl font-semibold text-coucou-800">Coucou 🫶🏼</h1>
           <p className="text-gray-600">
             Here's how {mockData.elderlyName} is doing
           </p>
         </div>
         
         <Button 
-          className="bg-[#46192e] hover:bg-[#3a1526] text-white"
+          className="bg-coucou-800 hover:bg-coucou-900 text-white rounded-full"
           size="sm"
           onClick={handleCall}
         >
@@ -64,11 +65,11 @@ const Dashboard = () => {
       </div>
       
       {/* Last Call Status */}
-      <Card className="border-[#dde9f1]">
+      <Card className="border-0 shadow-sm rounded-2xl overflow-hidden">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-medium">Last Check-in</CardTitle>
-            <Badge className={mockData.lastCall.status === "Done" ? "bg-[#dde9f1] text-[#46192e]" : "bg-red-100 text-red-800"}>
+            <Badge className={mockData.lastCall.status === "Done" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
               {mockData.lastCall.status}
             </Badge>
           </div>
@@ -77,12 +78,12 @@ const Dashboard = () => {
           <Link to={`/calls/${mockData.lastCall.id}`} className="block">
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-3">
-                <Avatar className="h-12 w-12 border-2 border-[#dde9f1]">
+                <Avatar className="h-12 w-12 border-2 border-gray-100">
                   {mockData.elderlyPhoto ? (
                     <AvatarImage src={mockData.elderlyPhoto} alt={mockData.elderlyName} />
                   ) : (
-                    <AvatarFallback className="bg-[#dde9f1]">
-                      <User size={24} className="text-[#46192e]" />
+                    <AvatarFallback className="bg-secondary">
+                      <User size={24} className="text-coucou-800" />
                     </AvatarFallback>
                   )}
                 </Avatar>
@@ -93,7 +94,7 @@ const Dashboard = () => {
                   </p>
                   <div className="flex gap-1 mt-1">
                     {mockData.lastCall.keywords.map((keyword, index) => (
-                      <Badge key={index} variant="outline" className="text-xs bg-[#dde9f1] border-[#46192e] text-[#46192e]">
+                      <Badge key={index} variant="outline" className="text-xs bg-secondary border-secondary text-coucou-800">
                         {keyword}
                       </Badge>
                     ))}
@@ -111,10 +112,10 @@ const Dashboard = () => {
       {/* Metrics Grid */}
       <div className="grid grid-cols-2 gap-4">
         {/* Medication Status */}
-        <Card className="border-[#dde9f1]">
+        <Card className="border-0 shadow-sm rounded-2xl">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
-              <Pill className="h-4 w-4 text-[#46192e]" />
+              <Pill className="h-4 w-4 text-coucou-800" />
               <CardTitle className="text-sm font-medium">Medication</CardTitle>
             </div>
           </CardHeader>
@@ -122,12 +123,12 @@ const Dashboard = () => {
             <div className="flex flex-col items-center justify-center h-24">
               <div className={`rounded-full p-2 ${
                 mockData.medications.status === "taken" 
-                  ? "bg-[#dde9f1]" 
+                  ? "bg-green-100" 
                   : "bg-red-100"
               }`}>
                 <div className={`rounded-full p-1 ${
                   mockData.medications.status === "taken" 
-                    ? "bg-[#46192e]" 
+                    ? "bg-green-500" 
                     : "bg-red-500"
                 } text-white`}>
                   {mockData.medications.status === "taken" 
@@ -143,10 +144,10 @@ const Dashboard = () => {
         </Card>
         
         {/* Sleep Quality */}
-        <Card className="border-[#dde9f1]">
+        <Card className="border-0 shadow-sm rounded-2xl">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-[#46192e]" />
+              <Clock className="h-4 w-4 text-coucou-800" />
               <CardTitle className="text-sm font-medium">Sleep Quality</CardTitle>
             </div>
           </CardHeader>
@@ -154,7 +155,7 @@ const Dashboard = () => {
             <div className="flex flex-col items-center justify-center h-24">
               <Badge className={`mb-2 ${
                 mockData.sleep.status === "good" 
-                  ? "bg-[#dde9f1] text-[#46192e]" 
+                  ? "bg-green-100 text-green-800" 
                   : "bg-yellow-100 text-yellow-800"
               }`}>
                 {mockData.sleep.status === "good" ? "Good" : "Fair"}
@@ -163,7 +164,7 @@ const Dashboard = () => {
                 {mockData.sleep.data.map((value, index) => (
                   <div 
                     key={index}
-                    className="bg-[#46192e] rounded-sm w-3" 
+                    className="bg-coucou-800 rounded-sm w-3" 
                     style={{ height: `${value * 10}%` }}
                   ></div>
                 ))}
@@ -173,11 +174,11 @@ const Dashboard = () => {
           </CardContent>
         </Card>
         
-        {/* Mood Analysis */}
-        <Card className="border-[#dde9f1]">
+        {/* Mood Analysis (was Sentiment) */}
+        <Card className="border-0 shadow-sm rounded-2xl">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
-              <Heart className="h-4 w-4 text-[#46192e]" />
+              <Heart className="h-4 w-4 text-coucou-800" />
               <CardTitle className="text-sm font-medium">Mood Analysis</CardTitle>
             </div>
           </CardHeader>
@@ -191,21 +192,14 @@ const Dashboard = () => {
                   fill="currentColor" 
                 />
                 
-                {/* Heart filled from bottom up based on mood score */}
-                <div 
-                  className="absolute bottom-0 left-0 overflow-hidden" 
-                  style={{ 
-                    height: `${mockData.mood.score}%`,
-                    width: '100%'
-                  }}
-                >
-                  <div className="absolute bottom-0 left-0">
-                    <Heart 
-                      size={64} 
-                      className={`text-[#46192e]`}
-                      fill="currentColor" 
-                    />
-                  </div>
+                {/* Heart filled based on mood score - filled from bottom to top */}
+                <div className="absolute bottom-0 left-0 w-full overflow-hidden" 
+                     style={{ height: `${mockData.mood.score}%` }}>
+                  <Heart 
+                    size={64} 
+                    className="absolute top-0 left-0 text-coucou-800"
+                    fill="currentColor" 
+                  />
                 </div>
               </div>
             </div>
@@ -218,11 +212,11 @@ const Dashboard = () => {
         </Card>
         
         {/* Appointments */}
-        <Card className="border-[#dde9f1]">
+        <Card className="border-0 shadow-sm rounded-2xl">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-[#46192e]" />
+                <Calendar className="h-4 w-4 text-coucou-800" />
                 <CardTitle className="text-sm font-medium">Appointments</CardTitle>
               </div>
             </div>
@@ -255,12 +249,12 @@ const Dashboard = () => {
       </div>
       
       {/* Recent Calls with Next Check-in */}
-      <Card className="border-[#dde9f1]">
+      <Card className="border-0 shadow-sm rounded-2xl">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-medium">Recent Calls</CardTitle>
             <Link to="/calls">
-              <Button variant="link" size="sm" className="px-0 text-[#46192e]">
+              <Button variant="link" size="sm" className="px-0 text-coucou-800">
                 View All
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
@@ -269,11 +263,11 @@ const Dashboard = () => {
         </CardHeader>
         <CardContent>
           {/* Next Check-in */}
-          <div className="mb-4 p-3 bg-[#dde9f1] rounded-lg">
+          <div className="mb-4 p-3 bg-secondary rounded-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="bg-[#f3f1eb] p-2 rounded-full">
-                  <Clock className="h-5 w-5 text-[#46192e]" />
+                <div className="bg-white p-2 rounded-full">
+                  <Clock className="h-5 w-5 text-coucou-800" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Next Check-in</p>
@@ -290,7 +284,7 @@ const Dashboard = () => {
                   <p className="font-medium">Today, 9:15 AM</p>
                   <p className="text-sm text-gray-500">Duration: 4m 32s</p>
                 </div>
-                <Badge className="bg-[#dde9f1] text-[#46192e]">Done</Badge>
+                <Badge className="bg-green-100 text-green-800">Done</Badge>
               </div>
             </Link>
             
@@ -300,7 +294,7 @@ const Dashboard = () => {
                   <p className="font-medium">Yesterday, 9:30 AM</p>
                   <p className="text-sm text-gray-500">Duration: 5m 15s</p>
                 </div>
-                <Badge className="bg-[#dde9f1] text-[#46192e]">Done</Badge>
+                <Badge className="bg-green-100 text-green-800">Done</Badge>
               </div>
             </Link>
             

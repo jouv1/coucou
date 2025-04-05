@@ -9,6 +9,47 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          appointment_date: string
+          appointment_time: string
+          appointment_title: string
+          created_at: string | null
+          id: number
+          location: string | null
+          loved_one_id: number
+          notes: string | null
+        }
+        Insert: {
+          appointment_date: string
+          appointment_time: string
+          appointment_title: string
+          created_at?: string | null
+          id?: number
+          location?: string | null
+          loved_one_id: number
+          notes?: string | null
+        }
+        Update: {
+          appointment_date?: string
+          appointment_time?: string
+          appointment_title?: string
+          created_at?: string | null
+          id?: number
+          location?: string | null
+          loved_one_id?: number
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_loved_one_id_fkey"
+            columns: ["loved_one_id"]
+            isOneToOne: false
+            referencedRelation: "loved_ones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       call_preferences: {
         Row: {
           call_frequency: string | null
