@@ -16,7 +16,11 @@ const Layout = () => {
       <main className="flex-1 container max-w-md mx-auto px-4 pb-16 overflow-auto">
         <Outlet />
       </main>
-      {showNavigation && <BottomNavigation />}
+      {showNavigation && (
+        <div className="fixed bottom-0 left-0 right-0 backdrop-blur-lg bg-background/60 border-t border-white/10 pb-safe">
+          <BottomNavigation />
+        </div>
+      )}
     </div>
   );
 };

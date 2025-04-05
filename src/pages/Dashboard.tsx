@@ -3,9 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Phone, Pill, Clock, Heart, Calendar, ChevronRight, User, CheckCircle, AlertCircle } from "lucide-react";
+import { Clock, Pill, Calendar, Heart, ChevronRight, User, CheckCircle, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 
 const mockData = {
   elderlyName: "Mary Johnson",
@@ -49,27 +48,30 @@ const Dashboard = () => {
     <div className="py-6 animate-fade-in space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-semibold text-coucou-800">Coucou 🫶🏼</h1>
-          <p className="text-gray-600">
+          <h1 className="text-2xl font-semibold text-white">Coucou 🫶🏼</h1>
+          <p className="text-white/80">
             Here's how {mockData.elderlyName} is doing
           </p>
         </div>
         
         <Button 
-          className="bg-coucou-800 hover:bg-coucou-900 text-white rounded-full"
+          className="bg-white/20 hover:bg-white/30 text-white rounded-full backdrop-blur-sm"
           size="sm"
           onClick={handleCall}
         >
-          <Phone className="h-4 w-4 mr-2" /> Call {displayName}
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          Call {displayName}
         </Button>
       </div>
       
       {/* Last Call Status */}
-      <Card className="border-0 shadow-sm rounded-2xl overflow-hidden">
+      <Card className="glass-card overflow-hidden">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-medium">Last Check-in</CardTitle>
-            <Badge className={mockData.lastCall.status === "Done" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+            <Badge className={mockData.lastCall.status === "Done" ? 
+              "bg-emerald-500/20 text-emerald-200 border border-emerald-500/30" : 
+              "bg-red-500/20 text-red-200 border border-red-500/30"}>
               {mockData.lastCall.status}
             </Badge>
           </div>
@@ -78,30 +80,30 @@ const Dashboard = () => {
           <Link to={`/calls/${mockData.lastCall.id}`} className="block">
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-3">
-                <Avatar className="h-12 w-12 border-2 border-gray-100">
+                <Avatar className="h-12 w-12 border-2 border-white/10">
                   {mockData.elderlyPhoto ? (
                     <AvatarImage src={mockData.elderlyPhoto} alt={mockData.elderlyName} />
                   ) : (
-                    <AvatarFallback className="bg-secondary">
-                      <User size={24} className="text-coucou-800" />
+                    <AvatarFallback className="bg-primary/20 text-white">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                     </AvatarFallback>
                   )}
                 </Avatar>
                 <div>
-                  <p className="text-gray-600">{mockData.lastCall.date}</p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-primary-foreground font-medium">{mockData.lastCall.date}</p>
+                  <p className="text-sm text-primary-foreground/70">
                     "{mockData.lastCall.sentiment}"
                   </p>
                   <div className="flex gap-1 mt-1">
                     {mockData.lastCall.keywords.map((keyword, index) => (
-                      <Badge key={index} variant="outline" className="text-xs bg-secondary border-secondary text-coucou-800">
+                      <Badge key={index} variant="outline" className="text-xs bg-primary/10 border-primary/20 text-white">
                         {keyword}
                       </Badge>
                     ))}
                   </div>
                 </div>
               </div>
-              <Button variant="ghost" size="sm" className="h-8">
+              <Button variant="ghost" size="sm" className="h-8 text-white hover:bg-white/10">
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
@@ -112,10 +114,10 @@ const Dashboard = () => {
       {/* Metrics Grid */}
       <div className="grid grid-cols-2 gap-4">
         {/* Medication Status */}
-        <Card className="border-0 shadow-sm rounded-2xl">
+        <Card className="glass-card">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
-              <Pill className="h-4 w-4 text-coucou-800" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-foreground"><path d="m9 12 2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg>
               <CardTitle className="text-sm font-medium">Medication</CardTitle>
             </div>
           </CardHeader>
@@ -123,20 +125,21 @@ const Dashboard = () => {
             <div className="flex flex-col items-center justify-center h-24">
               <div className={`rounded-full p-2 ${
                 mockData.medications.status === "taken" 
-                  ? "bg-green-100" 
-                  : "bg-red-100"
+                  ? "bg-emerald-500/20" 
+                  : "bg-red-500/20"
               }`}>
-                <div className={`rounded-full p-1 ${
+                <div className={`rounded-full p-2 ${
                   mockData.medications.status === "taken" 
-                    ? "bg-green-500" 
-                    : "bg-red-500"
-                } text-white`}>
-                  {mockData.medications.status === "taken" 
-                    ? <CheckCircle className="h-5 w-5" /> 
-                    : <AlertCircle className="h-5 w-5" />}
+                    ? "text-emerald-200" 
+                    : "text-red-200"
+                }`}>
+                  {mockData.medications.status === "taken" ? 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 12 2 2 4-4"></path><circle cx="12" cy="12" r="10"></circle></svg> : 
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" y2="16" x1="12"></line></svg>
+                  }
                 </div>
               </div>
-              <p className="mt-2 font-medium text-center">
+              <p className="mt-2 font-medium text-center text-primary-foreground">
                 {mockData.medications.status === "taken" ? "Taken Today" : "Not Taken"}
               </p>
             </div>
@@ -144,10 +147,10 @@ const Dashboard = () => {
         </Card>
         
         {/* Sleep Quality */}
-        <Card className="border-0 shadow-sm rounded-2xl">
+        <Card className="glass-card">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-coucou-800" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-foreground"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
               <CardTitle className="text-sm font-medium">Sleep Quality</CardTitle>
             </div>
           </CardHeader>
@@ -155,8 +158,8 @@ const Dashboard = () => {
             <div className="flex flex-col items-center justify-center h-24">
               <Badge className={`mb-2 ${
                 mockData.sleep.status === "good" 
-                  ? "bg-green-100 text-green-800" 
-                  : "bg-yellow-100 text-yellow-800"
+                  ? "bg-emerald-500/20 text-emerald-200 border border-emerald-500/30" 
+                  : "bg-yellow-500/20 text-yellow-200 border border-yellow-500/30"
               }`}>
                 {mockData.sleep.status === "good" ? "Good" : "Fair"}
               </Badge>
@@ -164,46 +167,40 @@ const Dashboard = () => {
                 {mockData.sleep.data.map((value, index) => (
                   <div 
                     key={index}
-                    className="bg-coucou-800 rounded-sm w-3" 
+                    className="bg-primary-foreground/80 rounded-sm w-3" 
                     style={{ height: `${value * 10}%` }}
                   ></div>
                 ))}
               </div>
-              <p className="text-xs text-gray-500 mt-2">Last 7 days</p>
+              <p className="text-xs text-primary-foreground/70 mt-2">Last 7 days</p>
             </div>
           </CardContent>
         </Card>
         
-        {/* Mood Analysis (was Sentiment) */}
-        <Card className="border-0 shadow-sm rounded-2xl">
+        {/* Mood Analysis */}
+        <Card className="glass-card">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
-              <Heart className="h-4 w-4 text-coucou-800" />
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-foreground"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" x2="9" y1="9" y2="9"></line><line x1="15" x2="15" y1="9" y2="9"></line></svg>
               <CardTitle className="text-sm font-medium">Mood Analysis</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="space-y-2">
             <div className="flex justify-center">
               <div className="relative w-16 h-16">
-                {/* Heart background (empty) */}
-                <Heart 
-                  size={64} 
-                  className="absolute top-0 left-0 text-gray-200" 
-                  fill="currentColor" 
-                />
-                
-                {/* Heart filled based on mood score - filled from bottom to top */}
-                <div className="absolute bottom-0 left-0 w-full overflow-hidden" 
-                     style={{ height: `${mockData.mood.score}%` }}>
-                  <Heart 
-                    size={64} 
-                    className="absolute top-0 left-0 text-coucou-800"
-                    fill="currentColor" 
-                  />
-                </div>
+                {/* Mood emoji based on score */}
+                {mockData.mood.score > 75 ? (
+                  <div className="text-4xl flex justify-center items-center h-full">😊</div>
+                ) : mockData.mood.score > 50 ? (
+                  <div className="text-4xl flex justify-center items-center h-full">🙂</div>
+                ) : mockData.mood.score > 25 ? (
+                  <div className="text-4xl flex justify-center items-center h-full">😐</div>
+                ) : (
+                  <div className="text-4xl flex justify-center items-center h-full">🙁</div>
+                )}
               </div>
             </div>
-            <p className="text-xs text-center text-gray-600">
+            <p className="text-sm text-center text-primary-foreground">
               {mockData.mood.score > 75 ? "Great" : 
                mockData.mood.score > 50 ? "Good" : 
                mockData.mood.score > 25 ? "Fair" : "Critical"}
@@ -212,13 +209,11 @@ const Dashboard = () => {
         </Card>
         
         {/* Appointments */}
-        <Card className="border-0 shadow-sm rounded-2xl">
+        <Card className="glass-card">
           <CardHeader className="pb-2 pt-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-coucou-800" />
-                <CardTitle className="text-sm font-medium">Appointments</CardTitle>
-              </div>
+            <div className="flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary-foreground"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
+              <CardTitle className="text-sm font-medium">Appointments</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
@@ -227,12 +222,12 @@ const Dashboard = () => {
                 {mockData.appointments.map((apt, index) => (
                   <div key={index} className="flex justify-between text-sm">
                     <div>
-                      <p className="font-medium">{apt.title}</p>
-                      <p className="text-xs text-gray-500">{apt.date}, {apt.time}</p>
+                      <p className="font-medium text-primary-foreground">{apt.title}</p>
+                      <p className="text-xs text-primary-foreground/70">{apt.date}, {apt.time}</p>
                     </div>
                   </div>
                 ))}
-                <Button variant="ghost" size="sm" className="w-full mt-2">
+                <Button variant="ghost" size="sm" className="w-full mt-2 text-white hover:bg-white/10">
                   <Link to="/appointments" className="flex items-center w-full justify-center">
                     View All
                     <ChevronRight className="h-4 w-4 ml-1" />
@@ -240,7 +235,7 @@ const Dashboard = () => {
                 </Button>
               </div>
             ) : (
-              <p className="text-sm text-gray-500 h-16 flex items-center justify-center">
+              <p className="text-sm text-primary-foreground/70 h-16 flex items-center justify-center">
                 No upcoming appointments
               </p>
             )}
@@ -249,12 +244,12 @@ const Dashboard = () => {
       </div>
       
       {/* Recent Calls with Next Check-in */}
-      <Card className="border-0 shadow-sm rounded-2xl">
+      <Card className="glass-card">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-medium">Recent Calls</CardTitle>
             <Link to="/calls">
-              <Button variant="link" size="sm" className="px-0 text-coucou-800">
+              <Button variant="ghost" size="sm" className="px-0 text-white hover:bg-transparent hover:text-white/80">
                 View All
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
@@ -263,15 +258,15 @@ const Dashboard = () => {
         </CardHeader>
         <CardContent>
           {/* Next Check-in */}
-          <div className="mb-4 p-3 bg-secondary rounded-lg">
+          <div className="mb-4 p-3 glass-surface">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="bg-white p-2 rounded-full">
-                  <Clock className="h-5 w-5 text-coucou-800" />
+                <div className="bg-primary/20 p-2 rounded-full text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Next Check-in</p>
-                  <p className="font-medium">{mockData.nextCall.scheduled}</p>
+                  <p className="text-sm text-primary-foreground/70">Next Check-in</p>
+                  <p className="font-medium text-primary-foreground">{mockData.nextCall.scheduled}</p>
                 </div>
               </div>
             </div>
@@ -279,32 +274,32 @@ const Dashboard = () => {
           
           <div className="space-y-3">
             <Link to="/calls/1" className="block">
-              <div className="flex justify-between items-center border-b pb-3">
+              <div className="flex justify-between items-center border-b border-white/10 pb-3">
                 <div>
-                  <p className="font-medium">Today, 9:15 AM</p>
-                  <p className="text-sm text-gray-500">Duration: 4m 32s</p>
+                  <p className="font-medium text-primary-foreground">Today, 9:15 AM</p>
+                  <p className="text-sm text-primary-foreground/70">Duration: 4m 32s</p>
                 </div>
-                <Badge className="bg-green-100 text-green-800">Done</Badge>
+                <Badge className="bg-emerald-500/20 text-emerald-200 border border-emerald-500/30">Done</Badge>
               </div>
             </Link>
             
             <Link to="/calls/2" className="block">
-              <div className="flex justify-between items-center border-b pb-3">
+              <div className="flex justify-between items-center border-b border-white/10 pb-3">
                 <div>
-                  <p className="font-medium">Yesterday, 9:30 AM</p>
-                  <p className="text-sm text-gray-500">Duration: 5m 15s</p>
+                  <p className="font-medium text-primary-foreground">Yesterday, 9:30 AM</p>
+                  <p className="text-sm text-primary-foreground/70">Duration: 5m 15s</p>
                 </div>
-                <Badge className="bg-green-100 text-green-800">Done</Badge>
+                <Badge className="bg-emerald-500/20 text-emerald-200 border border-emerald-500/30">Done</Badge>
               </div>
             </Link>
             
             <Link to="/calls/3" className="block">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="font-medium">May 3, 9:05 AM</p>
-                  <p className="text-sm text-gray-500">Duration: 3m 58s</p>
+                  <p className="font-medium text-primary-foreground">May 3, 9:05 AM</p>
+                  <p className="text-sm text-primary-foreground/70">Duration: 3m 58s</p>
                 </div>
-                <Badge className="bg-red-100 text-red-800">Missed</Badge>
+                <Badge className="bg-red-500/20 text-red-200 border border-red-500/30">Missed</Badge>
               </div>
             </Link>
           </div>

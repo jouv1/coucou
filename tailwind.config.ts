@@ -57,17 +57,17 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				coucou: {
-					50: '#faf1f4',
-					100: '#f6dee4',
-					200: '#ecc1ce',
-					300: '#df9aae',
-					400: '#d5738f',
-					500: '#c55775',
-					600: '#b63e5d',
-					700: '#9c2d4a',
-					800: '#46192e', // Main accent
-					900: '#3a1426',
-					950: '#2d0c1d',
+					50: '#e9f2f3',
+					100: '#d3e6e8',
+					200: '#a8cdd1',
+					300: '#7cb4bb',
+					400: '#519ba4',
+					500: '#3d828b',
+					600: '#2a6973',
+					700: '#1f4f58',
+					800: '#18353c', // Main accent (teal)
+					900: '#0f2226',
+					950: '#081316',
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
