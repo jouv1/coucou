@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Phone, Pill, Clock, HeartPulse, Calendar, ChevronRight, User } from "lucide-react";
+import { Phone, Pill, Clock, HeartPulse, Calendar, ChevronRight, User, CheckCircle, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const mockData = {
@@ -11,8 +11,13 @@ const mockData = {
   elderlyPhoto: null, // We'll use a fallback for now
   lastCall: {
     date: "Today, 9:15 AM",
-    sentiment: "good",
-    mood: "Joyful",
+    status: "Done",
+    sentiment: "Feeling good today, had breakfast with a neighbor",
+    keywords: ["Positive", "Social"],
+    todos: ["Buy groceries", "Schedule doctor visit"]
+  },
+  nextCall: {
+    scheduled: "Today, 5:30 PM"
   },
   medications: {
     status: "taken",
@@ -32,7 +37,7 @@ const Dashboard = () => {
     <div className="py-6 animate-fade-in space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-semibold text-lovable-800">Bisous</h1>
+          <h1 className="text-2xl font-semibold text-lovable-800">Bisou</h1>
           <p className="text-gray-600">
             Here's how {mockData.elderlyName} is doing
           </p>
@@ -51,18 +56,14 @@ const Dashboard = () => {
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-medium">Last Check-in</CardTitle>
-            <Badge className={
-              mockData.lastCall.sentiment === "good" 
-                ? "bg-green-100 text-green-800" 
-                : "bg-yellow-100 text-yellow-800"
-            }>
-              {mockData.lastCall.mood}
+            <Badge className="bg-green-100 text-green-800">
+              {mockData.lastCall.status}
             </Badge>
           </div>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+          <div className="flex items-start justify-between">
+            <div className="flex items-start gap-3">
               <Avatar className="h-12 w-12 border-2 border-lovable-100">
                 {mockData.elderlyPhoto ? (
                   <AvatarImage src={mockData.elderlyPhoto} alt={mockData.elderlyName} />
@@ -75,8 +76,15 @@ const Dashboard = () => {
               <div>
                 <p className="text-gray-600">{mockData.lastCall.date}</p>
                 <p className="text-sm text-gray-500">
-                  "Feeling good today, had breakfast with a neighbor"
+                  "{mockData.lastCall.sentiment}"
                 </p>
+                <div className="flex gap-1 mt-1">
+                  {mockData.lastCall.keywords.map((keyword, index) => (
+                    <Badge key={index} variant="outline" className="text-xs bg-lovable-50 border-lovable-200 text-lovable-700">
+                      {keyword}
+                    </Badge>
+                  ))}
+                </div>
               </div>
             </div>
             <Button variant="ghost" size="sm" className="h-8">
@@ -85,6 +93,48 @@ const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
+      
+      {/* Next Call Widget */}
+      <Card className="border-lovable-100">
+        <CardHeader className="pb-2">
+          <div className="flex justify-between items-center">
+            <CardTitle className="text-lg font-medium">Next Check-in</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-lovable-100 p-2 rounded-full">
+                <Clock className="h-5 w-5 text-lovable-500" />
+              </div>
+              <div>
+                <p className="font-medium">{mockData.nextCall.scheduled}</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      {/* To-Do List */}
+      {mockData.lastCall.todos.length > 0 && (
+        <Card className="border-lovable-100">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg font-medium">To-Do List</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              {mockData.lastCall.todos.map((todo, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <div className="rounded-full border border-lovable-300 p-0.5">
+                    <div className="h-4 w-4 rounded-full bg-white"></div>
+                  </div>
+                  <span className="text-sm">{todo}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
       
       {/* Metrics Grid */}
       <div className="grid grid-cols-2 gap-4">
@@ -109,8 +159,8 @@ const Dashboard = () => {
                     : "bg-red-500"
                 } text-white`}>
                   {mockData.medications.status === "taken" 
-                    ? <Check className="h-5 w-5" /> 
-                    : <X className="h-5 w-5" />}
+                    ? <CheckCircle className="h-5 w-5" /> 
+                    : <AlertCircle className="h-5 w-5" />}
                 </div>
               </div>
               <p className="mt-2 font-medium text-center">
@@ -167,9 +217,10 @@ const Dashboard = () => {
               <span className="text-xs">Critical</span>
               <span className="text-xs">Great</span>
             </div>
+            {/* Green bar for "generally positive" */}
             <div className="w-full bg-gray-100 rounded-full h-2.5">
               <div 
-                className="bg-gradient-to-r from-red-400 via-yellow-300 to-green-400 h-2.5 rounded-full" 
+                className="bg-green-500 h-2.5 rounded-full" 
                 style={{ width: "75%" }}
               ></div>
             </div>
@@ -180,9 +231,14 @@ const Dashboard = () => {
         {/* Appointments */}
         <Card className="border-lovable-100">
           <CardHeader className="pb-2 pt-4">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-lovable-500" />
-              <CardTitle className="text-sm font-medium">Appointments</CardTitle>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-lovable-500" />
+                <CardTitle className="text-sm font-medium">Appointments</CardTitle>
+              </div>
+              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs bg-lovable-50 hover:bg-lovable-100">
+                Add
+              </Button>
             </div>
           </CardHeader>
           <CardContent>
@@ -197,7 +253,7 @@ const Dashboard = () => {
                   </div>
                 ))}
                 <Button variant="ghost" size="sm" className="w-full mt-2">
-                  <Link to="/appointments" className="flex items-center w-full justify-center">
+                  <Link to="/calls" className="flex items-center w-full justify-center">
                     View All
                     <ChevronRight className="h-4 w-4 ml-1" />
                   </Link>
@@ -233,7 +289,7 @@ const Dashboard = () => {
                   <p className="font-medium">Today, 9:15 AM</p>
                   <p className="text-sm text-gray-500">Duration: 4m 32s</p>
                 </div>
-                <Badge className="bg-green-100 text-green-800">Joyful</Badge>
+                <Badge className="bg-green-100 text-green-800">Done</Badge>
               </div>
             </Link>
             
@@ -243,7 +299,7 @@ const Dashboard = () => {
                   <p className="font-medium">Yesterday, 9:30 AM</p>
                   <p className="text-sm text-gray-500">Duration: 5m 15s</p>
                 </div>
-                <Badge className="bg-green-100 text-green-800">Calm</Badge>
+                <Badge className="bg-green-100 text-green-800">OK</Badge>
               </div>
             </Link>
             
@@ -253,7 +309,7 @@ const Dashboard = () => {
                   <p className="font-medium">May 3, 9:05 AM</p>
                   <p className="text-sm text-gray-500">Duration: 3m 58s</p>
                 </div>
-                <Badge className="bg-yellow-100 text-yellow-800">Tired</Badge>
+                <Badge className="bg-red-100 text-red-800">Missed</Badge>
               </div>
             </Link>
           </div>
@@ -264,39 +320,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
-// Helper components
-const Check = ({ className }: { className?: string }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    width="24" 
-    height="24" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-    className={className}
-  >
-    <polyline points="20 6 9 17 4 12"></polyline>
-  </svg>
-);
-
-const X = ({ className }: { className?: string }) => (
-  <svg 
-    xmlns="http://www.w3.org/2000/svg" 
-    width="24" 
-    height="24" 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-    className={className}
-  >
-    <line x1="18" y1="6" x2="6" y2="18"></line>
-    <line x1="6" y1="6" x2="18" y2="18"></line>
-  </svg>
-);

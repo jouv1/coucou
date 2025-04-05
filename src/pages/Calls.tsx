@@ -9,53 +9,47 @@ const mockCalls = [
     id: "1",
     date: "Today, 9:15 AM",
     duration: "4m 32s",
-    sentiment: "good",
-    mood: "Joyful",
+    status: "Done",
   },
   {
     id: "2",
     date: "Yesterday, 9:30 AM",
     duration: "5m 15s",
-    sentiment: "good",
-    mood: "Calm",
+    status: "OK",
   },
   {
     id: "3",
     date: "May 3, 9:05 AM",
     duration: "3m 58s",
-    sentiment: "okay",
-    mood: "Tired",
+    status: "OK",
   },
   {
     id: "4",
     date: "May 2, 9:20 AM",
     duration: "6m 12s",
-    sentiment: "good",
-    mood: "Happy",
+    status: "Done",
   },
   {
     id: "5",
     date: "May 1, 9:10 AM",
     duration: "4m 42s",
-    sentiment: "low",
-    mood: "Lonely",
+    status: "Missed",
   },
   {
     id: "6",
     date: "Apr 30, 9:25 AM",
     duration: "5m 03s",
-    sentiment: "okay",
-    mood: "Busy",
+    status: "OK",
   },
 ];
 
-const getSentimentBadgeColor = (sentiment: string) => {
-  switch (sentiment) {
-    case "good":
+const getStatusBadgeColor = (status: string) => {
+  switch (status) {
+    case "Done":
       return "bg-green-100 text-green-800";
-    case "okay":
+    case "OK":
       return "bg-yellow-100 text-yellow-800";
-    case "low":
+    case "Missed":
       return "bg-red-100 text-red-800";
     default:
       return "bg-gray-100 text-gray-800";
@@ -88,8 +82,8 @@ const Calls = () => {
                     <p className="font-medium">{call.date}</p>
                     <p className="text-sm text-gray-500">Duration: {call.duration}</p>
                   </div>
-                  <Badge className={getSentimentBadgeColor(call.sentiment)}>
-                    {call.mood}
+                  <Badge className={getStatusBadgeColor(call.status)}>
+                    {call.status}
                   </Badge>
                 </div>
               </Link>

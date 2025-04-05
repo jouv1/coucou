@@ -1,5 +1,5 @@
 
-import { Check } from "lucide-react";
+import { Check, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface CompletionStepProps {
@@ -25,7 +25,7 @@ const CompletionStep = ({ data }: CompletionStepProps) => {
       </div>
       
       <div className="space-y-2">
-        <h3 className="text-xl font-medium text-lovable-700">You're all set!</h3>
+        <h3 className="text-xl font-medium text-lovable-700">Ready to Go!</h3>
         <p className="text-gray-600">
           We've configured everything to start checking in with {data.basicInfo?.name || "your loved one"}
         </p>
@@ -66,12 +66,13 @@ const CompletionStep = ({ data }: CompletionStepProps) => {
       
       <Button 
         onClick={handleTestCall}
-        className="bg-blue-500 hover:bg-blue-600 text-white"
+        className="bg-lovable-400 hover:bg-lovable-500 text-white flex items-center gap-2"
       >
-        Test Call
+        <Phone size={16} />
+        Call My Number
       </Button>
       <p className="text-xs text-gray-500">
-        This will call you (the caregiver), not your loved one
+        This is a test call that will call you, not your loved one
       </p>
     </div>
   );

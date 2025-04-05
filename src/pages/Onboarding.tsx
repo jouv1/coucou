@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -69,7 +68,7 @@ const steps = [
   },
   {
     id: "complete",
-    title: "All Set!",
+    title: "Ready to Go!",
     description: "You're ready to start",
     icon: Check,
     component: CompletionStep,
@@ -122,9 +121,9 @@ const Onboarding = () => {
       callSummary: true,
       missedCall: true,
       lowSentiment: true,
-      medication: true,
+      medication: false,
       sleep: false,
-      appointments: true,
+      appointments: false,
     },
   });
 
@@ -140,7 +139,6 @@ const Onboarding = () => {
       setCurrentStep((prevStep) => prevStep + 1);
       window.scrollTo(0, 0);
     } else {
-      // Submit data and navigate to dashboard
       navigate("/dashboard");
     }
   };
@@ -158,12 +156,10 @@ const Onboarding = () => {
   const progress = ((currentStep + 1) / steps.length) * 100;
   const isLastStep = currentStep === steps.length - 1;
   
-  // Get the current icon component
   const IconComponent = steps[currentStep].icon;
 
   return (
     <div className="min-h-screen py-8 animate-fade-in">
-      {/* Progress bar */}
       <div className="mb-6">
         <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
           <div
@@ -176,7 +172,6 @@ const Onboarding = () => {
         </p>
       </div>
 
-      {/* Step content */}
       <Card className="mb-6 border-lovable-100">
         <CardContent className="p-6">
           <div className="flex items-center gap-3 mb-4">
@@ -198,7 +193,6 @@ const Onboarding = () => {
         </CardContent>
       </Card>
 
-      {/* Navigation buttons */}
       <div className="flex justify-between gap-3 mt-6">
         <Button
           variant="outline"

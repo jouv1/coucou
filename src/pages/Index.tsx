@@ -10,7 +10,7 @@ const Index = () => {
     <div className="min-h-screen flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md space-y-8 animate-fade-in">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-lovable-600 mb-2">Bisous</h1>
+          <h1 className="text-4xl font-bold text-lovable-600 mb-2">Bisou</h1>
           <p className="text-xl text-lovable-800 mb-6">AI-powered check-ins for your loved ones</p>
         </div>
         
@@ -68,9 +68,9 @@ const Index = () => {
           <Button 
             variant="outline" 
             className="w-full border-lovable-300 text-lovable-600 hover:bg-lovable-50"
-            onClick={() => navigate("/onboarding")}
+            onClick={() => navigate("/dashboard")}
           >
-            Sign In
+            Log In
           </Button>
         </div>
       </div>

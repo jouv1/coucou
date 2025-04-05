@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { Home, Calendar, Settings, MessageSquare } from "lucide-react";
+import { Home, Settings, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const BottomNavigation = () => {
@@ -9,19 +9,14 @@ const BottomNavigation = () => {
 
   const navItems = [
     {
-      label: "Home",
-      icon: Home,
-      path: "/dashboard",
-    },
-    {
-      label: "Appointments",
-      icon: Calendar,
-      path: "/appointments",
-    },
-    {
       label: "Calls",
       icon: MessageSquare,
       path: "/calls",
+    },
+    {
+      label: "Home",
+      icon: Home,
+      path: "/dashboard",
       primary: true,
     },
     {

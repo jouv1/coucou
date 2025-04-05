@@ -1,12 +1,12 @@
 
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
   Bell, User, Settings as SettingsIcon, 
   Phone, Shield, LogOut, ChevronRight,
-  Heart, Volume2, Clock, Globe, 
-  MessageSquare, Info
+  Heart
 } from "lucide-react";
 
 const settingCategories = [
@@ -15,8 +15,8 @@ const settingCategories = [
     icon: User,
     color: "text-blue-500",
     items: [
-      { label: "Personal Information", link: "/settings/profile", description: "Edit your profile information" },
-      { label: "Account Security", link: "/settings/security", description: "Manage your password and security settings" },
+      { label: "Personal Information", link: "/settings/profile" },
+      { label: "Account Security", link: "/settings/security" },
     ]
   },
   {
@@ -24,10 +24,9 @@ const settingCategories = [
     icon: Heart,
     color: "text-lovable-500",
     items: [
-      { label: "Basic Information", link: "/settings/loved-one", description: "Name, age, and relationship details" },
-      { label: "Health & Medications", link: "/settings/health", description: "Health conditions and medication schedules" },
-      { label: "Voice Notes & Interests", link: "/settings/interests", description: "Conversation topics and voice recordings" },
-      { label: "Language Preference", link: "/settings/language", description: "Set the language for AI calls" },
+      { label: "Basic Information", link: "/settings/loved-one" },
+      { label: "Health & Medications", link: "/settings/health" },
+      { label: "Language Preference", link: "/settings/language" },
     ]
   },
   {
@@ -35,9 +34,9 @@ const settingCategories = [
     icon: Phone,
     color: "text-green-500",
     items: [
-      { label: "Call Type & Duration", link: "/settings/call-type", description: "Quick, standard, or extended calls" },
-      { label: "Voice & Tone", link: "/settings/voice", description: "Voice gender and conversation style" },
-      { label: "Schedule & Frequency", link: "/settings/schedule", description: "When and how often calls happen" },
+      { label: "Call Type & Duration", link: "/settings/call-type" },
+      { label: "Voice Preference", link: "/settings/voice" },
+      { label: "Schedule & Frequency", link: "/settings/schedule" },
     ]
   },
   {
@@ -45,10 +44,10 @@ const settingCategories = [
     icon: Bell,
     color: "text-amber-500",
     items: [
-      { label: "Daily Call Summary", link: "/settings/summary", description: "Get daily digests of conversations" },
-      { label: "Health Alerts", link: "/settings/health-alerts", description: "Medication, sleep, and mood alerts" },
-      { label: "Missed Call Settings", link: "/settings/missed-calls", description: "Configure retry attempts and escalation" },
-      { label: "Custom Reminders", link: "/settings/reminders", description: "Set specific questions for the AI to ask" },
+      { label: "Daily Call Summary", link: "/settings/summary" },
+      { label: "Health Alerts", link: "/settings/health-alerts" },
+      { label: "Missed Call Settings", link: "/settings/missed-calls" },
+      { label: "Custom Reminders", link: "/settings/reminders" },
     ]
   },
   {
@@ -56,19 +55,26 @@ const settingCategories = [
     icon: SettingsIcon,
     color: "text-gray-500",
     items: [
-      { label: "Privacy Settings", link: "/settings/privacy", description: "Data usage and privacy controls" },
-      { label: "Help & Support", link: "/settings/help", description: "Contact support and documentation" },
+      { label: "Privacy Settings", link: "/settings/privacy" },
+      { label: "Help & Support", link: "/settings/help" },
     ]
   },
 ];
 
 const Settings = () => {
+  const navigate = useNavigate();
+  
+  const handleSignOut = () => {
+    // In a real app, this would handle authentication logout
+    navigate("/");
+  };
+  
   return (
     <div className="py-6 animate-fade-in space-y-5">
       <div>
         <h1 className="text-2xl font-semibold text-lovable-800 mb-1">Settings</h1>
         <p className="text-gray-600">
-          Manage your account and Bisous preferences
+          Manage your account and Bisou preferences
         </p>
       </div>
       
@@ -91,7 +97,6 @@ const Settings = () => {
                     >
                       <div className="text-left">
                         <div>{item.label}</div>
-                        <div className="text-xs text-gray-500 font-normal mt-0.5">{item.description}</div>
                       </div>
                       <ChevronRight className="h-4 w-4 opacity-70" />
                     </Button>
@@ -104,7 +109,11 @@ const Settings = () => {
       ))}
       
       <div className="pt-4 text-center">
-        <Button variant="outline" className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600">
+        <Button 
+          variant="outline" 
+          className="text-red-500 border-red-200 hover:bg-red-50 hover:text-red-600"
+          onClick={handleSignOut}
+        >
           <LogOut className="h-4 w-4 mr-2" /> Sign Out
         </Button>
       </div>
