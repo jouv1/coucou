@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -53,17 +54,17 @@ export default {
 					foreground: 'hsl(var(--card-foreground))'
 				},
 				lovable: {
-					50: '#f0f0f0',
-					100: '#e0e0e0',
-					200: '#d1d1d1',
-					300: '#b0b0b0',
-					400: '#8a8a8a',
-					500: '#6b6b6b',
-					600: '#4b4b4b',
-					700: '#3a3a3a',
-					800: '#2a2a2a',
-					900: '#1a1a1a',
-					950: '#0a0a0a',
+					50: '#f3f1eb',   // Soft White
+					100: '#dde9f1',  // Pale Sky
+					200: '#c2d4c5',  // Muted Sage
+					300: '#a4ccd3',  // Serene Blue
+					400: '#82b5c0',  // Deeper Serene Blue
+					500: '#5a939e',  // Mid Ocean
+					600: '#3d7582',  // Deep Ocean Light
+					700: '#2d5460',  // Deep Ocean Medium
+					800: '#18333f',  // Deep Ocean
+					900: '#0e1e26',  // Dark Ocean
+					950: '#071116',  // Near Black
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
@@ -79,7 +80,8 @@ export default {
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				sm: 'calc(var(--radius) - 4px)',
+				'2xl': '1rem',  // Adding explicit 2xl radius
 			},
 			keyframes: {
 				'accordion-down': {
@@ -135,6 +137,10 @@ export default {
 				'fade-in': 'fade-in 0.3s ease-out',
 				'fade-out': 'fade-out 0.3s ease-out',
 				'scale-in': 'scale-in 0.2s ease-out',
+			},
+			boxShadow: {
+				'soft': '0 4px 20px rgba(0, 0, 0, 0.05)',
+				'gentle': '0 2px 10px rgba(0, 0, 0, 0.03)'
 			}
 		}
 	},

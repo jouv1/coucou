@@ -7,7 +7,7 @@ const Index = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-lovable-50 to-lovable-100 dark:from-lovable-800 dark:to-lovable-900">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 serene-gradient">
       <div className="w-full max-w-md space-y-10 animate-fade-in">
         <div className="text-center">
           <h1 className="text-4xl font-light text-lovable-800 dark:text-lovable-50 mb-3">Coucou</h1>
@@ -17,9 +17,9 @@ const Index = () => {
         </div>
         
         <div className="space-y-6 pt-4">
-          <div className="neumorphic-light dark:neumorphic-dark p-5">
+          <div className="soft-shadow bg-lovable-50 dark:bg-lovable-800/90 p-5">
             <div className="flex items-start gap-4">
-              <div className="text-lovable-600 dark:text-lovable-300">
+              <div className="text-lovable-300 dark:text-lovable-300">
                 <Phone size={20} strokeWidth={1.5} />
               </div>
               <div>
@@ -31,9 +31,9 @@ const Index = () => {
             </div>
           </div>
           
-          <div className="neumorphic-light dark:neumorphic-dark p-5">
+          <div className="soft-shadow bg-lovable-50 dark:bg-lovable-800/90 p-5">
             <div className="flex items-start gap-4">
-              <div className="text-lovable-600 dark:text-lovable-300">
+              <div className="text-lovable-300 dark:text-lovable-300">
                 <Heart size={20} strokeWidth={1.5} />
               </div>
               <div>
@@ -45,9 +45,9 @@ const Index = () => {
             </div>
           </div>
           
-          <div className="neumorphic-light dark:neumorphic-dark p-5">
+          <div className="soft-shadow bg-lovable-50 dark:bg-lovable-800/90 p-5">
             <div className="flex items-start gap-4">
-              <div className="text-lovable-600 dark:text-lovable-300">
+              <div className="text-lovable-300 dark:text-lovable-300">
                 <Bell size={20} strokeWidth={1.5} />
               </div>
               <div>
@@ -63,13 +63,13 @@ const Index = () => {
         <div className="pt-8 flex flex-col gap-4">
           <Button 
             onClick={() => navigate("/onboarding")}
-            className="w-full py-6 bg-lovable-800 hover:bg-lovable-700 text-lovable-50 dark:bg-lovable-50 dark:hover:bg-lovable-100 dark:text-lovable-800"
+            className="w-full py-6 ocean-button rounded-2xl"
           >
             Get Started
           </Button>
           <Button 
             variant="outline" 
-            className="w-full py-6 border-lovable-300 text-lovable-600 hover:bg-lovable-100 dark:border-lovable-600 dark:text-lovable-300 dark:hover:bg-lovable-700"
+            className="w-full py-6 border-lovable-300 text-lovable-600 hover:bg-lovable-100 dark:border-lovable-600 dark:text-lovable-300 dark:hover:bg-lovable-700 rounded-2xl"
             onClick={() => navigate("/dashboard")}
           >
             Log In
