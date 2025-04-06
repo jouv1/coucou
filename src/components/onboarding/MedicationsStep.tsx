@@ -1,6 +1,5 @@
 
 import { useState } from "react";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +24,7 @@ const MedicationsStep = ({ data, updateData, stepId }: MedicationsStepProps) => 
   const [newMedName, setNewMedName] = useState("");
   const [selectedTimes, setSelectedTimes] = useState<string[]>([]);
 
-  const handleRadioChange = (value: string) => {
+  const handleMedicationChange = (value: string) => {
     const takes = value === "yes";
     setTakesMedications(takes);
     if (!takes) {
@@ -84,20 +83,22 @@ const MedicationsStep = ({ data, updateData, stepId }: MedicationsStepProps) => 
     <div className="space-y-5 pt-2">
       <div className="space-y-3">
         <Label>Does your loved one take any medications regularly?</Label>
-        <RadioGroup 
-          className="flex space-x-4"
-          value={takesMedications ? "yes" : "no"}
-          onValueChange={handleRadioChange}
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="yes-meds" />
-            <Label htmlFor="yes-meds">Yes</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="no-meds" />
-            <Label htmlFor="no-meds">No</Label>
-          </div>
-        </RadioGroup>
+        <div className="flex space-x-4">
+          <Button
+            variant="outline"
+            className={`flex-1 ${takesMedications ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" : ""}`}
+            onClick={() => handleMedicationChange("yes")}
+          >
+            Yes
+          </Button>
+          <Button
+            variant="outline"
+            className={`flex-1 ${!takesMedications ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" : ""}`}
+            onClick={() => handleMedicationChange("no")}
+          >
+            No
+          </Button>
+        </div>
       </div>
       
       {takesMedications && (
@@ -114,7 +115,7 @@ const MedicationsStep = ({ data, updateData, stepId }: MedicationsStepProps) => 
                 {medications.map((med) => (
                   <div 
                     key={med.id} 
-                    className="flex items-center justify-between bg-lovable-50 p-3 rounded-md"
+                    className="flex items-center justify-between bg-[#e8f5f2] p-3 rounded-md"
                   >
                     <div>
                       <p className="font-medium">{med.name}</p>
@@ -152,7 +153,7 @@ const MedicationsStep = ({ data, updateData, stepId }: MedicationsStepProps) => 
                 <Button
                   type="button"
                   variant={selectedTimes.includes("morning") ? "default" : "outline"}
-                  className={selectedTimes.includes("morning") ? "bg-lovable-400" : ""}
+                  className={selectedTimes.includes("morning") ? "bg-[#63BFAC] hover:bg-[#4da899] text-white" : ""}
                   onClick={() => toggleTimeOfDay("morning")}
                 >
                   Morning
@@ -160,7 +161,7 @@ const MedicationsStep = ({ data, updateData, stepId }: MedicationsStepProps) => 
                 <Button
                   type="button"
                   variant={selectedTimes.includes("afternoon") ? "default" : "outline"}
-                  className={selectedTimes.includes("afternoon") ? "bg-lovable-400" : ""}
+                  className={selectedTimes.includes("afternoon") ? "bg-[#63BFAC] hover:bg-[#4da899] text-white" : ""}
                   onClick={() => toggleTimeOfDay("afternoon")}
                 >
                   Afternoon
@@ -168,7 +169,7 @@ const MedicationsStep = ({ data, updateData, stepId }: MedicationsStepProps) => 
                 <Button
                   type="button"
                   variant={selectedTimes.includes("evening") ? "default" : "outline"}
-                  className={selectedTimes.includes("evening") ? "bg-lovable-400" : ""}
+                  className={selectedTimes.includes("evening") ? "bg-[#63BFAC] hover:bg-[#4da899] text-white" : ""}
                   onClick={() => toggleTimeOfDay("evening")}
                 >
                   Evening
@@ -178,7 +179,7 @@ const MedicationsStep = ({ data, updateData, stepId }: MedicationsStepProps) => 
               <Button 
                 onClick={addMedication} 
                 disabled={selectedTimes.length === 0}
-                className="mt-2"
+                className="mt-2 bg-[#63BFAC] hover:bg-[#4da899] text-white"
               >
                 <Plus className="h-4 w-4 mr-2" /> Add Medication
               </Button>

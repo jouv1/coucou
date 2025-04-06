@@ -11,7 +11,7 @@ const Index = () => {
       <div className="w-full max-w-md space-y-8 animate-fade-in">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-coucou-600 mb-2">Coucou 🫶🏼</h1>
-          <p className="text-xl text-coucou-800 mb-6">AI-powered check-ins for your loved ones</p>
+          <p className="text-xl text-coucou-800 mb-6">Technology that <span className="font-bold">cares</span> like you do</p>
         </div>
         
         <div className="space-y-4 pt-4">
@@ -58,17 +58,21 @@ const Index = () => {
           </div>
         </div>
         
-        <div className="pt-6 flex flex-col gap-4">
+        <div className="pt-4 text-center">
+          <p className="text-gray-600 italic mb-6">"It's not just a check-in call. It's peace of mind"</p>
+        </div>
+        
+        <div className="pt-2 flex flex-col gap-4">
           <Button 
             onClick={() => navigate("/onboarding")}
-            className="w-full bg-coucou-400 hover:bg-coucou-500 text-white py-6 ios-button"
+            className="w-full bg-[#63BFAC] hover:bg-[#4da899] text-white py-6 ios-button"
           >
             Get Started
           </Button>
           <Button 
             variant="outline" 
-            className="w-full border-coucou-300 text-coucou-600 hover:bg-coucou-50 ios-button"
-            onClick={() => navigate("/dashboard")}
+            className="w-full border-[#63BFAC] text-[#1F584D] hover:bg-[#e8f5f2] ios-button"
+            onClick={() => navigate("/auth")}
           >
             Log In
           </Button>

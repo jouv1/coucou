@@ -1,44 +1,76 @@
 
+// Cache name with version
 const CACHE_NAME = 'coucou-cache-v1';
 
-const self = this;
+// Files to cache
+const urlsToCache = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/assets/index.css',
+  '/assets/index.js',
+];
 
-// Install a service worker
-self.addEventListener('install', (event) => {
+// Install event
+self.addEventListener('install', event => {
+  console.log('ServiceWorker installation successful');
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll([
-          '/',
-          '/index.html',
-          '/manifest.json'
-        ]);
+      .then(cache => {
+        return cache.addAll(urlsToCache);
       })
   );
 });
 
-// Cache and return requests
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        return response || fetch(event.request);
-      })
-  );
-});
-
-// Update a service worker
-self.addEventListener('activate', (event) => {
-  const cacheWhitelist = [CACHE_NAME];
+// Activate event
+self.addEventListener('activate', event => {
+  console.log('ServiceWorker activation successful');
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then(cacheNames => {
       return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheWhitelist.indexOf(cacheName) === -1) {
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
             return caches.delete(cacheName);
           }
         })
       );
     })
   );
+});
+
+// Fetch event
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request).then(
+          response => {
+            // Check if we received a valid response
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            // Clone the response
+            const responseToCache = response.clone();
+
+            caches.open(CACHE_NAME)
+              .then(cache => {
+                cache.put(event.request, responseToCache);
+              });
+
+            return response;
+          }
+        );
+      })
+  );
+});
+
+// Handle messages from clients
+self.addEventListener('message', event => {
+  if (event.data === 'skipWaiting') {
+    self.skipWaiting();
+  }
 });

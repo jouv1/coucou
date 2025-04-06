@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Clock } from "lucide-react";
 
@@ -102,35 +101,49 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
     <div className="space-y-6 pt-2">
       <div className="space-y-3">
         <Label>Call Frequency</Label>
-        <RadioGroup 
-          value={schedule.frequency}
-          onValueChange={handleFrequencyChange}
-          className="space-y-2"
-        >
-          <div className="flex items-start space-x-3">
-            <RadioGroupItem value="daily" id="daily" className="mt-1" />
-            <div>
-              <Label htmlFor="daily" className="font-medium">Daily Check-ins</Label>
-              <p className="text-sm text-gray-500">Our AI will call every day</p>
+        <div className="flex flex-col space-y-2">
+          <Button
+            type="button"
+            variant="outline"
+            className={`justify-start text-left h-auto py-2 ${
+              schedule.frequency === "daily" ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" : ""
+            }`}
+            onClick={() => handleFrequencyChange("daily")}
+          >
+            <div className="flex flex-col items-start">
+              <span className="font-medium">Daily Check-ins</span>
+              <span className="text-xs text-gray-500">Our AI will call every day</span>
             </div>
-          </div>
+          </Button>
           
-          <div className="flex items-start space-x-3">
-            <RadioGroupItem value="weekdays" id="weekdays" className="mt-1" />
-            <div>
-              <Label htmlFor="weekdays" className="font-medium">Weekdays Only</Label>
-              <p className="text-sm text-gray-500">Monday through Friday check-ins</p>
+          <Button
+            type="button"
+            variant="outline"
+            className={`justify-start text-left h-auto py-2 ${
+              schedule.frequency === "weekdays" ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" : ""
+            }`}
+            onClick={() => handleFrequencyChange("weekdays")}
+          >
+            <div className="flex flex-col items-start">
+              <span className="font-medium">Weekdays Only</span>
+              <span className="text-xs text-gray-500">Monday through Friday check-ins</span>
             </div>
-          </div>
+          </Button>
           
-          <div className="flex items-start space-x-3">
-            <RadioGroupItem value="custom" id="custom" className="mt-1" />
-            <div>
-              <Label htmlFor="custom" className="font-medium">Custom Schedule</Label>
-              <p className="text-sm text-gray-500">Select specific days for calls</p>
+          <Button
+            type="button"
+            variant="outline"
+            className={`justify-start text-left h-auto py-2 ${
+              schedule.frequency === "custom" ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" : ""
+            }`}
+            onClick={() => handleFrequencyChange("custom")}
+          >
+            <div className="flex flex-col items-start">
+              <span className="font-medium">Custom Schedule</span>
+              <span className="text-xs text-gray-500">Select specific days for calls</span>
             </div>
-          </div>
-        </RadioGroup>
+          </Button>
+        </div>
       </div>
       
       {schedule.frequency === "custom" && (
@@ -142,9 +155,10 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
                 key={day}
                 type="button"
                 variant="outline"
+                size="sm"
                 className={`${
                   schedule.specificDays.includes(day) 
-                    ? "bg-lovable-100 border-lovable-300 text-lovable-700" 
+                    ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" 
                     : ""
                 }`}
                 onClick={() => toggleDay(day)}
@@ -162,7 +176,7 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
           <Button
             type="button"
             variant="outline"
-            className={`${schedule.callsPerDay === "one" ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""}`}
+            className={`${schedule.callsPerDay === "one" ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" : ""}`}
             onClick={() => handleCallsPerDayChange("one")}
           >
             Once
@@ -170,7 +184,7 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
           <Button
             type="button"
             variant="outline"
-            className={`${schedule.callsPerDay === "two" ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""}`}
+            className={`${schedule.callsPerDay === "two" ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" : ""}`}
             onClick={() => handleCallsPerDayChange("two")}
           >
             Twice
@@ -178,7 +192,7 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
           <Button
             type="button"
             variant="outline"
-            className={`${schedule.callsPerDay === "three" ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""}`}
+            className={`${schedule.callsPerDay === "three" ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" : ""}`}
             onClick={() => handleCallsPerDayChange("three")}
           >
             Three Times
@@ -200,7 +214,9 @@ const CallScheduleStep = ({ data, updateData, stepId }: CallScheduleStepProps) =
               type="button"
               variant="outline"
               className={`flex flex-col items-center py-3 h-auto ${
-                schedule.timePreferences.includes(slot.id) ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""
+                schedule.timePreferences.includes(slot.id) 
+                ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" 
+                : ""
               }`}
               onClick={() => toggleTimePreference(slot.id)}
               disabled={!schedule.timePreferences.includes(slot.id) && schedule.timePreferences.length >= maxAllowedTimeSlots}

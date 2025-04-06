@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { 
   ArrowLeft, ArrowRight, Check, 
   User, Pill, Clock, Bell,
-  MessageSquare, Mic
+  MessageSquare
 } from "lucide-react";
 import AccountCreationStep from "@/components/onboarding/AccountCreationStep";
 import BasicInfoStep from "@/components/onboarding/BasicInfoStep";
@@ -87,11 +87,6 @@ const Onboarding = () => {
       photo: null,
       language: "",
     },
-    healthConditions: {
-      mentalState: 5, // Scale of 1-10
-      lowMentalStateReasons: [],
-      conditions: [],
-    },
     medications: [],
     preferences: {
       callLength: "short",
@@ -152,7 +147,7 @@ const Onboarding = () => {
       <div className="mb-6">
         <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
           <div
-            className="bg-coucou-400 h-full transition-all"
+            className="bg-[#63BFAC] h-full transition-all"
             style={{ width: `${progress}%` }}
           ></div>
         </div>
@@ -161,14 +156,14 @@ const Onboarding = () => {
         </p>
       </div>
 
-      <Card className="mb-6 border-coucou-100 ios-card ios-shadow">
+      <Card className="mb-6 border-[#63BFAC] border-opacity-30 ios-card ios-shadow">
         <CardContent className="p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="bg-coucou-100 p-2 rounded-md text-coucou-600">
+            <div className="bg-[#e8f5f2] p-2 rounded-md text-[#63BFAC]">
               <IconComponent size={24} />
             </div>
             <div>
-              <h2 className="text-xl font-medium text-coucou-800">
+              <h2 className="text-xl font-medium text-[#1F584D]">
                 {steps[currentStep].title}
               </h2>
               <p className="text-gray-600">{steps[currentStep].description}</p>
@@ -186,14 +181,14 @@ const Onboarding = () => {
         <Button
           variant="outline"
           onClick={handleBack}
-          className="flex-1 border-coucou-200 ios-button"
+          className="flex-1 border-[#63BFAC] text-[#1F584D] hover:bg-[#e8f5f2] ios-button"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
         <Button
           onClick={handleNext}
-          className="flex-1 bg-coucou-400 hover:bg-coucou-500 text-white ios-button"
+          className="flex-1 bg-[#63BFAC] hover:bg-[#4da899] text-white ios-button"
         >
           {isLastStep ? "Go to Dashboard" : "Continue"}
           {!isLastStep && <ArrowRight className="ml-2 h-4 w-4" />}

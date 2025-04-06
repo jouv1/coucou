@@ -9,47 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      appointments: {
-        Row: {
-          appointment_date: string
-          appointment_time: string
-          appointment_title: string
-          created_at: string | null
-          id: number
-          location: string | null
-          loved_one_id: number
-          notes: string | null
-        }
-        Insert: {
-          appointment_date: string
-          appointment_time: string
-          appointment_title: string
-          created_at?: string | null
-          id?: number
-          location?: string | null
-          loved_one_id: number
-          notes?: string | null
-        }
-        Update: {
-          appointment_date?: string
-          appointment_time?: string
-          appointment_title?: string
-          created_at?: string | null
-          id?: number
-          location?: string | null
-          loved_one_id?: number
-          notes?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "appointments_loved_one_id_fkey"
-            columns: ["loved_one_id"]
-            isOneToOne: false
-            referencedRelation: "loved_ones"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       call_preferences: {
         Row: {
           call_frequency: string | null
@@ -90,6 +49,60 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "call_preferences_loved_one_id_fkey"
+            columns: ["loved_one_id"]
+            isOneToOne: false
+            referencedRelation: "loved_ones"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      consolidated_appointments: {
+        Row: {
+          appointment_date: string | null
+          appointment_time: string | null
+          appointment_title: string | null
+          call_preference_id: number | null
+          created_at: string | null
+          frequency: string | null
+          id: number
+          loved_one_id: number
+          time_slot: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          appointment_date?: string | null
+          appointment_time?: string | null
+          appointment_title?: string | null
+          call_preference_id?: number | null
+          created_at?: string | null
+          frequency?: string | null
+          id: number
+          loved_one_id: number
+          time_slot?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          appointment_date?: string | null
+          appointment_time?: string | null
+          appointment_title?: string | null
+          call_preference_id?: number | null
+          created_at?: string | null
+          frequency?: string | null
+          id?: number
+          loved_one_id?: number
+          time_slot?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consolidated_appointments_call_preference_id_fkey"
+            columns: ["call_preference_id"]
+            isOneToOne: false
+            referencedRelation: "call_preferences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "consolidated_appointments_loved_one_id_fkey"
             columns: ["loved_one_id"]
             isOneToOne: false
             referencedRelation: "loved_ones"
@@ -256,37 +269,26 @@ export type Database = {
           },
         ]
       }
-      time_slots: {
+      profiles: {
         Row: {
-          call_preference_id: number | null
-          created_at: string | null
-          frequency: string | null
-          id: number
-          time_slot: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          updated_at: string
         }
         Insert: {
-          call_preference_id?: number | null
-          created_at?: string | null
-          frequency?: string | null
-          id?: number
-          time_slot?: string | null
+          created_at?: string
+          full_name?: string | null
+          id: string
+          updated_at?: string
         }
         Update: {
-          call_preference_id?: number | null
-          created_at?: string | null
-          frequency?: string | null
-          id?: number
-          time_slot?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "time_slots_call_preference_id_fkey"
-            columns: ["call_preference_id"]
-            isOneToOne: false
-            referencedRelation: "call_preferences"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       users: {
         Row: {

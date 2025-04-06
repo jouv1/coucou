@@ -2,11 +2,7 @@
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { 
-  MessageSquare, 
-  Phone, 
-  Frown
-} from "lucide-react";
+import { Bell, MessageSquare, AlertCircle, Clock } from "lucide-react";
 
 interface NotificationsStepProps {
   data: any;
@@ -15,85 +11,112 @@ interface NotificationsStepProps {
 }
 
 const NotificationsStep = ({ data, updateData, stepId }: NotificationsStepProps) => {
-  const [notifications, setNotifications] = useState({
-    callSummary: data.notifications?.callSummary ?? true,
-    missedCall: data.notifications?.missedCall ?? true,
-    lowSentiment: data.notifications?.lowSentiment ?? true,
-    medication: data.notifications?.medication ?? false,
-    sleep: data.notifications?.sleep ?? false,
-    appointments: data.notifications?.appointments ?? false,
+  const [notifications, setNotifications] = useState(data.notifications || {
+    callSummary: true,
+    missedCall: true,
+    lowSentiment: true,
+    medication: false,
+    sleep: false,
+    appointments: false,
   });
 
-  const handleToggle = (key: string, value: boolean) => {
-    const updatedNotifications = { ...notifications, [key]: value };
+  const handleNotificationChange = (type: string, value: boolean) => {
+    const updatedNotifications = { ...notifications, [type]: value };
     setNotifications(updatedNotifications);
     updateData(stepId, updatedNotifications);
   };
 
+  const notificationOptions = [
+    {
+      id: "callSummary",
+      title: "Daily Call Summary",
+      description: "Get a summary after each call",
+      icon: MessageSquare,
+      color: "text-blue-500",
+      bgColor: "bg-blue-50",
+    },
+    {
+      id: "missedCall",
+      title: "Missed Calls",
+      description: "Alert when your loved one misses a call",
+      icon: Clock,
+      color: "text-amber-500",
+      bgColor: "bg-amber-50",
+    },
+    {
+      id: "lowSentiment",
+      title: "Health Alerts",
+      description: "Notification when we detect concerns",
+      icon: AlertCircle,
+      color: "text-red-500",
+      bgColor: "bg-red-50",
+    },
+  ];
+
   return (
-    <div className="space-y-6 pt-2">
-      <p className="text-sm text-gray-600">
-        Choose when you'd like to receive notifications about your loved one.
+    <div className="space-y-5 pt-2">
+      <p className="text-gray-600">
+        Choose which notifications you'd like to receive about your loved one.
       </p>
-      
+
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-start gap-3">
-            <div className="mt-0.5 text-lovable-500">
-              <MessageSquare size={18} />
+        {notificationOptions.map((option) => (
+          <div key={option.id} className="flex items-center justify-between p-3 border rounded-md">
+            <div className="flex items-center gap-3">
+              <div className={`${option.bgColor} p-2 rounded-md`}>
+                <option.icon className={`h-5 w-5 ${option.color}`} />
+              </div>
+              <div>
+                <h3 className="font-medium">{option.title}</h3>
+                <p className="text-sm text-gray-500">{option.description}</p>
+              </div>
             </div>
-            <div>
-              <Label htmlFor="call-summary" className="font-medium">Daily Call Summary</Label>
-              <p className="text-sm text-gray-500">Get a daily digest of all conversations</p>
-            </div>
+            <Switch 
+              checked={notifications[option.id as keyof typeof notifications]} 
+              onCheckedChange={(checked) => handleNotificationChange(option.id, checked)} 
+              className="data-[state=checked]:bg-[#63BFAC]"
+            />
           </div>
-          <Switch 
-            id="call-summary"
-            checked={notifications.callSummary}
-            onCheckedChange={(checked) => handleToggle("callSummary", checked)}
-            defaultChecked
-          />
-        </div>
-        
-        <div className="flex items-center justify-between">
-          <div className="flex items-start gap-3">
-            <div className="mt-0.5 text-blue-500">
-              <Phone size={18} />
-            </div>
-            <div>
-              <Label htmlFor="missed-call" className="font-medium">Missed Calls</Label>
-              <p className="text-sm text-gray-500">Alert if calls are missed</p>
-            </div>
+        ))}
+      </div>
+
+      <div className="border-t pt-4">
+        <Label className="mb-3 block">Medication & Health Reminders</Label>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="medication-switch" className="cursor-pointer">Medication Alerts</Label>
+            <Switch 
+              id="medication-switch"
+              checked={notifications.medication} 
+              onCheckedChange={(checked) => handleNotificationChange("medication", checked)}
+              className="data-[state=checked]:bg-[#63BFAC]"
+            />
           </div>
-          <Switch 
-            id="missed-call"
-            checked={notifications.missedCall}
-            onCheckedChange={(checked) => handleToggle("missedCall", checked)}
-            defaultChecked
-          />
-        </div>
-        
-        <div className="flex items-center justify-between">
-          <div className="flex items-start gap-3">
-            <div className="mt-0.5 text-amber-500">
-              <Frown size={18} />
-            </div>
-            <div>
-              <Label htmlFor="low-sentiment" className="font-medium">Low Sentiment</Label>
-              <p className="text-sm text-gray-500">Notify if your loved one seems sad or distressed</p>
-            </div>
+          
+          <div className="flex items-center justify-between">
+            <Label htmlFor="sleep-switch" className="cursor-pointer">Sleep Quality Concerns</Label>
+            <Switch 
+              id="sleep-switch"
+              checked={notifications.sleep} 
+              onCheckedChange={(checked) => handleNotificationChange("sleep", checked)}
+              className="data-[state=checked]:bg-[#63BFAC]"
+            />
           </div>
-          <Switch 
-            id="low-sentiment"
-            checked={notifications.lowSentiment}
-            onCheckedChange={(checked) => handleToggle("lowSentiment", checked)}
-            defaultChecked
-          />
+          
+          <div className="flex items-center justify-between">
+            <Label htmlFor="appointments-switch" className="cursor-pointer">Appointment Reminders</Label>
+            <Switch 
+              id="appointments-switch"
+              checked={notifications.appointments} 
+              onCheckedChange={(checked) => handleNotificationChange("appointments", checked)}
+              className="data-[state=checked]:bg-[#63BFAC]"
+            />
+          </div>
         </div>
       </div>
-      
+
       <p className="text-sm text-muted-foreground mt-4 italic">
-        You can always adjust these settings later from the Settings page.
+        You can update these notification preferences at any time in settings.
       </p>
     </div>
   );

@@ -29,7 +29,7 @@ const CompletionStep = ({ data }: CompletionStepProps) => {
       <div className="flex justify-center">
         <Button 
           onClick={handleTestCall} 
-          className="bg-coucou-400 hover:bg-coucou-500 text-white"
+          className="bg-[#63BFAC] hover:bg-[#4da899] text-white"
         >
           <Phone className="mr-2 h-4 w-4" />
           Call My Number

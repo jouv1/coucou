@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Phone, Pill, Clock, Smile, Frown, Calendar, ChevronRight, User, CheckCircle, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
 
 const mockData = {
   elderlyName: "Mary Johnson",
@@ -56,7 +55,7 @@ const Dashboard = () => {
         </div>
         
         <Button 
-          className="bg-coucou-400 hover:bg-coucou-500 text-white"
+          className="bg-[#63BFAC] hover:bg-[#4da899] text-white"
           size="sm"
           onClick={handleCall}
         >
@@ -65,11 +64,11 @@ const Dashboard = () => {
       </div>
       
       {/* Last Call Status */}
-      <Card className="border-coucou-100 ios-card ios-shadow">
+      <Card className="border-[#63BFAC] border-opacity-30 ios-card ios-shadow">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-medium">Last Check-in</CardTitle>
-            <Badge className={mockData.lastCall.status === "Done" ? "bg-coucou-100 text-coucou-800" : "bg-red-100 text-red-800"}>
+            <Badge className={mockData.lastCall.status === "Done" ? "bg-[#e8f5f2] text-[#1F584D]" : "bg-red-100 text-red-800"}>
               {mockData.lastCall.status}
             </Badge>
           </div>
@@ -78,12 +77,12 @@ const Dashboard = () => {
           <Link to={`/calls/${mockData.lastCall.id}`} className="block">
             <div className="flex items-start justify-between">
               <div className="flex items-start gap-3">
-                <Avatar className="h-12 w-12 border-2 border-coucou-100">
+                <Avatar className="h-12 w-12 border-2 border-[#e8f5f2]">
                   {mockData.elderlyPhoto ? (
                     <AvatarImage src={mockData.elderlyPhoto} alt={mockData.elderlyName} />
                   ) : (
-                    <AvatarFallback className="bg-coucou-50">
-                      <User size={24} className="text-coucou-300" />
+                    <AvatarFallback className="bg-[#e8f5f2]">
+                      <User size={24} className="text-[#63BFAC]" />
                     </AvatarFallback>
                   )}
                 </Avatar>
@@ -94,7 +93,7 @@ const Dashboard = () => {
                   </p>
                   <div className="flex gap-1 mt-1">
                     {mockData.lastCall.keywords.map((keyword, index) => (
-                      <Badge key={index} variant="outline" className="text-xs bg-coucou-50 border-coucou-200 text-coucou-700">
+                      <Badge key={index} variant="outline" className="text-xs bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]">
                         {keyword}
                       </Badge>
                     ))}
@@ -112,10 +111,10 @@ const Dashboard = () => {
       {/* Metrics Grid */}
       <div className="grid grid-cols-2 gap-4">
         {/* Medication Status */}
-        <Card className="border-coucou-100 ios-card ios-shadow">
+        <Card className="border-[#63BFAC] border-opacity-30 ios-card ios-shadow">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
-              <Pill className="h-4 w-4 text-coucou-500" />
+              <Pill className="h-4 w-4 text-[#63BFAC]" />
               <CardTitle className="text-sm font-medium">Medication</CardTitle>
             </div>
           </CardHeader>
@@ -123,12 +122,12 @@ const Dashboard = () => {
             <div className="flex flex-col items-center justify-center h-24">
               <div className={`rounded-full p-2 ${
                 mockData.medications.status === "taken" 
-                  ? "bg-coucou-100" 
+                  ? "bg-[#e8f5f2]" 
                   : "bg-red-100"
               }`}>
                 <div className={`rounded-full p-1 ${
                   mockData.medications.status === "taken" 
-                    ? "bg-coucou-400" 
+                    ? "bg-[#63BFAC]" 
                     : "bg-red-500"
                 } text-white`}>
                   {mockData.medications.status === "taken" 
@@ -144,10 +143,10 @@ const Dashboard = () => {
         </Card>
         
         {/* Sleep Quality */}
-        <Card className="border-coucou-100 ios-card ios-shadow">
+        <Card className="border-[#63BFAC] border-opacity-30 ios-card ios-shadow">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4 text-coucou-500" />
+              <Clock className="h-4 w-4 text-[#63BFAC]" />
               <CardTitle className="text-sm font-medium">Sleep Quality</CardTitle>
             </div>
           </CardHeader>
@@ -155,7 +154,7 @@ const Dashboard = () => {
             <div className="flex flex-col items-center justify-center h-24">
               <Badge className={`mb-2 ${
                 mockData.sleep.status === "good" 
-                  ? "bg-coucou-100 text-coucou-800" 
+                  ? "bg-[#e8f5f2] text-[#1F584D]" 
                   : "bg-yellow-100 text-yellow-800"
               }`}>
                 {mockData.sleep.status === "good" ? "Good" : "Fair"}
@@ -164,7 +163,7 @@ const Dashboard = () => {
                 {mockData.sleep.data.map((value, index) => (
                   <div 
                     key={index}
-                    className="bg-coucou-300 rounded-sm w-3" 
+                    className="bg-[#63BFAC] rounded-sm w-3" 
                     style={{ height: `${value * 10}%` }}
                   ></div>
                 ))}
@@ -174,13 +173,13 @@ const Dashboard = () => {
           </CardContent>
         </Card>
         
-        {/* Mood Analysis (was Sentiment/Heart) */}
-        <Card className="border-coucou-100 ios-card ios-shadow">
+        {/* Mood Analysis */}
+        <Card className="border-[#63BFAC] border-opacity-30 ios-card ios-shadow">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center gap-2">
               {mockData.mood.score > 50 ? 
-                <Smile className="h-4 w-4 text-coucou-500" /> : 
-                <Frown className="h-4 w-4 text-coucou-500" />
+                <Smile className="h-4 w-4 text-[#63BFAC]" /> : 
+                <Frown className="h-4 w-4 text-[#63BFAC]" />
               }
               <CardTitle className="text-sm font-medium">Mood Analysis</CardTitle>
             </div>
@@ -188,8 +187,8 @@ const Dashboard = () => {
           <CardContent className="space-y-2">
             <div className="flex justify-center">
               {mockData.mood.score > 50 ? (
-                <div className="bg-coucou-100 rounded-full p-4">
-                  <Smile size={40} className="text-coucou-400" />
+                <div className="bg-[#e8f5f2] rounded-full p-4">
+                  <Smile size={40} className="text-[#63BFAC]" />
                 </div>
               ) : (
                 <div className="bg-red-100 rounded-full p-4">
@@ -206,11 +205,11 @@ const Dashboard = () => {
         </Card>
         
         {/* Appointments */}
-        <Card className="border-coucou-100 ios-card ios-shadow">
+        <Card className="border-[#63BFAC] border-opacity-30 ios-card ios-shadow">
           <CardHeader className="pb-2 pt-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-coucou-500" />
+                <Calendar className="h-4 w-4 text-[#63BFAC]" />
                 <CardTitle className="text-sm font-medium">Appointments</CardTitle>
               </div>
             </div>
@@ -243,12 +242,12 @@ const Dashboard = () => {
       </div>
       
       {/* Recent Calls with Next Check-in */}
-      <Card className="border-coucou-100 ios-card ios-shadow">
+      <Card className="border-[#63BFAC] border-opacity-30 ios-card ios-shadow">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-medium">Recent Calls</CardTitle>
             <Link to="/calls">
-              <Button variant="link" size="sm" className="px-0">
+              <Button variant="link" size="sm" className="px-0 text-[#1F584D]">
                 View All
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
@@ -257,11 +256,11 @@ const Dashboard = () => {
         </CardHeader>
         <CardContent>
           {/* Next Check-in */}
-          <div className="mb-4 p-3 bg-coucou-50 rounded-lg">
+          <div className="mb-4 p-3 bg-[#e8f5f2] rounded-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="bg-coucou-100 p-2 rounded-full">
-                  <Clock className="h-5 w-5 text-coucou-500" />
+                <div className="bg-white p-2 rounded-full">
+                  <Clock className="h-5 w-5 text-[#63BFAC]" />
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Next Check-in</p>
@@ -278,7 +277,7 @@ const Dashboard = () => {
                   <p className="font-medium">Today, 9:15 AM</p>
                   <p className="text-sm text-gray-500">Duration: 4m 32s</p>
                 </div>
-                <Badge className="bg-coucou-100 text-coucou-800">Done</Badge>
+                <Badge className="bg-[#e8f5f2] text-[#1F584D]">Done</Badge>
               </div>
             </Link>
             
@@ -288,7 +287,7 @@ const Dashboard = () => {
                   <p className="font-medium">Yesterday, 9:30 AM</p>
                   <p className="text-sm text-gray-500">Duration: 5m 15s</p>
                 </div>
-                <Badge className="bg-coucou-100 text-coucou-800">Done</Badge>
+                <Badge className="bg-[#e8f5f2] text-[#1F584D]">Done</Badge>
               </div>
             </Link>
             

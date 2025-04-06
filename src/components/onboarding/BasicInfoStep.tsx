@@ -50,27 +50,29 @@ const BasicInfoStep = ({ data, updateData, stepId }: BasicInfoStepProps) => {
   return (
     <div className="space-y-5 pt-2">
       <div className="flex justify-center mb-6">
-        <div className="relative">
-          <Avatar className="w-24 h-24 border-2 border-lovable-200">
-            {previewUrl ? (
-              <AvatarImage src={previewUrl} alt="Profile picture" />
-            ) : (
-              <AvatarFallback className="bg-lovable-50">
-                <User size={36} className="text-lovable-300" />
-              </AvatarFallback>
-            )}
-          </Avatar>
-          <label htmlFor="photo-upload" className="absolute -bottom-2 -right-2 bg-lovable-400 text-white p-2 rounded-full cursor-pointer hover:bg-lovable-500">
-            <Camera size={16} />
-            <input 
-              id="photo-upload" 
-              type="file" 
-              accept="image/*" 
-              className="hidden" 
-              onChange={handlePhotoChange}
-            />
-          </label>
-        </div>
+        <label htmlFor="photo-upload" className="cursor-pointer">
+          <div className="relative">
+            <Avatar className="w-24 h-24 border-2 border-[#63BFAC]">
+              {previewUrl ? (
+                <AvatarImage src={previewUrl} alt="Profile picture" />
+              ) : (
+                <AvatarFallback className="bg-[#e8f5f2]">
+                  <User size={36} className="text-[#63BFAC]" />
+                </AvatarFallback>
+              )}
+            </Avatar>
+            <div className="absolute -bottom-2 -right-2 bg-[#63BFAC] text-white p-2 rounded-full hover:bg-[#4da899]">
+              <Camera size={16} />
+            </div>
+          </div>
+          <input 
+            id="photo-upload" 
+            type="file" 
+            accept="image/*" 
+            className="hidden" 
+            onChange={handlePhotoChange}
+          />
+        </label>
       </div>
 
       <div className="space-y-2">
@@ -120,7 +122,7 @@ const BasicInfoStep = ({ data, updateData, stepId }: BasicInfoStepProps) => {
           <Button
             type="button"
             variant="outline"
-            className={`h-12 ${localData.gender === "female" ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""}`}
+            className={`h-10 ${localData.gender === "female" ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" : ""}`}
             onClick={() => handleGenderSelect("female")}
           >
             Female
@@ -128,7 +130,7 @@ const BasicInfoStep = ({ data, updateData, stepId }: BasicInfoStepProps) => {
           <Button
             type="button"
             variant="outline"
-            className={`h-12 ${localData.gender === "male" ? "bg-lovable-100 border-lovable-300 text-lovable-700" : ""}`}
+            className={`h-10 ${localData.gender === "male" ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" : ""}`}
             onClick={() => handleGenderSelect("male")}
           >
             Male

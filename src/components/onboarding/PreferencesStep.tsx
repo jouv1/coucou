@@ -1,9 +1,10 @@
 
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { MessageSquare, Mic, Plus } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface PreferencesStepProps {
   data: any;
@@ -13,121 +14,182 @@ interface PreferencesStepProps {
 
 const PreferencesStep = ({ data, updateData, stepId }: PreferencesStepProps) => {
   const [preferences, setPreferences] = useState(data.preferences || {
-    callLength: "medium",
+    callLength: "short",
     voiceGender: "female",
     customVoice: "",
     checkItems: ["medication", "mood", "sleep", "appointments"],
     customCheckItem: "",
   });
 
-  const handlePreferenceChange = (field: string, value: string) => {
-    const newPreferences = { ...preferences, [field]: value };
-    setPreferences(newPreferences);
-    updateData(stepId, newPreferences);
+  const [customItem, setCustomItem] = useState("");
+
+  const handleCallLengthChange = (value: string) => {
+    const updatedPrefs = { ...preferences, callLength: value };
+    setPreferences(updatedPrefs);
+    updateData(stepId, updatedPrefs);
   };
 
-  const checkItems = [
-    { id: "medication", label: "Medication Reminders" },
-    { id: "mood", label: "Mood Check" },
-    { id: "sleep", label: "Sleep Quality" },
-    { id: "appointments", label: "Upcoming Appointments" },
-  ];
+  const handleVoiceChange = (value: string) => {
+    const updatedPrefs = { ...preferences, voiceGender: value };
+    setPreferences(updatedPrefs);
+    updateData(stepId, updatedPrefs);
+  };
+
+  const toggleCheckItem = (value: string) => {
+    const currentItems = [...preferences.checkItems];
+    const updatedItems = currentItems.includes(value)
+      ? currentItems.filter(item => item !== value)
+      : [...currentItems, value];
+    
+    const updatedPrefs = { ...preferences, checkItems: updatedItems };
+    setPreferences(updatedPrefs);
+    updateData(stepId, updatedPrefs);
+  };
+
+  const addCustomCheckItem = () => {
+    if (customItem.trim() === "") return;
+    
+    const currentItems = [...preferences.checkItems];
+    if (!currentItems.includes(customItem)) {
+      const updatedPrefs = { 
+        ...preferences, 
+        checkItems: [...currentItems, customItem],
+        customCheckItem: customItem
+      };
+      setPreferences(updatedPrefs);
+      updateData(stepId, updatedPrefs);
+    }
+    setCustomItem("");
+  };
+
+  // Get description based on call length
+  const getCallLengthDescription = (length: string) => {
+    switch(length) {
+      case "short":
+        return "Quick check-in for those who aren't too talkative";
+      case "medium":
+        return "Standard calls with enough time for key questions";
+      case "long":
+        return "Extended conversation for those who enjoy chatting";
+      default:
+        return "";
+    }
+  };
+
+  const callLengthDescription = getCallLengthDescription(preferences.callLength);
 
   return (
-    <div className="space-y-6 pt-2">
+    <div className="space-y-5 pt-2">
       <div className="space-y-3">
         <Label>Call Length Preference</Label>
-        <RadioGroup 
-          value={preferences.callLength}
-          onValueChange={(value) => handlePreferenceChange("callLength", value)}
-          className="grid grid-cols-3 gap-3"
-        >
-          <div className="flex items-center justify-center">
-            <RadioGroupItem value="short" id="short" className="sr-only" />
-            <Label
-              htmlFor="short"
-              className={`flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer ${
-                preferences.callLength === "short" ? "border-lovable-500" : ""
-              }`}
-            >
-              <span className="text-xl mb-2">⚡</span>
-              <span className="font-medium">Short</span>
-              <span className="text-xs text-muted-foreground">2-3 minutes</span>
-            </Label>
-          </div>
-          
-          <div className="flex items-center justify-center">
-            <RadioGroupItem value="medium" id="medium" className="sr-only" />
-            <Label
-              htmlFor="medium"
-              className={`flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer ${
-                preferences.callLength === "medium" ? "border-lovable-500" : ""
-              }`}
-            >
-              <span className="text-xl mb-2">🔄</span>
-              <span className="font-medium">Medium</span>
-              <span className="text-xs text-muted-foreground">4-5 minutes</span>
-            </Label>
-          </div>
-          
-          <div className="flex items-center justify-center">
-            <RadioGroupItem value="long" id="long" className="sr-only" />
-            <Label
-              htmlFor="long"
-              className={`flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground cursor-pointer ${
-                preferences.callLength === "long" ? "border-lovable-500" : ""
-              }`}
-            >
-              <span className="text-xl mb-2">🔊</span>
-              <span className="font-medium">Long</span>
-              <span className="text-xs text-muted-foreground">7-10 minutes</span>
-            </Label>
-          </div>
-        </RadioGroup>
-      </div>
-      
-      <div className="space-y-3 pt-2 border-t">
-        <Label>Voice Preference</Label>
-        <Select 
-          value={preferences.voiceGender} 
-          onValueChange={(value) => handlePreferenceChange("voiceGender", value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select voice preference" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="female">Female Voice</SelectItem>
-            <SelectItem value="male">Male Voice</SelectItem>
-            <SelectItem value="custom">Custom Voice</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      
-      <div className="space-y-3 pt-2 border-t">
-        <Label>What should we check during calls?</Label>
-        <div className="grid grid-cols-2 gap-3">
-          {checkItems.map((item) => (
-            <div key={item.id} className="flex items-center gap-2 rounded-md border p-3 disabled">
-              <div className="h-5 w-5 border rounded flex items-center justify-center">
-                {preferences.checkItems.includes(item.id) && (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-4 w-4"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                )}
-              </div>
-              <span>{item.label}</span>
-            </div>
-          ))}
+        <div className="grid grid-cols-3 gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            className={`h-10 ${preferences.callLength === "short" ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" : ""}`}
+            onClick={() => handleCallLengthChange("short")}
+          >
+            Short
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className={`h-10 ${preferences.callLength === "medium" ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" : ""}`}
+            onClick={() => handleCallLengthChange("medium")}
+          >
+            Medium
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className={`h-10 ${preferences.callLength === "long" ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" : ""}`}
+            onClick={() => handleCallLengthChange("long")}
+          >
+            Long
+          </Button>
         </div>
+        
+        {callLengthDescription && (
+          <p className="text-sm text-gray-600 italic">
+            {callLengthDescription}
+          </p>
+        )}
+      </div>
+
+      <div className="space-y-3 border-t pt-4">
+        <Label>Voice Preference</Label>
+        <div className="grid grid-cols-2 gap-3">
+          <Button
+            type="button"
+            variant="outline"
+            className={`${preferences.voiceGender === "female" ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" : ""}`}
+            onClick={() => handleVoiceChange("female")}
+          >
+            <Mic className="h-4 w-4 mr-2" />
+            Female Voice
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            className={`${preferences.voiceGender === "male" ? "bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]" : ""}`}
+            onClick={() => handleVoiceChange("male")}
+          >
+            <Mic className="h-4 w-4 mr-2" />
+            Male Voice
+          </Button>
+        </div>
+      </div>
+      
+      <div className="space-y-3 border-t pt-4">
+        <Label>What should we check during calls?</Label>
+        <div className="space-y-2">
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { id: "medication", label: "Medications" },
+              { id: "mood", label: "Mood" },
+              { id: "sleep", label: "Sleep Quality" },
+              { id: "appointments", label: "Appointments" }
+            ].map((item) => (
+              <div key={item.id} 
+                className={`flex items-center space-x-2 p-2 rounded-md border cursor-pointer ${
+                  preferences.checkItems.includes(item.id) 
+                    ? "bg-[#e8f5f2] border-[#63BFAC]" 
+                    : "border-gray-200"
+                }`}
+                onClick={() => toggleCheckItem(item.id)}
+              >
+                <Checkbox 
+                  id={`check-${item.id}`} 
+                  checked={preferences.checkItems.includes(item.id)} 
+                  className="data-[state=checked]:bg-[#63BFAC] data-[state=checked]:border-[#63BFAC]"
+                />
+                <Label htmlFor={`check-${item.id}`} className="cursor-pointer">{item.label}</Label>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-2 mt-4">
+            <Input
+              placeholder="Custom check item"
+              value={customItem}
+              onChange={(e) => setCustomItem(e.target.value)}
+            />
+            <Button 
+              onClick={addCustomCheckItem}
+              disabled={!customItem.trim()}
+              className="bg-[#63BFAC] hover:bg-[#4da899] text-white"
+            >
+              <Plus className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+      
+      <div className="flex items-center gap-3 bg-[#e8f5f2] p-3 rounded-md mt-4">
+        <MessageSquare className="h-5 w-5 text-[#1F584D]" />
+        <p className="text-sm text-gray-600">
+          These preferences help us tailor the AI calls to what matters most for your loved one.
+        </p>
       </div>
     </div>
   );
