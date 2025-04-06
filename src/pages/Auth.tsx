@@ -17,7 +17,10 @@ const Auth = () => {
   const [searchParams] = useSearchParams();
   const { user, isAuthenticated, setOnboardingStep } = useAuth();
   
-  const [mode, setMode] = useState<AuthMode>("login");
+  // Initialize mode based on URL parameter
+  const initialMode = searchParams.get('mode') === 'signup' ? 'signup' : 'login';
+  const [mode, setMode] = useState<AuthMode>(initialMode);
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
