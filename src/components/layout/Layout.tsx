@@ -13,10 +13,12 @@ const Layout = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-background">
-      <main className="flex-1 container max-w-md mx-auto px-4 pb-16">
+      <main className="flex-1 container max-w-md mx-auto px-4 pb-16 overflow-x-hidden">
+        <div className="ios-blur fixed top-0 left-0 right-0 h-[env(safe-area-inset-top)] z-40"></div>
         <Outlet />
       </main>
       {showNavigation && <BottomNavigation />}
+      <div className="ios-blur fixed bottom-0 left-0 right-0 h-[env(safe-area-inset-bottom)] z-40"></div>
     </div>
   );
 };

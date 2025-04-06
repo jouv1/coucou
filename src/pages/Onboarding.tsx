@@ -1,15 +1,15 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
   ArrowLeft, ArrowRight, Check, 
-  User, Heart, Pill, Clock, Bell,
+  User, Pill, Clock, Bell,
   MessageSquare, Mic
 } from "lucide-react";
 import AccountCreationStep from "@/components/onboarding/AccountCreationStep";
 import BasicInfoStep from "@/components/onboarding/BasicInfoStep";
-import HealthConditionsStep from "@/components/onboarding/HealthConditionsStep";
 import MedicationsStep from "@/components/onboarding/MedicationsStep";
 import PreferencesStep from "@/components/onboarding/PreferencesStep";
 import CallScheduleStep from "@/components/onboarding/CallScheduleStep";
@@ -30,13 +30,6 @@ const steps = [
     description: "Tell us about who you care for",
     icon: User,
     component: BasicInfoStep,
-  },
-  {
-    id: "health-conditions",
-    title: "Health Assessment",
-    description: "Help us understand their health",
-    icon: Heart,
-    component: HealthConditionsStep,
   },
   {
     id: "medications",
@@ -159,7 +152,7 @@ const Onboarding = () => {
       <div className="mb-6">
         <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
           <div
-            className="bg-lovable-400 h-full transition-all"
+            className="bg-coucou-400 h-full transition-all"
             style={{ width: `${progress}%` }}
           ></div>
         </div>
@@ -168,14 +161,14 @@ const Onboarding = () => {
         </p>
       </div>
 
-      <Card className="mb-6 border-lovable-100">
+      <Card className="mb-6 border-coucou-100 ios-card ios-shadow">
         <CardContent className="p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="bg-lovable-100 p-2 rounded-md text-lovable-600">
+            <div className="bg-coucou-100 p-2 rounded-md text-coucou-600">
               <IconComponent size={24} />
             </div>
             <div>
-              <h2 className="text-xl font-medium text-lovable-800">
+              <h2 className="text-xl font-medium text-coucou-800">
                 {steps[currentStep].title}
               </h2>
               <p className="text-gray-600">{steps[currentStep].description}</p>
@@ -193,14 +186,14 @@ const Onboarding = () => {
         <Button
           variant="outline"
           onClick={handleBack}
-          className="flex-1 border-lovable-200"
+          className="flex-1 border-coucou-200 ios-button"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back
         </Button>
         <Button
           onClick={handleNext}
-          className="flex-1 bg-lovable-400 hover:bg-lovable-500 text-white"
+          className="flex-1 bg-coucou-400 hover:bg-coucou-500 text-white ios-button"
         >
           {isLastStep ? "Go to Dashboard" : "Continue"}
           {!isLastStep && <ArrowRight className="ml-2 h-4 w-4" />}

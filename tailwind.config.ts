@@ -58,11 +58,11 @@ export default {
 					100: '#d0f7ed',
 					200: '#a6eed9',
 					300: '#75e0c4',
-					400: '#62BFAD',
+					400: '#63BFAC',
 					500: '#30aa8e',
 					600: '#258a74',
 					700: '#216f5f',
-					800: '#1f584d',
+					800: '#1F584D',
 					900: '#1d4941',
 					950: '#0c2a25',
 				},
@@ -79,8 +79,13 @@ export default {
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
-				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				md: 'calc(var(--radius) - 0.5rem)',
+				sm: 'calc(var(--radius) - 1rem)'
+			},
+			boxShadow: {
+				'ios': '0 8px 16px rgba(0, 0, 0, 0.04)',
+				'ios-md': '0 12px 24px rgba(0, 0, 0, 0.06)',
+				'ios-lg': '0 16px 32px rgba(0, 0, 0, 0.08)',
 			},
 			keyframes: {
 				'accordion-down': {

@@ -27,7 +27,7 @@ const BottomNavigation = () => {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10 h-16">
+    <div className="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg border-t border-gray-200 dark:border-gray-800 z-10 h-16 ios-shadow">
       <div className="flex justify-around items-center h-full max-w-md mx-auto">
         {navItems.map((item) => (
           <Link
@@ -35,18 +35,18 @@ const BottomNavigation = () => {
             to={item.path}
             className={cn(
               "flex flex-col items-center justify-center px-4 h-full",
-              currentPath === item.path ? "text-lovable-500" : "text-gray-500"
+              currentPath === item.path ? "text-coucou-400" : "text-gray-500"
             )}
           >
             {item.primary ? (
-              <div className="bg-lovable-400 text-white p-3 rounded-full -mt-6 shadow-md">
+              <div className="bg-coucou-400 text-white p-3 rounded-full shadow-md">
                 <item.icon size={24} />
               </div>
             ) : (
               <item.icon
                 size={24}
                 className={cn(
-                  currentPath === item.path ? "text-lovable-500" : "text-gray-500"
+                  currentPath === item.path ? "text-coucou-400" : "text-gray-500"
                 )}
               />
             )}

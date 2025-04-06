@@ -5,35 +5,35 @@
 
 @layer base {
   :root {
-    --background: 60 54% 97%;
-    --foreground: 164 35% 25%;
+    --background: 43 25% 95%;
+    --foreground: 192 40% 17%;
 
     --card: 0 0% 100%;
-    --card-foreground: 164 35% 25%;
+    --card-foreground: 192 40% 17%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 164 35% 25%;
+    --popover-foreground: 192 40% 17%;
 
-    --primary: 164 35% 56%;
+    --primary: 167 33% 57%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 60 54% 97%;
-    --secondary-foreground: 164 35% 25%;
+    --secondary: 43 25% 95%;
+    --secondary-foreground: 192 40% 17%;
 
-    --muted: 164 25% 95%;
-    --muted-foreground: 164 15% 40%;
+    --muted: 167 25% 95%;
+    --muted-foreground: 167 15% 40%;
 
-    --accent: 164 25% 95%;
-    --accent-foreground: 164 35% 25%;
+    --accent: 167 25% 95%;
+    --accent-foreground: 192 40% 17%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 164 30% 90%;
-    --input: 164 30% 90%;
-    --ring: 164 35% 56%;
+    --border: 167 30% 90%;
+    --input: 167 30% 90%;
+    --ring: 167 33% 57%;
 
-    --radius: 0.75rem;
+    --radius: 1.5rem;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -46,33 +46,33 @@
   }
 
   .dark {
-    --background: 164 25% 15%;
-    --foreground: 164 20% 96%;
+    --background: 192 40% 10%;
+    --foreground: 167 20% 96%;
 
-    --card: 164 25% 15%;
-    --card-foreground: 164 20% 96%;
+    --card: 192 40% 10%;
+    --card-foreground: 167 20% 96%;
 
-    --popover: 164 25% 15%;
-    --popover-foreground: 164 20% 96%;
+    --popover: 192 40% 10%;
+    --popover-foreground: 167 20% 96%;
 
-    --primary: 164 35% 56%;
+    --primary: 167 33% 57%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 164 30% 25%;
-    --secondary-foreground: 164 20% 96%;
+    --secondary: 192 30% 20%;
+    --secondary-foreground: 167 20% 96%;
 
-    --muted: 164 30% 25%;
-    --muted-foreground: 164 15% 70%;
+    --muted: 192 30% 20%;
+    --muted-foreground: 167 15% 70%;
 
-    --accent: 164 30% 25%;
-    --accent-foreground: 164 20% 96%;
+    --accent: 192 30% 20%;
+    --accent-foreground: 167 20% 96%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 164 20% 96%;
+    --destructive-foreground: 167 20% 96%;
 
-    --border: 164 30% 25%;
-    --input: 164 30% 25%;
-    --ring: 164 35% 56%;
+    --border: 192 30% 20%;
+    --input: 192 30% 20%;
+    --ring: 167 33% 57%;
     
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -108,5 +108,26 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  
+  /* iOS inspired utilities */
+  .ios-blur {
+    @apply backdrop-blur-xl bg-white/60 dark:bg-black/60;
+  }
+  
+  .ios-card {
+    @apply rounded-2xl shadow-sm;
+  }
+  
+  .ios-button {
+    @apply rounded-full font-medium;
+  }
+  
+  .ios-input {
+    @apply rounded-lg bg-gray-100 dark:bg-gray-800 px-4 py-3;
+  }
+  
+  .ios-shadow {
+    @apply shadow-[0_8px_16px_rgba(0,0,0,0.04)];
   }
 }
