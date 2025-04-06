@@ -22,7 +22,7 @@ const Dashboard = () => {
   const [lastCall, setLastCall] = useState(null);
   const [nextCall, setNextCall] = useState({ scheduled: "Not scheduled" });
   const [loading, setLoading] = useState(true);
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState<number | null>(null);
   
   const { user } = useAuth();
   const { toast } = useToast();
@@ -65,7 +65,7 @@ const Dashboard = () => {
             variant: "destructive"
           });
           setLoading(false);
-          return;
+          return null;
         }
         
         // Store the numeric user ID for subsequent queries
