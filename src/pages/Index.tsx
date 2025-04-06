@@ -66,7 +66,7 @@ const Index = () => {
         
         <div className="pt-2 flex flex-col gap-4">
           <Button 
-            onClick={() => navigate(isAuthenticated ? "/onboarding" : "/auth?mode=signup")}
+            onClick={() => navigate("/auth?mode=signup")}
             className="w-full bg-[#63BFAC] hover:bg-[#4da899] text-white py-6 ios-button"
           >
             Get Started
