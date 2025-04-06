@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -25,8 +24,7 @@ const settingCategories = [
     icon: Heart,
     color: "text-lovable-500",
     items: [
-      { label: "Basic Information", link: "/settings/loved-one" },
-      { label: "Health & Medications", link: "/settings/health" }
+      { label: "Personal Information", link: "/settings/loved-one" }
     ]
   },
   {
