@@ -7,6 +7,9 @@ import {
   Bell, User, Settings as SettingsIcon, 
   Phone, Heart, LogOut, ChevronRight
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
 
 const settingCategories = [
   {
@@ -47,11 +50,28 @@ const settingCategories = [
 
 const Settings = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   
-  const handleSignOut = () => {
-    // In a real app with authentication, this would handle logout
-    // For now, just navigate to the landing page
-    navigate("/");
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Signed out successfully",
+        description: "You have been logged out of your account",
+      });
+      
+      navigate("/");
+    } catch (error: any) {
+      console.error("Error signing out:", error.message);
+      toast({
+        title: "Sign out failed",
+        description: error.message || "There was a problem signing out",
+        variant: "destructive",
+      });
+    }
   };
   
   return (
