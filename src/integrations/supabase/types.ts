@@ -292,18 +292,21 @@ export type Database = {
       }
       users: {
         Row: {
+          auth_user_id: string | null
           created_at: string
           id: number
           phone_number: string | null
           user_name: string | null
         }
         Insert: {
+          auth_user_id?: string | null
           created_at?: string
           id?: number
           phone_number?: string | null
           user_name?: string | null
         }
         Update: {
+          auth_user_id?: string | null
           created_at?: string
           id?: number
           phone_number?: string | null

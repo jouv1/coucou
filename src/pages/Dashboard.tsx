@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +22,7 @@ const Dashboard = () => {
   const [lastCall, setLastCall] = useState(null);
   const [nextCall, setNextCall] = useState({ scheduled: "Not scheduled" });
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState(null);
   
   const { user } = useAuth();
   const { toast } = useToast();
@@ -46,15 +48,49 @@ const Dashboard = () => {
   useEffect(() => {
     if (!user) return;
 
+    const fetchUserData = async () => {
+      try {
+        // First get the user record that corresponds to the authenticated user
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('id')
+          .eq('auth_user_id', user.id)
+          .single();
+          
+        if (userError) {
+          console.error('Error fetching user:', userError);
+          toast({
+            title: "Error",
+            description: "Could not fetch user information",
+            variant: "destructive"
+          });
+          setLoading(false);
+          return;
+        }
+        
+        // Store the numeric user ID for subsequent queries
+        setUserId(userData.id);
+        
+        return userData.id;
+      } catch (error) {
+        console.error('Error getting user data:', error);
+        return null;
+      }
+    };
+
     const fetchData = async () => {
       try {
         setLoading(true);
+        
+        // Get the app user_id first
+        const appUserId = await fetchUserData();
+        if (!appUserId) return;
         
         // Fetch loved one info
         const { data: lovedOnesData, error: lovedOnesError } = await supabase
           .from('loved_ones')
           .select('*')
-          .eq('user_id', user.id.toString()) // Convert UUID to string
+          .eq('user_id', appUserId)
           .limit(1)
           .single();
         
@@ -80,7 +116,7 @@ const Dashboard = () => {
         const { data: conversationsData, error: conversationsError } = await supabase
           .from('conversations')
           .select('*')
-          .eq('user_id', user.id.toString()) // Convert UUID to string
+          .eq('user_id', appUserId)
           .order('created_at', { ascending: false })
           .limit(5);
         

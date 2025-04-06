@@ -21,10 +21,28 @@ const Calls = () => {
     const fetchCalls = async () => {
       try {
         setLoading(true);
+        
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('id')
+          .eq('auth_user_id', user.id)
+          .single();
+          
+        if (userError) {
+          console.error('Error fetching user:', userError);
+          toast({
+            title: "Error",
+            description: "Could not fetch user information",
+            variant: "destructive"
+          });
+          setLoading(false);
+          return;
+        }
+        
         const { data, error } = await supabase
           .from('conversations')
           .select('*')
-          .eq('user_id', user.id.toString())
+          .eq('user_id', userData.id)
           .order('created_at', { ascending: false })
           .limit(20);
 
