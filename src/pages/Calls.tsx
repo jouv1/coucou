@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Phone } from "lucide-react";
+import { Phone, Calendar, Info } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/context/AuthContext";
@@ -29,7 +29,7 @@ interface Conversation {
 const Calls = () => {
   const [calls, setCalls] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -56,6 +56,8 @@ const Calls = () => {
           setLoading(false);
           return;
         }
+
+        console.log('Found user ID:', userData.id);
         
         // Use the numeric user_id to fetch conversations
         const { data, error } = await supabase
@@ -71,11 +73,10 @@ const Calls = () => {
             description: "Could not fetch your calls",
             variant: "destructive"
           });
-          return;
+        } else {
+          console.log('Fetched calls:', data);
+          setCalls(data || []);
         }
-
-        console.log('Fetched calls:', data);
-        setCalls(data || []);
       } catch (error) {
         console.error('Error in data fetching:', error);
         toast({
@@ -88,8 +89,12 @@ const Calls = () => {
       }
     };
 
-    fetchCalls();
-  }, [user, toast]);
+    if (isAuthenticated) {
+      fetchCalls();
+    } else {
+      setLoading(false);
+    }
+  }, [user, toast, isAuthenticated]);
 
   const formatCallDate = (dateString: string) => {
     try {
@@ -129,6 +134,48 @@ const Calls = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="py-6 animate-fade-in space-y-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-coucou-800">Recent Calls</h1>
+          <p className="text-gray-600">Loading your call history...</p>
+        </div>
+        
+        <Card className="border-coucou-100">
+          <CardContent className="pt-6">
+            <div className="flex justify-center items-center py-12">
+              <div className="w-8 h-8 border-t-2 border-coucou-500 border-solid rounded-full animate-spin"></div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="py-6 animate-fade-in space-y-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-coucou-800">Recent Calls</h1>
+          <p className="text-gray-600">Please sign in to view your call history</p>
+        </div>
+        
+        <Card className="border-coucou-100">
+          <CardContent className="pt-6">
+            <div className="text-center py-8">
+              <Info className="mx-auto h-12 w-12 text-gray-400 mb-4" />
+              <p className="text-gray-600 mb-4">You need to be logged in to access your call history.</p>
+              <Button asChild>
+                <Link to="/auth">Sign In</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="py-6 animate-fade-in space-y-4">
       <div>
@@ -145,7 +192,7 @@ const Calls = () => {
               <Phone className="h-5 w-5 text-coucou-500 mr-2" />
               <CardTitle className="text-lg font-medium">Call History</CardTitle>
             </div>
-            {!loading && calls.length > 0 && (
+            {calls.length > 0 && (
               <Badge className="bg-gray-100 text-gray-800">
                 {calls.length} Call{calls.length !== 1 ? 's' : ''}
               </Badge>
@@ -153,11 +200,7 @@ const Calls = () => {
           </div>
         </CardHeader>
         <CardContent>
-          {loading ? (
-            <div className="text-center py-4">
-              <p className="text-gray-500">Loading calls...</p>
-            </div>
-          ) : calls.length > 0 ? (
+          {calls.length > 0 ? (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -183,8 +226,16 @@ const Calls = () => {
               </TableBody>
             </Table>
           ) : (
-            <div className="text-center py-4">
-              <p className="text-gray-500">No calls recorded yet.</p>
+            <div className="text-center py-12">
+              <Phone className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+              <p className="text-gray-500 mb-2">No calls recorded yet</p>
+              <p className="text-gray-400 text-sm mb-6">When you make calls to your loved one, they will appear here</p>
+              <Button variant="outline" asChild className="mx-auto">
+                <Link to="/dashboard">
+                  <Calendar className="mr-2 h-4 w-4" />
+                  View Upcoming Calls
+                </Link>
+              </Button>
             </div>
           )}
         </CardContent>
