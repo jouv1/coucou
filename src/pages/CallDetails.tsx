@@ -1,45 +1,150 @@
-
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar, Clock, Heart, MessageSquare, Check, ChevronDown, ChevronUp, Pill } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-
-// Mock data for a single call
-const mockCallData = {
-  id: "1",
-  date: "Today, 9:15 AM",
-  duration: "4m 32s",
-  status: "Done",
-  transcript: "AI: Good morning Mary, how are you feeling today?\n\nMary: Oh, hello. I'm feeling pretty good today. Had breakfast with my neighbor Martha this morning.\n\nAI: That sounds nice. Have you taken your morning medication?\n\nMary: Yes, I've taken it already. I need to remember to buy groceries later though.\n\nAI: I'll make a note of that. How did you sleep last night?\n\nMary: Not too bad, woke up once or twice but got back to sleep okay.\n\nAI: That's good to hear. Do you have any plans for today?\n\nMary: Just going to watch my program, and then maybe go for a short walk if the weather's nice. Oh, and I need to schedule that doctor visit.",
-  sentiment: "Positive",
-  summary: "Mary is feeling good today. She had breakfast with her neighbor Martha and has taken her morning medication. She needs to buy groceries and schedule a doctor's appointment. She slept reasonably well and plans to watch TV and go for a walk.",
-  healthMetrics: {
-    sleep: {
-      status: "Good",
-      detail: "Slept through most of the night with only minor interruptions"
-    },
-    medication: {
-      status: "Taken",
-      detail: "Morning medication taken as scheduled"
-    },
-    mood: {
-      status: "Positive",
-      detail: "Generally upbeat and social"
-    }
-  }
-};
+import { useState, useEffect } from "react";
+import { format } from "date-fns";
+import { useConversations } from "@/hooks/useConversations";
+import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/context/AuthContext";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const CallDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const [isTranscriptExpanded, setIsTranscriptExpanded] = useState(false);
+  const [isTranscriptExpanded, setIsTranscriptExpanded] = useState(true);
+  const { fetchConversationById, currentConversation: callData, loading } = useConversations();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
+  
+  useEffect(() => {
+    const loadConversation = async () => {
+      if (!id || !isAuthenticated) return;
+      
+      const data = await fetchConversationById(id);
+      if (!data) {
+        toast({
+          title: "Call not found",
+          description: "The call you're looking for doesn't exist or you don't have access to it.",
+          variant: "destructive"
+        });
+        navigate('/calls');
+      }
+    };
+    
+    loadConversation();
+  }, [id, fetchConversationById, navigate, isAuthenticated, toast]);
   
   // Toggle transcript visibility
   const toggleTranscript = () => {
     setIsTranscriptExpanded(!isTranscriptExpanded);
   };
+  
+  const formatCallDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      
+      if (date.toDateString() === today.toDateString()) {
+        return `Today, ${format(date, 'h:mm a')}`;
+      } else if (date.toDateString() === yesterday.toDateString()) {
+        return `Yesterday, ${format(date, 'h:mm a')}`;
+      } else {
+        return format(date, 'MMM d, h:mm a');
+      }
+    } catch (e) {
+      console.error('Date formatting error:', e);
+      return dateString || 'Unknown date';
+    }
+  };
+  
+  const formatCallDuration = (seconds: number | null) => {
+    if (!seconds) return 'Unknown duration';
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}m ${remainingSeconds}s`;
+  };
+  
+  const formatTranscript = (transcript: string | null) => {
+    if (!transcript) return [];
+    
+    return transcript.split('\n').filter(line => line.trim() !== '').map((line, index) => {
+      const isBotLine = line.toLowerCase().startsWith('agent:');
+      return { text: line, isBot: isBotLine, id: index };
+    });
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="py-6 animate-fade-in space-y-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-coucou-800">Call Details</h1>
+          <p className="text-gray-600">Please log in to view call details</p>
+        </div>
+        
+        <Card className="border-coucou-100">
+          <CardContent className="py-12 text-center">
+            <p className="text-gray-500 mb-4">Authentication required</p>
+            <Button asChild>
+              <Link to="/auth">
+                Sign In
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="py-6 animate-fade-in space-y-4">
+        <Link to="/calls" className="inline-flex items-center text-coucou-600 mb-4">
+          <ArrowLeft className="h-4 w-4 mr-1" /> Back to calls
+        </Link>
+        <h1 className="text-2xl font-semibold text-coucou-800 mb-2">Call Details</h1>
+        <Card className="border-coucou-100">
+          <CardContent className="pt-6">
+            <div className="space-y-4">
+              <Skeleton className="h-6 w-40" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-2/3" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+  
+  // No data state
+  if (!callData) {
+    return (
+      <div className="py-6 animate-fade-in space-y-4">
+        <Link to="/calls" className="inline-flex items-center text-coucou-600 mb-4">
+          <ArrowLeft className="h-4 w-4 mr-1" /> Back to calls
+        </Link>
+        <h1 className="text-2xl font-semibold text-coucou-800 mb-2">Call Details</h1>
+        <Card className="border-coucou-100">
+          <CardContent className="py-12 text-center">
+            <p className="text-gray-500">Call not found or details unavailable</p>
+            <Button variant="outline" asChild className="mt-4">
+              <Link to="/calls">
+                View All Calls
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  const transcriptLines = formatTranscript(callData.transcript);
 
   return (
     <div className="py-6 animate-fade-in space-y-4">
@@ -49,60 +154,52 @@ const CallDetails = () => {
         </Link>
         <h1 className="text-2xl font-semibold text-coucou-800 mb-1">Call Details</h1>
         <div className="flex items-center gap-2">
-          <p className="text-gray-600">{mockCallData.date}</p>
+          <p className="text-gray-600">{formatCallDate(callData.created_at)}</p>
           <Badge className="bg-green-100 text-green-800">
-            {mockCallData.status}
+            Done
           </Badge>
         </div>
       </div>
       
-      {/* Call Summary Card */}
+      {/* Call Info Card */}
       <Card className="border-coucou-100">
         <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5 text-coucou-500" />
-            <CardTitle className="text-lg font-medium">Call Summary</CardTitle>
+            <CardTitle className="text-lg font-medium">Call Information</CardTitle>
           </div>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-700 mb-4">{mockCallData.summary}</p>
-          
-          {/* Health Metrics */}
-          <div className="grid grid-cols-3 gap-3 mt-4">
-            {/* Sleep Metric */}
-            <div className="p-3 bg-blue-50 rounded-lg">
-              <div className="flex items-center gap-2 mb-1">
-                <Clock className="h-4 w-4 text-blue-500" />
-                <span className="font-medium text-sm">Sleep</span>
-              </div>
-              <Badge className="bg-blue-100 text-blue-800">{mockCallData.healthMetrics.sleep.status}</Badge>
-              <p className="text-xs text-gray-500 mt-1">{mockCallData.healthMetrics.sleep.detail}</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm text-gray-500">Duration</p>
+              <p className="font-medium">{formatCallDuration(callData.call_duration_secs)}</p>
             </div>
             
-            {/* Medication Metric */}
-            <div className="p-3 bg-green-50 rounded-lg">
-              <div className="flex items-center gap-2 mb-1">
-                <Pill className="h-4 w-4 text-green-500" />
-                <span className="font-medium text-sm">Medication</span>
-              </div>
-              <Badge className="bg-green-100 text-green-800">{mockCallData.healthMetrics.medication.status}</Badge>
-              <p className="text-xs text-gray-500 mt-1">{mockCallData.healthMetrics.medication.detail}</p>
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm text-gray-500">Direction</p>
+              <p className="font-medium capitalize">{callData.call_direction || 'Unknown'}</p>
             </div>
             
-            {/* Mood Metric */}
-            <div className="p-3 bg-purple-50 rounded-lg">
-              <div className="flex items-center gap-2 mb-1">
-                <Heart className="h-4 w-4 text-purple-500" />
-                <span className="font-medium text-sm">Mood</span>
-              </div>
-              <Badge className="bg-purple-100 text-purple-800">{mockCallData.healthMetrics.mood.status}</Badge>
-              <p className="text-xs text-gray-500 mt-1">{mockCallData.healthMetrics.mood.detail}</p>
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm text-gray-500">Phone Number</p>
+              <p className="font-medium">{callData.phone_number || 'Unknown'}</p>
             </div>
+            
+            {callData.happiness_level && (
+              <div className="flex flex-col space-y-1">
+                <p className="text-sm text-gray-500">Mood</p>
+                <div className="flex items-center gap-2">
+                  <Heart className="h-4 w-4 text-purple-500" />
+                  <p className="font-medium">{callData.happiness_level}</p>
+                </div>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
       
-      {/* Call Transcript Card */}
+      {/* Transcript Card */}
       <Card className="border-coucou-100">
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
@@ -110,36 +207,46 @@ const CallDetails = () => {
               <Clock className="h-5 w-5 text-coucou-500" />
               <CardTitle className="text-lg font-medium">Transcript</CardTitle>
             </div>
-            <div className="flex items-center gap-2">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={toggleTranscript}
-                className="flex items-center gap-1"
-              >
-                {isTranscriptExpanded ? (
-                  <>
-                    <ChevronUp className="h-4 w-4" />
-                    <span>Hide</span>
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="h-4 w-4" />
-                    <span>Show</span>
-                  </>
-                )}
-              </Button>
-              <span className="text-sm text-gray-500">|</span>
-              <span className="text-sm text-gray-500">Duration:</span>
-              <span className="text-sm font-medium">{mockCallData.duration}</span>
-            </div>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={toggleTranscript}
+              className="flex items-center gap-1"
+            >
+              {isTranscriptExpanded ? (
+                <>
+                  <ChevronUp className="h-4 w-4" />
+                  <span>Hide</span>
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-4 w-4" />
+                  <span>Show</span>
+                </>
+              )}
+            </Button>
           </div>
         </CardHeader>
         {isTranscriptExpanded && (
           <CardContent>
-            <pre className="whitespace-pre-wrap text-sm text-gray-600 font-sans">
-              {mockCallData.transcript}
-            </pre>
+            {transcriptLines.length > 0 ? (
+              <div className="space-y-4">
+                {transcriptLines.map((line) => (
+                  <div 
+                    key={line.id} 
+                    className={`p-3 rounded-lg ${
+                      line.isBot 
+                        ? 'bg-gray-100 text-gray-800 mr-12' 
+                        : 'bg-blue-50 text-blue-800 ml-12'
+                    }`}
+                  >
+                    <p className="whitespace-pre-line text-sm">{line.text}</p>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-center text-gray-500 py-4">No transcript available for this call</p>
+            )}
           </CardContent>
         )}
       </Card>

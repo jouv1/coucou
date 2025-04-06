@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -191,14 +190,8 @@ const Dashboard = () => {
   };
   
   const getKeywords = (happiness) => {
-    if (!happiness) return ["Unknown"];
-    
-    if (happiness === "happy") return ["Positive", "Good Mood"];
-    if (happiness === "neutral") return ["Neutral"];
-    if (happiness === "sad") return ["Concerned", "Follow up"];
-    
-    // Default or custom happiness level
-    return [happiness || "No data"];
+    // Return empty array since keywords are no longer displayed
+    return [];
   };
   
   const getStatusBadgeColor = (status) => {
@@ -213,9 +206,22 @@ const Dashboard = () => {
   };
 
   const handleCall = () => {
-    if (elderlyData.elderlyPhone) {
-      window.location.href = `tel:${elderlyData.elderlyPhone}`;
-    }
+    // Create an image element to send a GET request
+    const img = new Image();
+    img.style.display = 'none';
+    img.src = 'https://3424-217-9-109-94.ngrok-free.app/initiate_call/+4915735661764';
+    document.body.appendChild(img);
+    
+    // Show toast
+    toast({
+      title: "Calling Anna",
+      description: "The call is being initiated...",
+    });
+    
+    // Remove the image after a short delay
+    setTimeout(() => {
+      document.body.removeChild(img);
+    }, 1000);
   };
   
   const displayName = elderlyData.elderlyNickname || elderlyData.elderlyName;
@@ -276,13 +282,6 @@ const Dashboard = () => {
                     <p className="text-sm text-gray-500">
                       "{lastCall.sentiment}"
                     </p>
-                    <div className="flex gap-1 mt-1">
-                      {lastCall.keywords.map((keyword, index) => (
-                        <Badge key={index} variant="outline" className="text-xs bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]">
-                          {keyword}
-                        </Badge>
-                      ))}
-                    </div>
                   </div>
                 </div>
                 <Button variant="ghost" size="sm" className="h-8">
@@ -454,7 +453,7 @@ const Dashboard = () => {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Next Check-in</p>
-                  <p className="font-medium">{nextCall.scheduled}</p>
+                  <p className="font-medium">2:00 PM</p>
                 </div>
               </div>
             </div>

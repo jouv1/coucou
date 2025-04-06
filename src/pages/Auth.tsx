@@ -1,6 +1,5 @@
-
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, useLocation } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,6 +13,7 @@ type AuthMode = "login" | "signup" | "reset" | "confirmation-sent";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const { user, isAuthenticated, setOnboardingStep } = useAuth();
   
@@ -29,12 +29,17 @@ const Auth = () => {
   const [verifyingEmail, setVerifyingEmail] = useState(false);
   const [verificationSuccess, setVerificationSuccess] = useState(false);
 
-  // If user is authenticated, redirect to dashboard
+  // Redirect if user is already authenticated
   useEffect(() => {
-    if (isAuthenticated && !verifyingEmail) {
-      navigate("/dashboard");
+    console.log('Auth page loaded, auth state:', { isAuthenticated, user });
+    
+    if (isAuthenticated) {
+      // Get the redirect path from location state, or default to dashboard
+      const from = (location.state as { from?: Location })?.from?.pathname || '/dashboard';
+      console.log('User is authenticated, redirecting to:', from);
+      navigate(from, { replace: true });
     }
-  }, [isAuthenticated, navigate, verifyingEmail]);
+  }, [isAuthenticated, navigate, location]);
 
   // Check for email confirmation token
   useEffect(() => {
@@ -90,19 +95,53 @@ const Auth = () => {
 
     try {
       if (mode === "login") {
-        const { error } = await supabase.auth.signInWithPassword({
+        console.log('Attempting login with email:', email);
+        const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
         if (error) throw error;
         
+        console.log('Login successful, user data:', data);
+        
         toast({
           title: "Welcome back!",
           description: "You've been successfully logged in.",
         });
         
-        navigate("/dashboard");
+        // Find the user in the users table to ensure we have a record
+        const { data: userData, error: userError } = await supabase
+          .from('users')
+          .select('*')
+          .eq('auth_user_id', data.user?.id)
+          .single();
+          
+        if (userError || !userData) {
+          console.log('No user record found, creating one');
+          // Create a user record if one doesn't exist
+          const { data: newUser, error: createError } = await supabase
+            .from('users')
+            .insert([
+              { 
+                auth_user_id: data.user?.id,
+                email: data.user?.email,
+                name: data.user?.user_metadata?.full_name || email.split('@')[0]
+              }
+            ])
+            .select()
+            .single();
+            
+          if (createError) {
+            console.error('Error creating user record:', createError);
+          } else {
+            console.log('Created user record:', newUser);
+          }
+        } else {
+          console.log('Found existing user record:', userData);
+        }
+        
+        navigate("/calls");
       } 
       else if (mode === "signup") {
         if (password !== confirmPassword) {
@@ -115,7 +154,8 @@ const Auth = () => {
           return;
         }
 
-        const { error } = await supabase.auth.signUp({
+        console.log('Attempting signup with email:', email);
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -127,6 +167,29 @@ const Auth = () => {
         });
 
         if (error) throw error;
+        
+        console.log('Signup successful, user data:', data);
+        
+        // Create a user record right away
+        if (data.user) {
+          const { data: newUser, error: createError } = await supabase
+            .from('users')
+            .insert([
+              { 
+                auth_user_id: data.user.id,
+                email: data.user.email,
+                name: fullName || email.split('@')[0]
+              }
+            ])
+            .select()
+            .single();
+            
+          if (createError) {
+            console.error('Error creating user record:', createError);
+          } else {
+            console.log('Created user record:', newUser);
+          }
+        }
         
         setMode("confirmation-sent");
         toast({

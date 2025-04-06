@@ -1,11 +1,11 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/context/AuthContext";
 
 import Layout from "./components/layout/Layout";
 import Index from "./pages/Index";
@@ -28,6 +28,24 @@ import ScheduleSettings from "./pages/settings/ScheduleSettings";
 import NotificationSettings from "./pages/settings/NotificationSettings";
 
 const queryClient = new QueryClient();
+
+// Protected route component
+const ProtectedRoute: React.FC<{children: React.ReactNode}> = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) {
+    // Show minimal loading state while checking auth
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
+  
+  if (!isAuthenticated) {
+    // Redirect to auth page, but remember where they were trying to go
+    return <Navigate to="/auth" state={{ from: location }} replace />;
+  }
+
+  return <>{children}</>;
+};
 
 const App = () => {
   // Register service worker for PWA functionality
@@ -87,8 +105,19 @@ const App = () => {
               <Route path="auth" element={<Auth />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="onboarding" element={<Onboarding />} />
-              <Route path="calls" element={<Calls />} />
-              <Route path="calls/:id" element={<CallDetails />} />
+              
+              {/* Protected routes */}
+              <Route path="calls" element={
+                <ProtectedRoute>
+                  <Calls />
+                </ProtectedRoute>
+              } />
+              <Route path="calls/:id" element={
+                <ProtectedRoute>
+                  <CallDetails />
+                </ProtectedRoute>
+              } />
+              
               <Route path="appointments" element={<Appointments />} />
               <Route path="settings" element={<Settings />} />
               

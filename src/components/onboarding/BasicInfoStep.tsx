@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -105,8 +104,15 @@ const BasicInfoStep = ({ data, updateData, stepId }: BasicInfoStepProps) => {
             <SelectValue placeholder="Select age range" />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="25-35">25-35</SelectItem>
+            <SelectItem value="30-40">30-40</SelectItem>
+            <SelectItem value="35-45">35-45</SelectItem>
+            <SelectItem value="45-55">45-55</SelectItem>
+            <SelectItem value="55-65">55-65</SelectItem>
             <SelectItem value="60-65">60-65</SelectItem>
+            <SelectItem value="65-75">65-75</SelectItem>
             <SelectItem value="66-70">66-70</SelectItem>
+            <SelectItem value="70-80">70-80</SelectItem>
             <SelectItem value="71-75">71-75</SelectItem>
             <SelectItem value="76-80">76-80</SelectItem>
             <SelectItem value="81-85">81-85</SelectItem>
@@ -173,11 +179,14 @@ const BasicInfoStep = ({ data, updateData, stepId }: BasicInfoStepProps) => {
             <SelectValue placeholder="Select relationship" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="parent">Parent</SelectItem>
-            <SelectItem value="grandparent">Grandparent</SelectItem>
-            <SelectItem value="aunt-uncle">Aunt/Uncle</SelectItem>
-            <SelectItem value="friend">Friend</SelectItem>
-            <SelectItem value="other">Other</SelectItem>
+            <SelectItem value="Parent">Parent</SelectItem>
+            <SelectItem value="Grandparent">Grandparent</SelectItem>
+            <SelectItem value="Spouse">Spouse</SelectItem>
+            <SelectItem value="Sibling">Sibling</SelectItem>
+            <SelectItem value="Aunt/Uncle">Aunt/Uncle</SelectItem>
+            <SelectItem value="Friend">Friend</SelectItem>
+            <SelectItem value="Self">Self</SelectItem>
+            <SelectItem value="Other">Other</SelectItem>
           </SelectContent>
         </Select>
       </div>

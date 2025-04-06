@@ -2,12 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Phone, Calendar, Info } from "lucide-react";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/context/AuthContext";
+import { Phone, Calendar, MessageSquare, Clock } from "lucide-react";
 import { format } from "date-fns";
-import { useToast } from "@/components/ui/use-toast";
 import {
   Table,
   TableBody,
@@ -16,60 +12,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-interface Conversation {
-  id: string;
-  created_at: string;
-  call_duration_secs: number | null;
-  happiness_level: string | null;
-  transcript: string | null;
-}
+import { useConversations } from "@/hooks/useConversations";
+import { useAuth } from "@/context/AuthContext";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Calls = () => {
-  const [calls, setCalls] = useState<Conversation[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { user, isAuthenticated } = useAuth();
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const fetchCalls = async () => {
-      try {
-        setLoading(true);
-        
-        // If we're in development or testing environment, fetch all conversations
-        // This is a temporary solution since auth_user_id is NULL in the database
-        const { data, error } = await supabase
-          .from('conversations')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          console.error('Error fetching calls:', error);
-          toast({
-            title: "Error",
-            description: "Could not fetch your calls",
-            variant: "destructive"
-          });
-        } else {
-          console.log('Fetched calls:', data);
-          setCalls(data || []);
-        }
-      } catch (error) {
-        console.error('Error in data fetching:', error);
-        toast({
-          title: "Error",
-          description: "Something went wrong while loading your calls",
-          variant: "destructive"
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    // For demo purposes, fetch calls even if not authenticated
-    // In production, you would want to check isAuthenticated
-    fetchCalls();
-  }, [toast]);
+  const { conversations: calls, loading } = useConversations();
+  const { isAuthenticated } = useAuth();
 
   const formatCallDate = (dateString: string) => {
     try {
@@ -108,6 +57,39 @@ const Calls = () => {
         return "bg-gray-100 text-gray-800";
     }
   };
+  
+  // Function to truncate transcript for preview
+  const truncateTranscript = (transcript: string | null, maxLength = 100) => {
+    if (!transcript) return 'No transcript available';
+    return transcript.length > maxLength
+      ? `${transcript.substring(0, maxLength)}...`
+      : transcript;
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="py-6 animate-fade-in space-y-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-coucou-800">Recent Calls</h1>
+          <p className="text-gray-600">Please log in to view your calls</p>
+        </div>
+        
+        <Card className="border-coucou-100">
+          <CardContent className="pt-6">
+            <div className="text-center py-12">
+              <Phone className="mx-auto h-12 w-12 text-gray-300 mb-4" />
+              <p className="text-gray-500 mb-4">Authentication required</p>
+              <Button asChild>
+                <Link to="/auth">
+                  Sign In
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -118,9 +100,21 @@ const Calls = () => {
         </div>
         
         <Card className="border-coucou-100">
-          <CardContent className="pt-6">
-            <div className="flex justify-center items-center py-12">
-              <div className="w-8 h-8 border-t-2 border-coucou-500 border-solid rounded-full animate-spin"></div>
+          <CardHeader className="pb-2">
+            <div className="flex items-center">
+              <Phone className="h-5 w-5 text-coucou-500 mr-2" />
+              <CardTitle className="text-lg font-medium">Call History</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {Array(3).fill(0).map((_, i) => (
+                <div key={i} className="flex flex-col space-y-2 p-4 border rounded-md">
+                  <Skeleton className="h-5 w-32" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-2/3" />
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
@@ -153,30 +147,37 @@ const Calls = () => {
         </CardHeader>
         <CardContent>
           {calls.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Duration</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {calls.map((call) => (
-                  <TableRow key={call.id} className="hover:bg-gray-50">
-                    <TableCell className="font-medium">
-                      <Link to={`/calls/${call.id}`} className="hover:underline">
-                        {formatCallDate(call.created_at)}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{formatCallDuration(call.call_duration_secs)}</TableCell>
-                    <TableCell>
-                      <Badge className={getStatusBadgeColor("Done")}>Done</Badge>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <div className="space-y-4">
+              {calls.map((call) => (
+                <div key={call.id} className="border rounded-md p-4 transition-colors hover:bg-gray-50">
+                  <Link to={`/calls/${call.id}`} className="block">
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="flex items-center gap-2">
+                        <Badge className={getStatusBadgeColor("Done")}>Done</Badge>
+                        <span className="text-sm text-gray-500">{formatCallDate(call.created_at)}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock className="h-4 w-4 text-gray-400" />
+                        <span className="text-sm text-gray-500">{formatCallDuration(call.call_duration_secs)}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-2">
+                      <div className="flex items-center gap-1 text-coucou-700 mb-1">
+                        <MessageSquare className="h-4 w-4" />
+                        <span className="font-medium">Transcript</span>
+                      </div>
+                      <p className="text-sm text-gray-700 whitespace-pre-line line-clamp-3">
+                        {truncateTranscript(call.transcript)}
+                      </p>
+                      <div className="mt-2 text-right">
+                        <span className="text-coucou-600 text-sm hover:underline">View Details →</span>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
           ) : (
             <div className="text-center py-12">
               <Phone className="mx-auto h-12 w-12 text-gray-300 mb-4" />
