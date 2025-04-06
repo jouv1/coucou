@@ -5,33 +5,33 @@
 
 @layer base {
   :root {
-    --background: 39 15% 95%;
-    --foreground: 340 35% 16%;
+    --background: 60 54% 97%;
+    --foreground: 164 35% 25%;
 
     --card: 0 0% 100%;
-    --card-foreground: 340 35% 16%;
+    --card-foreground: 164 35% 25%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 340 35% 16%;
+    --popover-foreground: 164 35% 25%;
 
-    --primary: 340 35% 20%;
+    --primary: 164 35% 56%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 198 30% 91%;
-    --secondary-foreground: 340 35% 16%;
+    --secondary: 60 54% 97%;
+    --secondary-foreground: 164 35% 25%;
 
-    --muted: 340 15% 95%;
-    --muted-foreground: 340 15% 40%;
+    --muted: 164 25% 95%;
+    --muted-foreground: 164 15% 40%;
 
-    --accent: 340 15% 95%;
-    --accent-foreground: 340 35% 16%;
+    --accent: 164 25% 95%;
+    --accent-foreground: 164 35% 25%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 340 30% 90%;
-    --input: 340 30% 90%;
-    --ring: 340 35% 20%;
+    --border: 164 30% 90%;
+    --input: 164 30% 90%;
+    --ring: 164 35% 56%;
 
     --radius: 0.75rem;
 
@@ -46,33 +46,33 @@
   }
 
   .dark {
-    --background: 340 15% 15%;
-    --foreground: 340 20% 96%;
+    --background: 164 25% 15%;
+    --foreground: 164 20% 96%;
 
-    --card: 340 15% 15%;
-    --card-foreground: 340 20% 96%;
+    --card: 164 25% 15%;
+    --card-foreground: 164 20% 96%;
 
-    --popover: 340 15% 15%;
-    --popover-foreground: 340 20% 96%;
+    --popover: 164 25% 15%;
+    --popover-foreground: 164 20% 96%;
 
-    --primary: 340 35% 20%;
+    --primary: 164 35% 56%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 340 30% 25%;
-    --secondary-foreground: 340 20% 96%;
+    --secondary: 164 30% 25%;
+    --secondary-foreground: 164 20% 96%;
 
-    --muted: 340 30% 25%;
-    --muted-foreground: 340 15% 70%;
+    --muted: 164 30% 25%;
+    --muted-foreground: 164 15% 70%;
 
-    --accent: 340 30% 25%;
-    --accent-foreground: 340 20% 96%;
+    --accent: 164 30% 25%;
+    --accent-foreground: 164 20% 96%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 340 20% 96%;
+    --destructive-foreground: 164 20% 96%;
 
-    --border: 340 30% 25%;
-    --input: 340 30% 25%;
-    --ring: 340 35% 20%;
+    --border: 164 30% 25%;
+    --input: 164 30% 25%;
+    --ring: 164 35% 56%;
     
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
@@ -92,10 +92,6 @@
 
   body {
     @apply bg-background text-foreground font-sans;
-    /* iOS-like font */
-    font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    -webkit-tap-highlight-color: transparent;
-    overscroll-behavior: none; /* Prevent page refresh on pull-down on iOS */
   }
   
   /* Custom font styles for better readability */
@@ -107,47 +103,10 @@
   button, a {
     @apply min-h-[44px] min-w-[44px];
   }
-
-  /* iOS style buttons */
-  .ios-button {
-    @apply rounded-full bg-primary/10 text-primary font-medium px-4 py-2;
-  }
-
-  /* iOS-like cards */
-  .ios-card {
-    @apply bg-white rounded-2xl shadow-sm border-0;
-  }
-  
-  /* iOS-like bottom sheet */
-  .ios-sheet {
-    @apply bg-white rounded-t-2xl;
-  }
-  
-  /* iOS-like flat navigation bar */
-  .ios-nav {
-    @apply backdrop-blur-md bg-white/60 border-b border-gray-200;
-  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
-  }
-  
-  /* Safe area insets for notch phones */
-  .pt-safe {
-    padding-top: env(safe-area-inset-top);
-  }
-  
-  .pb-safe {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  
-  .pl-safe {
-    padding-left: env(safe-area-inset-left);
-  }
-  
-  .pr-safe {
-    padding-right: env(safe-area-inset-right);
   }
 }
