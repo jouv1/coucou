@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +24,7 @@ const Calls = () => {
         const { data, error } = await supabase
           .from('conversations')
           .select('*')
-          .eq('user_id', user.id)
+          .eq('user_id', user.id.toString())
           .order('created_at', { ascending: false })
           .limit(20);
 

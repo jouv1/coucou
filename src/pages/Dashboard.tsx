@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -55,7 +54,7 @@ const Dashboard = () => {
         const { data: lovedOnesData, error: lovedOnesError } = await supabase
           .from('loved_ones')
           .select('*')
-          .eq('user_id', user.id)
+          .eq('user_id', user.id.toString()) // Convert UUID to string
           .limit(1)
           .single();
         
@@ -81,7 +80,7 @@ const Dashboard = () => {
         const { data: conversationsData, error: conversationsError } = await supabase
           .from('conversations')
           .select('*')
-          .eq('user_id', user.id)
+          .eq('user_id', user.id.toString()) // Convert UUID to string
           .order('created_at', { ascending: false })
           .limit(5);
         
