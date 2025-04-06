@@ -4,58 +4,95 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Phone } from "lucide-react";
-
-const mockCalls = [
-  {
-    id: "1",
-    date: "Today, 9:15 AM",
-    duration: "4m 32s",
-    status: "Done",
-  },
-  {
-    id: "2",
-    date: "Yesterday, 9:30 AM",
-    duration: "5m 15s",
-    status: "Done",
-  },
-  {
-    id: "3",
-    date: "May 3, 9:05 AM",
-    duration: "3m 58s",
-    status: "Done",
-  },
-  {
-    id: "4",
-    date: "May 2, 9:20 AM",
-    duration: "6m 12s",
-    status: "Done",
-  },
-  {
-    id: "5",
-    date: "May 1, 9:10 AM",
-    duration: "4m 42s",
-    status: "Missed",
-  },
-  {
-    id: "6",
-    date: "Apr 30, 9:25 AM",
-    duration: "5m 03s",
-    status: "Done",
-  },
-];
-
-const getStatusBadgeColor = (status: string) => {
-  switch (status) {
-    case "Done":
-      return "bg-green-100 text-green-800";
-    case "Missed":
-      return "bg-red-100 text-red-800";
-    default:
-      return "bg-gray-100 text-gray-800";
-  }
-};
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/context/AuthContext";
+import { format } from "date-fns";
+import { useToast } from "@/components/ui/use-toast";
 
 const Calls = () => {
+  const [calls, setCalls] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchCalls = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('conversations')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(20);
+
+        if (error) {
+          console.error('Error fetching calls:', error);
+          toast({
+            title: "Error",
+            description: "Could not fetch your calls",
+            variant: "destructive"
+          });
+          return;
+        }
+
+        setCalls(data || []);
+      } catch (error) {
+        console.error('Error in data fetching:', error);
+        toast({
+          title: "Error",
+          description: "Something went wrong while loading your calls",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCalls();
+  }, [user, toast]);
+
+  const formatCallDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      
+      if (date.toDateString() === today.toDateString()) {
+        return `Today, ${format(date, 'h:mm a')}`;
+      } else if (date.toDateString() === yesterday.toDateString()) {
+        return `Yesterday, ${format(date, 'h:mm a')}`;
+      } else {
+        return format(date, 'MMM d, h:mm a');
+      }
+    } catch (e) {
+      console.error('Date formatting error:', e);
+      return dateString || 'Unknown date';
+    }
+  };
+  
+  const formatCallDuration = (seconds) => {
+    if (!seconds) return 'Unknown duration';
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}m ${remainingSeconds}s`;
+  };
+
+  const getStatusBadgeColor = (status) => {
+    switch (status) {
+      case "Done":
+        return "bg-[#e8f5f2] text-[#1F584D]";
+      case "Missed":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
   return (
     <div className="py-6 animate-fade-in space-y-4">
       <div>
@@ -73,21 +110,33 @@ const Calls = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {mockCalls.map((call) => (
-              <Link key={call.id} to={`/calls/${call.id}`} className="block">
-                <div className="flex justify-between items-center border-b pb-3 last:border-0">
-                  <div>
-                    <p className="font-medium">{call.date}</p>
-                    <p className="text-sm text-gray-500">Duration: {call.duration}</p>
+          {loading ? (
+            <div className="text-center py-4">
+              <p className="text-gray-500">Loading calls...</p>
+            </div>
+          ) : calls.length > 0 ? (
+            <div className="space-y-3">
+              {calls.map((call) => (
+                <Link key={call.id} to={`/calls/${call.id}`} className="block">
+                  <div className="flex justify-between items-center border-b pb-3 last:border-0">
+                    <div>
+                      <p className="font-medium">{formatCallDate(call.created_at)}</p>
+                      <p className="text-sm text-gray-500">
+                        Duration: {formatCallDuration(call.call_duration_secs)}
+                      </p>
+                    </div>
+                    <Badge className={getStatusBadgeColor("Done")}>
+                      Done
+                    </Badge>
                   </div>
-                  <Badge className={getStatusBadgeColor(call.status)}>
-                    {call.status}
-                  </Badge>
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-4">
+              <p className="text-gray-500">No calls recorded yet.</p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

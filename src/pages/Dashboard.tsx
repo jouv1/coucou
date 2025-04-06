@@ -5,44 +5,193 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Phone, Pill, Clock, Smile, Frown, Calendar, ChevronRight, User, CheckCircle, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const mockData = {
-  elderlyName: "Mary Johnson",
-  elderlyNickname: "Mom",
-  elderlyPhoto: null, // We'll use a fallback for now
-  elderlyPhone: "+1234567890", // Added phone number for call button
-  lastCall: {
-    id: "1", // Added ID for link to call details
-    date: "Today, 9:15 AM",
-    status: "Done",
-    sentiment: "Feeling good today, had breakfast with a neighbor",
-    keywords: ["Positive", "Social"],
-  },
-  nextCall: {
-    scheduled: "Today, 5:30 PM"
-  },
-  medications: {
-    status: "taken",
-  },
-  sleep: {
-    status: "good",
-    data: [4, 6, 7, 5, 8, 6, 7],
-  },
-  appointments: [
-    { date: "May 7", title: "Doctor Appointment", time: "10:30 AM" },
-  ],
-  mood: {
-    // Value between 0-100, where 100 is great and 0 is critical
-    score: 75,
-  }
-};
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/context/AuthContext";
+import { format } from "date-fns";
+import { useToast } from "@/components/ui/use-toast";
 
 const Dashboard = () => {
-  const handleCall = () => {
-    window.location.href = `tel:${mockData.elderlyPhone}`;
+  const [elderlyData, setElderlyData] = useState({
+    elderlyName: "Your Loved One",
+    elderlyNickname: "",
+    elderlyPhoto: null,
+    elderlyPhone: "",
+  });
+  const [recentCalls, setRecentCalls] = useState([]);
+  const [lastCall, setLastCall] = useState(null);
+  const [nextCall, setNextCall] = useState({ scheduled: "Not scheduled" });
+  const [loading, setLoading] = useState(true);
+  
+  const { user } = useAuth();
+  const { toast } = useToast();
+  
+  // Mock data for sections that aren't connected to the database yet
+  const mockData = {
+    medications: {
+      status: "taken",
+    },
+    sleep: {
+      status: "good",
+      data: [4, 6, 7, 5, 8, 6, 7],
+    },
+    appointments: [
+      { date: "May 7", title: "Doctor Appointment", time: "10:30 AM" },
+    ],
+    mood: {
+      // Value between 0-100, where 100 is great and 0 is critical
+      score: 75,
+    }
+  };
+
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch loved one info
+        const { data: lovedOnesData, error: lovedOnesError } = await supabase
+          .from('loved_ones')
+          .select('*')
+          .eq('user_id', user.id)
+          .limit(1)
+          .single();
+        
+        if (lovedOnesError && lovedOnesError.code !== 'PGRST116') {
+          console.error('Error fetching loved one data:', lovedOnesError);
+          toast({
+            title: "Error fetching data",
+            description: "Could not retrieve your loved one's information",
+            variant: "destructive"
+          });
+        }
+        
+        if (lovedOnesData) {
+          setElderlyData({
+            elderlyName: lovedOnesData.name,
+            elderlyNickname: lovedOnesData.nickname || null,
+            elderlyPhoto: null, // Add photo handling if available in the future
+            elderlyPhone: "+1234567890", // Replace with actual phone when available
+          });
+        }
+        
+        // Fetch recent conversations (calls)
+        const { data: conversationsData, error: conversationsError } = await supabase
+          .from('conversations')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(5);
+        
+        if (conversationsError) {
+          console.error('Error fetching conversations:', conversationsError);
+          toast({
+            title: "Error fetching calls",
+            description: "Could not retrieve your recent calls",
+            variant: "destructive"
+          });
+        } else if (conversationsData && conversationsData.length > 0) {
+          setRecentCalls(conversationsData);
+          
+          // Set the last call
+          const lastCallData = conversationsData[0];
+          setLastCall({
+            id: lastCallData.id,
+            date: formatCallDate(lastCallData.created_at),
+            status: "Done", // Assuming completed calls are stored
+            sentiment: lastCallData.transcript ? truncateTranscript(lastCallData.transcript) : "No transcript available",
+            keywords: getKeywords(lastCallData.happiness_level),
+          });
+        }
+        
+      } catch (error) {
+        console.error('Error in data fetching:', error);
+        toast({
+          title: "Error",
+          description: "Something went wrong while loading your data",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, [user, toast]);
+  
+  const formatCallDate = (dateString) => {
+    try {
+      const date = new Date(dateString);
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      
+      if (date.toDateString() === today.toDateString()) {
+        return `Today, ${format(date, 'h:mm a')}`;
+      } else if (date.toDateString() === yesterday.toDateString()) {
+        return `Yesterday, ${format(date, 'h:mm a')}`;
+      } else {
+        return format(date, 'MMM d, h:mm a');
+      }
+    } catch (e) {
+      console.error('Date formatting error:', e);
+      return dateString || 'Unknown date';
+    }
   };
   
-  const displayName = mockData.elderlyNickname || mockData.elderlyName;
+  const formatCallDuration = (seconds) => {
+    if (!seconds) return 'Unknown duration';
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}m ${remainingSeconds}s`;
+  };
+  
+  const truncateTranscript = (transcript, maxLength = 100) => {
+    if (!transcript) return "No transcript available";
+    return transcript.length > maxLength 
+      ? `${transcript.substring(0, maxLength)}...` 
+      : transcript;
+  };
+  
+  const getKeywords = (happiness) => {
+    if (!happiness) return ["Unknown"];
+    
+    if (happiness === "happy") return ["Positive", "Good Mood"];
+    if (happiness === "neutral") return ["Neutral"];
+    if (happiness === "sad") return ["Concerned", "Follow up"];
+    
+    // Default or custom happiness level
+    return [happiness || "No data"];
+  };
+  
+  const getStatusBadgeColor = (status) => {
+    switch (status) {
+      case "Done":
+        return "bg-[#e8f5f2] text-[#1F584D]";
+      case "Missed":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const handleCall = () => {
+    if (elderlyData.elderlyPhone) {
+      window.location.href = `tel:${elderlyData.elderlyPhone}`;
+    }
+  };
+  
+  const displayName = elderlyData.elderlyNickname || elderlyData.elderlyName;
+
+  if (loading) {
+    return (
+      <div className="py-6 animate-fade-in space-y-6 text-center">
+        <p>Loading your dashboard...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="py-6 animate-fade-in space-y-6">
@@ -50,7 +199,7 @@ const Dashboard = () => {
         <div>
           <h1 className="text-2xl font-semibold text-coucou-800">Coucou</h1>
           <p className="text-gray-600">
-            Here's how {mockData.elderlyName} is doing
+            Here's how {elderlyData.elderlyName} is doing
           </p>
         </div>
         
@@ -68,43 +217,49 @@ const Dashboard = () => {
         <CardHeader className="pb-2">
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-medium">Last Check-in</CardTitle>
-            <Badge className={mockData.lastCall.status === "Done" ? "bg-[#e8f5f2] text-[#1F584D]" : "bg-red-100 text-red-800"}>
-              {mockData.lastCall.status}
+            <Badge className={lastCall ? "bg-[#e8f5f2] text-[#1F584D]" : "bg-yellow-100 text-yellow-800"}>
+              {lastCall ? "Done" : "No calls yet"}
             </Badge>
           </div>
         </CardHeader>
         <CardContent>
-          <Link to={`/calls/${mockData.lastCall.id}`} className="block">
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-3">
-                <Avatar className="h-12 w-12 border-2 border-[#e8f5f2]">
-                  {mockData.elderlyPhoto ? (
-                    <AvatarImage src={mockData.elderlyPhoto} alt={mockData.elderlyName} />
-                  ) : (
-                    <AvatarFallback className="bg-[#e8f5f2]">
-                      <User size={24} className="text-[#63BFAC]" />
-                    </AvatarFallback>
-                  )}
-                </Avatar>
-                <div>
-                  <p className="text-gray-600">{mockData.lastCall.date}</p>
-                  <p className="text-sm text-gray-500">
-                    "{mockData.lastCall.sentiment}"
-                  </p>
-                  <div className="flex gap-1 mt-1">
-                    {mockData.lastCall.keywords.map((keyword, index) => (
-                      <Badge key={index} variant="outline" className="text-xs bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]">
-                        {keyword}
-                      </Badge>
-                    ))}
+          {lastCall ? (
+            <Link to={`/calls/${lastCall.id}`} className="block">
+              <div className="flex items-start justify-between">
+                <div className="flex items-start gap-3">
+                  <Avatar className="h-12 w-12 border-2 border-[#e8f5f2]">
+                    {elderlyData.elderlyPhoto ? (
+                      <AvatarImage src={elderlyData.elderlyPhoto} alt={elderlyData.elderlyName} />
+                    ) : (
+                      <AvatarFallback className="bg-[#e8f5f2]">
+                        <User size={24} className="text-[#63BFAC]" />
+                      </AvatarFallback>
+                    )}
+                  </Avatar>
+                  <div>
+                    <p className="text-gray-600">{lastCall.date}</p>
+                    <p className="text-sm text-gray-500">
+                      "{lastCall.sentiment}"
+                    </p>
+                    <div className="flex gap-1 mt-1">
+                      {lastCall.keywords.map((keyword, index) => (
+                        <Badge key={index} variant="outline" className="text-xs bg-[#e8f5f2] border-[#63BFAC] text-[#1F584D]">
+                          {keyword}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                 </div>
+                <Button variant="ghost" size="sm" className="h-8">
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
               </div>
-              <Button variant="ghost" size="sm" className="h-8">
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+            </Link>
+          ) : (
+            <div className="text-center p-4">
+              <p className="text-gray-500">No calls recorded yet</p>
             </div>
-          </Link>
+          )}
         </CardContent>
       </Card>
       
@@ -264,42 +419,28 @@ const Dashboard = () => {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Next Check-in</p>
-                  <p className="font-medium">{mockData.nextCall.scheduled}</p>
+                  <p className="font-medium">{nextCall.scheduled}</p>
                 </div>
               </div>
             </div>
           </div>
           
           <div className="space-y-3">
-            <Link to="/calls/1" className="block">
-              <div className="flex justify-between items-center border-b pb-3">
-                <div>
-                  <p className="font-medium">Today, 9:15 AM</p>
-                  <p className="text-sm text-gray-500">Duration: 4m 32s</p>
-                </div>
-                <Badge className="bg-[#e8f5f2] text-[#1F584D]">Done</Badge>
-              </div>
-            </Link>
-            
-            <Link to="/calls/2" className="block">
-              <div className="flex justify-between items-center border-b pb-3">
-                <div>
-                  <p className="font-medium">Yesterday, 9:30 AM</p>
-                  <p className="text-sm text-gray-500">Duration: 5m 15s</p>
-                </div>
-                <Badge className="bg-[#e8f5f2] text-[#1F584D]">Done</Badge>
-              </div>
-            </Link>
-            
-            <Link to="/calls/3" className="block">
-              <div className="flex justify-between items-center">
-                <div>
-                  <p className="font-medium">May 3, 9:05 AM</p>
-                  <p className="text-sm text-gray-500">Duration: 3m 58s</p>
-                </div>
-                <Badge className="bg-red-100 text-red-800">Missed</Badge>
-              </div>
-            </Link>
+            {recentCalls.length > 0 ? (
+              recentCalls.map((call) => (
+                <Link to={`/calls/${call.id}`} key={call.id} className="block">
+                  <div className="flex justify-between items-center border-b pb-3 last:border-b-0">
+                    <div>
+                      <p className="font-medium">{formatCallDate(call.created_at)}</p>
+                      <p className="text-sm text-gray-500">Duration: {formatCallDuration(call.call_duration_secs)}</p>
+                    </div>
+                    <Badge className={getStatusBadgeColor("Done")}>Done</Badge>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              <p className="text-center py-4 text-gray-500">No calls recorded yet</p>
+            )}
           </div>
         </CardContent>
       </Card>
