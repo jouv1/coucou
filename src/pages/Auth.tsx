@@ -15,7 +15,7 @@ type AuthMode = "login" | "signup" | "reset" | "confirmation-sent";
 const Auth = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { setOnboardingStep } = useAuth();
+  const { user, isAuthenticated, setOnboardingStep } = useAuth();
   
   const [mode, setMode] = useState<AuthMode>("login");
   const [email, setEmail] = useState("");
@@ -26,17 +26,32 @@ const Auth = () => {
   const [verifyingEmail, setVerifyingEmail] = useState(false);
   const [verificationSuccess, setVerificationSuccess] = useState(false);
 
+  // If user is authenticated, redirect to dashboard
+  useEffect(() => {
+    if (isAuthenticated && !verifyingEmail) {
+      navigate("/dashboard");
+    }
+  }, [isAuthenticated, navigate, verifyingEmail]);
+
   // Check for email confirmation token
   useEffect(() => {
     const handleEmailConfirmation = async () => {
-      const token = searchParams.get('confirmation_token');
+      const token_hash = searchParams.get('token_hash');
+      const type = searchParams.get('type');
       
-      if (token) {
+      if (token_hash && type === 'email') {
         setVerifyingEmail(true);
         
         try {
-          await supabase.auth.verifyOtp({ token_hash: token, type: 'email' });
+          console.log("Verifying email with token_hash:", token_hash);
+          const { data, error } = await supabase.auth.verifyOtp({ 
+            token_hash, 
+            type: 'email' 
+          });
           
+          if (error) throw error;
+          
+          console.log("Email verification response:", data);
           setVerificationSuccess(true);
           toast({
             title: "Email verified successfully!",
@@ -51,6 +66,7 @@ const Auth = () => {
             navigate("/onboarding");
           }, 1500);
         } catch (error: any) {
+          console.error("Email verification error:", error);
           toast({
             title: "Email verification failed",
             description: error.message || "Please try again or contact support",
@@ -116,7 +132,10 @@ const Auth = () => {
         });
       }
       else if (mode === "reset") {
-        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/auth`,
+        });
+        
         if (error) throw error;
         
         toast({
@@ -127,6 +146,7 @@ const Auth = () => {
         setMode("login");
       }
     } catch (error: any) {
+      console.error("Authentication error:", error);
       toast({
         title: "Authentication error",
         description: error.message || "An error occurred during authentication",

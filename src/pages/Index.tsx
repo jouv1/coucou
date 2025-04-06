@@ -2,9 +2,11 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Phone, Heart, Bell } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6">
@@ -64,7 +66,7 @@ const Index = () => {
         
         <div className="pt-2 flex flex-col gap-4">
           <Button 
-            onClick={() => navigate("/onboarding")}
+            onClick={() => navigate(isAuthenticated ? "/onboarding" : "/auth?mode=signup")}
             className="w-full bg-[#63BFAC] hover:bg-[#4da899] text-white py-6 ios-button"
           >
             Get Started

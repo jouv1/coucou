@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -73,7 +72,7 @@ const steps = [
 
 const Onboarding = () => {
   const navigate = useNavigate();
-  const { user, onboardingStep, setOnboardingStep } = useAuth();
+  const { user, isAuthenticated, onboardingStep, setOnboardingStep } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
     account: {
@@ -143,8 +142,8 @@ const Onboarding = () => {
   // Redirect to auth if not authenticated
   useEffect(() => {
     const checkAuth = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (!data.session) {
+      if (!isAuthenticated) {
+        console.log("User not authenticated, redirecting to auth");
         navigate('/auth');
         toast({
           title: "Authentication required",
@@ -154,7 +153,7 @@ const Onboarding = () => {
     };
     
     checkAuth();
-  }, [navigate]);
+  }, [isAuthenticated, navigate]);
 
   const updateFormData = (step: string, data: any) => {
     setFormData((prev) => ({

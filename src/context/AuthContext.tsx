@@ -10,6 +10,7 @@ type AuthContextType = {
   loading: boolean;
   onboardingStep: string | null;
   setOnboardingStep: (step: string | null) => void;
+  isAuthenticated: boolean;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -18,6 +19,7 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   onboardingStep: null,
   setOnboardingStep: () => {},
+  isAuthenticated: false,
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -30,6 +32,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // First set up the auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log("Auth state change event:", event);
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
@@ -38,6 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Then check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("Got existing session:", session ? "yes" : "no");
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
@@ -46,8 +50,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Compute isAuthenticated based on presence of user and session
+  const isAuthenticated = !!user && !!session;
+
   return (
-    <AuthContext.Provider value={{ user, session, loading, onboardingStep, setOnboardingStep }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      session, 
+      loading, 
+      onboardingStep, 
+      setOnboardingStep,
+      isAuthenticated 
+    }}>
       {children}
     </AuthContext.Provider>
   );
