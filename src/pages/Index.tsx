@@ -60,10 +60,6 @@ const Index = () => {
           </div>
         </div>
         
-        <div className="pt-4 text-center">
-          <p className="text-gray-600 italic mb-6">"It's not just a check-in call. It's peace of mind"</p>
-        </div>
-        
         <div className="pt-2 flex flex-col gap-4">
           <Button 
             onClick={() => navigate("/auth?mode=signup")}
