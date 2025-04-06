@@ -2,24 +2,30 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Session, User } from "@supabase/supabase-js";
+import { useNavigate } from "react-router-dom";
 
 type AuthContextType = {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  onboardingStep: string | null;
+  setOnboardingStep: (step: string | null) => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   session: null,
   loading: true,
+  onboardingStep: null,
+  setOnboardingStep: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
-
+  const [onboardingStep, setOnboardingStep] = useState<string | null>(null);
+  
   useEffect(() => {
     // First set up the auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -41,7 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, session, loading }}>
+    <AuthContext.Provider value={{ user, session, loading, onboardingStep, setOnboardingStep }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,24 +1,69 @@
 
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
 
-type AuthMode = "login" | "signup" | "reset";
+type AuthMode = "login" | "signup" | "reset" | "confirmation-sent";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const { setOnboardingStep } = useAuth();
+  
   const [mode, setMode] = useState<AuthMode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [verifyingEmail, setVerifyingEmail] = useState(false);
+  const [verificationSuccess, setVerificationSuccess] = useState(false);
+
+  // Check for email confirmation token
+  useEffect(() => {
+    const handleEmailConfirmation = async () => {
+      const token = searchParams.get('confirmation_token');
+      
+      if (token) {
+        setVerifyingEmail(true);
+        
+        try {
+          await supabase.auth.verifyOtp({ token_hash: token, type: 'email' });
+          
+          setVerificationSuccess(true);
+          toast({
+            title: "Email verified successfully!",
+            description: "Continuing with onboarding...",
+          });
+          
+          // Set the onboarding step to continue from basic info
+          setOnboardingStep("basic-info");
+          
+          // Wait a moment to show success before redirecting
+          setTimeout(() => {
+            navigate("/onboarding");
+          }, 1500);
+        } catch (error: any) {
+          toast({
+            title: "Email verification failed",
+            description: error.message || "Please try again or contact support",
+            variant: "destructive",
+          });
+        } finally {
+          setVerifyingEmail(false);
+        }
+      }
+    };
+    
+    handleEmailConfirmation();
+  }, [searchParams, navigate, setOnboardingStep]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -57,19 +102,18 @@ const Auth = () => {
           options: {
             data: {
               full_name: fullName,
-            }
+            },
+            emailRedirectTo: `${window.location.origin}/auth`,
           }
         });
 
         if (error) throw error;
         
+        setMode("confirmation-sent");
         toast({
           title: "Account created!",
           description: "Please check your email for the verification link.",
         });
-        
-        // Navigate to dashboard (in a real app, we might want to wait for email verification)
-        navigate("/dashboard");
       }
       else if (mode === "reset") {
         const { error } = await supabase.auth.resetPasswordForEmail(email);
@@ -93,6 +137,40 @@ const Auth = () => {
     }
   };
 
+  // If we're verifying email, show a loading screen
+  if (verifyingEmail) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-6">
+        <Card className="w-full max-w-md border-[#63BFAC] border-opacity-30 ios-card ios-shadow">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold text-[#1F584D]">
+              Verifying Your Email
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center justify-center p-6">
+            {verificationSuccess ? (
+              <>
+                <div className="bg-[#63BFAC] p-3 rounded-full mb-4">
+                  <Check className="h-8 w-8 text-white" />
+                </div>
+                <p className="text-center mb-4">
+                  Email verified successfully! Continuing with onboarding...
+                </p>
+              </>
+            ) : (
+              <>
+                <Loader2 className="h-8 w-8 text-[#63BFAC] animate-spin mb-4" />
+                <p className="text-center mb-4">
+                  Please wait while we verify your email...
+                </p>
+              </>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md space-y-6 animate-fade-in">
@@ -109,134 +187,160 @@ const Auth = () => {
             <CardTitle className="text-2xl font-bold text-[#1F584D]">
               {mode === "login" ? "Welcome Back" : 
                mode === "signup" ? "Create Account" : 
+               mode === "confirmation-sent" ? "Check Your Email" :
                "Reset Password"}
             </CardTitle>
             <p className="text-gray-600 mt-2">
               {mode === "login" ? "Sign in to your Coucou account" :
                mode === "signup" ? "Get started with Coucou" :
+               mode === "confirmation-sent" ? "We've sent you a verification email" :
                "We'll send you a reset link"}
             </p>
           </CardHeader>
           <CardContent className="pt-4">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {mode === "signup" && (
-                <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name</Label>
-                  <Input
-                    id="fullName"
-                    type="text"
-                    placeholder="Your full name"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required={mode === "signup"}
-                  />
+            {mode === "confirmation-sent" ? (
+              <div className="space-y-4 text-center">
+                <div className="flex justify-center">
+                  <div className="bg-[#e8f5f2] p-4 rounded-full">
+                    <Check className="h-8 w-8 text-[#63BFAC]" />
+                  </div>
                 </div>
-              )}
-              
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="your.email@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+                <p>
+                  We've sent a verification link to <strong>{email}</strong>. 
+                  Please check your inbox and click the link to verify your email address.
+                </p>
+                <p className="text-sm text-gray-500">
+                  After verification, you'll be redirected to continue setting up your account.
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={() => setMode("login")}
+                  className="mt-4 text-[#1F584D] border-[#63BFAC]"
+                >
+                  Return to Login
+                </Button>
               </div>
-              
-              {(mode === "login" || mode === "signup") && (
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {mode === "signup" && (
+                  <div className="space-y-2">
+                    <Label htmlFor="fullName">Full Name</Label>
+                    <Input
+                      id="fullName"
+                      type="text"
+                      placeholder="Your full name"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      required={mode === "signup"}
+                    />
+                  </div>
+                )}
+                
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="email">Email Address</Label>
                   <Input
-                    id="password"
-                    type="password"
-                    placeholder={mode === "signup" ? "Create a secure password" : "Enter your password"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required={mode === "login" || mode === "signup"}
+                    id="email"
+                    type="email"
+                    placeholder="your.email@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </div>
-              )}
-              
-              {mode === "signup" && (
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder="Confirm your password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required={mode === "signup"}
-                  />
-                </div>
-              )}
-              
-              <Button 
-                type="submit" 
-                className="w-full bg-[#63BFAC] hover:bg-[#4da899] text-white"
-                disabled={loading}
-              >
-                {loading ? (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                ) : null}
-                {mode === "login" ? "Sign In" : 
-                 mode === "signup" ? "Create Account" : 
-                 "Send Reset Link"}
-              </Button>
-              
-              <div className="text-center space-y-2 pt-2">
-                {mode === "login" && (
-                  <>
-                    <Button 
-                      type="button" 
-                      variant="link" 
-                      className="text-[#1F584D]"
-                      onClick={() => setMode("reset")}
-                    >
-                      Forgot password?
-                    </Button>
-                    <div>
-                      <span className="text-gray-500">Don't have an account? </span>
+                
+                {(mode === "login" || mode === "signup") && (
+                  <div className="space-y-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder={mode === "signup" ? "Create a secure password" : "Enter your password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required={mode === "login" || mode === "signup"}
+                    />
+                  </div>
+                )}
+                
+                {mode === "signup" && (
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">Confirm Password</Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      placeholder="Confirm your password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required={mode === "signup"}
+                    />
+                  </div>
+                )}
+                
+                <Button 
+                  type="submit" 
+                  className="w-full bg-[#63BFAC] hover:bg-[#4da899] text-white"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  ) : null}
+                  {mode === "login" ? "Sign In" : 
+                   mode === "signup" ? "Create Account" : 
+                   "Send Reset Link"}
+                </Button>
+                
+                <div className="text-center space-y-2 pt-2">
+                  {mode === "login" && (
+                    <>
                       <Button 
                         type="button" 
                         variant="link" 
                         className="text-[#1F584D]"
-                        onClick={() => setMode("signup")}
+                        onClick={() => setMode("reset")}
                       >
-                        Sign up
+                        Forgot password?
+                      </Button>
+                      <div>
+                        <span className="text-gray-500">Don't have an account? </span>
+                        <Button 
+                          type="button" 
+                          variant="link" 
+                          className="text-[#1F584D]"
+                          onClick={() => setMode("signup")}
+                        >
+                          Sign up
+                        </Button>
+                      </div>
+                    </>
+                  )}
+                  
+                  {mode === "signup" && (
+                    <div>
+                      <span className="text-gray-500">Already have an account? </span>
+                      <Button 
+                        type="button" 
+                        variant="link" 
+                        className="text-[#1F584D]"
+                        onClick={() => setMode("login")}
+                      >
+                        Sign in
                       </Button>
                     </div>
-                  </>
-                )}
-                
-                {mode === "signup" && (
-                  <div>
-                    <span className="text-gray-500">Already have an account? </span>
+                  )}
+                  
+                  {mode === "reset" && (
                     <Button 
                       type="button" 
                       variant="link" 
                       className="text-[#1F584D]"
                       onClick={() => setMode("login")}
                     >
-                      Sign in
+                      Back to sign in
                     </Button>
-                  </div>
-                )}
-                
-                {mode === "reset" && (
-                  <Button 
-                    type="button" 
-                    variant="link" 
-                    className="text-[#1F584D]"
-                    onClick={() => setMode("login")}
-                  >
-                    Back to sign in
-                  </Button>
-                )}
-              </div>
-            </form>
+                  )}
+                </div>
+              </form>
+            )}
           </CardContent>
         </Card>
       </div>

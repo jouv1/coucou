@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,6 +8,9 @@ import {
   User, Pill, Clock, Bell,
   MessageSquare
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 import AccountCreationStep from "@/components/onboarding/AccountCreationStep";
 import BasicInfoStep from "@/components/onboarding/BasicInfoStep";
 import MedicationsStep from "@/components/onboarding/MedicationsStep";
@@ -70,6 +73,7 @@ const steps = [
 
 const Onboarding = () => {
   const navigate = useNavigate();
+  const { user, onboardingStep, setOnboardingStep } = useAuth();
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
     account: {
@@ -110,6 +114,47 @@ const Onboarding = () => {
       appointments: false,
     },
   });
+
+  // Check if user is authenticated and if onboardingStep is set
+  useEffect(() => {
+    if (user) {
+      // Pre-fill some user data if available
+      setFormData(prev => ({
+        ...prev,
+        account: {
+          ...prev.account,
+          fullName: user.user_metadata?.full_name || "",
+          email: user.email || "",
+        }
+      }));
+    }
+    
+    // If coming from email verification, skip to the appropriate step
+    if (onboardingStep === "basic-info") {
+      const stepIndex = steps.findIndex(step => step.id === "basic-info");
+      if (stepIndex !== -1) {
+        setCurrentStep(stepIndex);
+        // Reset the onboarding step to avoid unexpected redirects
+        setOnboardingStep(null);
+      }
+    }
+  }, [user, onboardingStep, setOnboardingStep]);
+  
+  // Redirect to auth if not authenticated
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        navigate('/auth');
+        toast({
+          title: "Authentication required",
+          description: "Please sign in or create an account to continue with onboarding.",
+        });
+      }
+    };
+    
+    checkAuth();
+  }, [navigate]);
 
   const updateFormData = (step: string, data: any) => {
     setFormData((prev) => ({

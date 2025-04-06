@@ -1,12 +1,15 @@
 
 import { Button } from "@/components/ui/button";
 import { Phone } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 interface CompletionStepProps {
   data: any;
 }
 
 const CompletionStep = ({ data }: CompletionStepProps) => {
+  const { user } = useAuth();
+  
   const handleTestCall = () => {
     alert("This would initiate a test call to your number");
   };
